@@ -4,31 +4,6 @@ local soundManager = require("src.sound.SoundManager"):getInstance()
 
 local data = {
 
-    stun = {
-        affects = {
-            canMove = false,
-            canAttack = false,
-            canUseAbilities = false,
-        },
-        interuptsCasting = true,
-        duration = 1,
-        animation = {},
-        adjective = "stunned"
-    },
-
-
-    snare = {
-        affects = {
-            canMove = false,
-            canUseAbilities = false,
-        },
-        interuptsCasting = true,
-        duration = 1,
-        animation = {},
-        adjective = "snared"
-    },
-
-
     knockback = {
         affects = {
             canMove = false,
@@ -40,7 +15,6 @@ local data = {
         duration = 1,
         intensity = 1,
         callback = function(matchState, target, source)
-            print("kb called")
 
             -- acount for if target already knockbacked so multiple kbs stack
             -- calculate where will that knockback take them and then work from there
@@ -189,146 +163,6 @@ local data = {
             end
         end,
         adjective = "panicking"
-    },
-
-
-    disarm = {
-        affects = {
-            canAttack = false,
-        },
-        interuptsCasting = true,
-        duration = 1,
-        animation = {},
-        adjective = "disarmed"
-    },
-
-
-    suppression = {
-        affects = {
-            canMove = false,
-            canAttack = false,
-            canUseAbilities = false,
-            displacable = false
-        },
-        interuptsCasting = true,
-        duration = 1,
-        animation = {},
-        adjective = "suppressed"
-    },
-
-
-    sleep = {
-        affects = {
-            canMove = false,
-            canAttack = false,
-            canUseAbilities = false,
-            displacable = true
-        },
-        interuptsCasting = true,
-        duration = {1, 3},
-        animation = {},
-        adjective = "asleep"
-        -- particle animation
-    },
-
-
-    slow = {
-        alter = {
-            customMovePattern = function(pattern)
-                --change the pattern
-            end
-        },
-        interuptsCasting = false,
-        duration = 1,
-        animation = {},
-        adjective = "slowed"
-    },
-
-
-    ground = {
-        affects = {
-            canDash = false
-        },
-        interuptsCasting = false,
-        duration = 1,
-        animation = {},
-        adjective = "grounded"
-    },
-
-    
-    wound = {
-        affects = {
-            canMove = true,
-            canAttack = true,
-            canUseAbilities = true,
-            displacable = true,
-            takesExtraDamage = true
-        },
-        alter = {
-            decreaseP = {
-                healingReduction = 0.3,
-                def = 0.4
-            }
-        },
-        interuptsCasting = false,
-        duration = {1, 2},
-        animation = {},
-        adjective = "wounded"
-    },
-
-
-    confusion = {
-        affects = {
-            canMove = true,
-            canAttack = true,
-            canUseAbilities = false,
-            displacable = true,
-        },
-        alter = {
-            customMovePattern = function(pattern)
-                -- scramble the pattern a bit
-            end
-        },
-        interuptsCasting = false,
-        duration = {1, 2},
-        animation = {},
-        adjective = "confused"
-    },
-
-
-    jam = {
-        affects = {
-            canMove = true,
-            canAttack = true,
-            canUseAbilities = false,
-            displacable = true
-        },
-        interuptsCasting = false,
-        duration = 1,
-        animation = {},
-        adjective = "jammed"
-    },
-
-
-    exhaust = {
-        affects = {
-            canUseAbilities = false,
-        },
-        interuptsCasting = false,
-        duration = 1,
-        animation = {},
-        adjective = "exhausted"
-    },
-
-
-    invisibility = {
-        affects = {
-            visible = false
-        },
-        interuptsCasting = false,
-        duration = 1,
-        animation = {},
-        adjective = "invisible"
     }
 }
 
