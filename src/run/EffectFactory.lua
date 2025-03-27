@@ -9,10 +9,14 @@ function EffectFactory.newStat(effectType, amount, target)
     
     assert(type(amount) == "number", "Expected number, got: ".. amount)
 
-    assert(type(effectType) == "string" and
-        effectType == "increase" or
-        effectType == "increaseP"   
-        , "Invalid effecttype, got: " .. effectType)
+    assert(type(target) == "string" and
+        target == "atk" or
+        target == "def" or 
+        target == "hp" or 
+        target == "crit" or
+        target == "lifeSteal" or
+        target == "pen"
+        , "Invalid effect target, got: " .. target)
 
     return {effectType, amount, target}
 end

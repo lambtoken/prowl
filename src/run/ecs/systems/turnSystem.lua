@@ -78,21 +78,32 @@ function turnSystem:init()
         stand_by_phase = {
             instance = self,
 
+            -- go through all entities in the pool
+            -- go through their passives and items
+            -- if they have onStandBy event call it
+
+
+
             -- onStandby event
             -- buffs/debuffs
             -- disabling, defensive
             -- dot
-            -- passives
 
             -- phase starts on enter time of sliding text
 
-            enter = function(s) 
-                if false then
-                    s.instance.phase:set_state("main_phase")
+            enter = function(s)
+                
+                for index, entity in ipairs(s.instance.pool) do
+                    if entity.passive and entity.passive.onStandBy then
+                        entity.passive.onStandBy(gs.currentMatch, entity)
+                    end
                 end
+
             end,
             
             update = function(s, dt) 
+                -- check for actions here.
+                -- if no actions anymore switch to main_phase
             end,
 
             draw = function() 
@@ -144,9 +155,8 @@ end
 
 function turnSystem:handleStandBy()
     self.buffsDebuffSystem:onStandBy()
-    -- disabling
+    -- statusEffectSystem
     -- tags
-    -- defensive
     -- dot
     -- onStandBy event
 end
