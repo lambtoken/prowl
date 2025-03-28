@@ -1,4 +1,3 @@
-local DURATION_UNIT = require "src.run.combat.DURATION_UNIT"
 local ccFunctions = require "src.run.combat.crowdControlFunctions"
 local soundManager = require("src.sound.SoundManager"):getInstance()
 

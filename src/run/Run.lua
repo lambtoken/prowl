@@ -17,12 +17,17 @@ function Run:initialize(starterSpecies, seed)
 end
 
 function Run:nextStage()
-
+    self.currentStage = self.currentStage + 1
+    self.currentNodeCoords = {1, 1}
 end
 
 function Run:generateStages()
     self.stages[1] = Stage:new(1)
     self.stages[1]:generate()
+    self.stages[2] = Stage:new(2)
+    self.stages[2]:generate()
+    self.stages[3] = Stage:new(3)
+    self.stages[3]:generate()
 end
 
 -- function Run:generateMatches()

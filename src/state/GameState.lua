@@ -40,7 +40,7 @@ function GameState:initialize()
     }
     self.achievements = {}
     self.seed = os.time()
-    self:setSeed(seed)
+    self:setSeed(self.seed)
 end
 
 function GameState:setSeed(seed)

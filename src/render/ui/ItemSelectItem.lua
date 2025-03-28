@@ -3,6 +3,7 @@ local spriteTable = require 'src.render.spriteTable'
 local gs = require('src.state.GameState'):getInstance()
 local sceneManager = require('src.scene.SceneManager'):getInstance()
 local ItemDetails = require('src.render.ui.itemDetails')
+local stageConfig = require('src.run.stageConfig')
 
 local ItemSelectItem = {}
 ItemSelectItem.__index = ItemSelectItem
@@ -65,8 +66,13 @@ function ItemSelectItem:mousepressed(x, y, btn)
     if x >= self.screenX and y >= self.screenY and x <= self.screenX + self.width and y <= self.screenY + self.height then
        
         gs.currentMatch.itemSystem:giveItem(gs.run.team[1], self.itemName)
-        gs.run.currentNodeCoords = {gs.currentMatchNode.x, gs.currentMatchNode.y}
         gs.currentMatchNode.passed = true
+        
+        if gs.run.currentNodeCoords[1] == #stageConfig.format - 1 then
+            gs.run:nextStage()
+        else
+            gs.run.currentNodeCoords = {gs.currentMatchNode.x, gs.currentMatchNode.y}
+        end
 
         sceneManager:switchScene( "runMap")
     end

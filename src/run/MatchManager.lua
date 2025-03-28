@@ -52,11 +52,11 @@ function MatchManager:initialize(node)
         self.__systems.crowdControlSystem,
         self.__systems.statusEffectSystem,
         self.__systems.itemSystem,
+        self.__systems.statsSystem,
         self.__systems.stateSystem,
-        self.__systems.effectSystem,
-        self.__systems.timerSystem
-        -- self.__systems.buffDebuffSystem
-        --self.__systems.turnSystem
+        self.__systems.timerSystem,
+        self.__systems.buffDebuffSystem,
+        self.__systems.turnSystem
     )
 
     self.moveSystem = self.ecs:getSystem(self.__systems.moveSystem)
@@ -65,10 +65,11 @@ function MatchManager:initialize(node)
     self.crowdControlSystem = self.ecs:getSystem(self.__systems.crowdControlSystem)
     self.renderSystem = self.ecs:getSystem(self.__systems.renderSystem)
     self.itemSystem = self.ecs:getSystem(self.__systems.itemSystem)
+    self.statsSystem = self.ecs:getSystem(self.__systems.statsSystem)
     self.combatSystem = self.ecs:getSystem(self.__systems.combatSystem)
     self.timerSystem = self.ecs:getSystem(self.__systems.timerSystem)
-    -- self.buffDebuffSystem = self.ecs:getSystem(self.__systems.buffDebuffSystem)
-    --self.turnSystem = self.ecs:getSystem(self.__systems.turnSystem)
+    self.buffDebuffSystem = self.ecs:getSystem(self.__systems.buffDebuffSystem)
+    self.turnSystem = self.ecs:getSystem(self.__systems.turnSystem)
     
     self.states = fsm({
         playing = {
@@ -633,7 +634,7 @@ function MatchManager:onExit()
     -- not happy with this approach. we should just create MatchManager and register events once
     self.eventManager:reset()
     self:removeEntitiesFromTheWorld()
-    self.ecs = nil
+    -- self.ecs = nil
     -- gs.currentMatch = nil
 end
 
@@ -646,7 +647,6 @@ function MatchManager:update(dt)
 
     shimmerShader:send('time', love.timer.getTime())
     noiseShader:send("time", love.timer.getTime())
-
 end
 
 return MatchManager

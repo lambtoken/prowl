@@ -9,7 +9,6 @@ local turnSystem = Concord.system({pool = {team}})
 
 
 function turnSystem:init() 
-    self.buffsDebuffSystem = gs.currentMatch.buffsDebuffSystem
     self.turn = 1
     -- self.states = fsm({
     --     playing = {
@@ -154,7 +153,7 @@ function turnSystem:update(dt)
 end
 
 function turnSystem:handleStandBy()
-    self.buffsDebuffSystem:onStandBy()
+    gs.buffsDebuffSystem:onStandBy()
     -- statusEffectSystem
     -- tags
     -- dot

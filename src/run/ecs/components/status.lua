@@ -9,6 +9,7 @@ local status = Concord.component("status", function(component)
     component.isTargetable = statusDefaults.isTargetable
     component.isInvulnerable = statusDefaults.isInvulnerable
     component.isJammed = statusDefaults.isJammed -- should i do this on the level of the item?
+    component.effects = {}
 end)
 
 return status

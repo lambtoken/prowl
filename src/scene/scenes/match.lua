@@ -33,7 +33,7 @@ function match:enter()
     -- ugly check for now. will refactor.
     if(self.currentMatch.teamManager.teams[1].members[1] == nil) then
         self.currentMatch:addToTeam(1, gs.run.team[1])
-        self.currentMatch:addToTeam(1, self.currentMatch:newAnimal("bear", 4, 4, 1))
+        --self.currentMatch:addToTeam(1, self.currentMatch:newAnimal("bear", 4, 4, 1))
     end
 
     self.currentMatch:preparePlayer()

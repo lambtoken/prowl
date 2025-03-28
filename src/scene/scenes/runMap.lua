@@ -23,7 +23,7 @@ end
 local runMap = Scene:new('runMap')
 
 function runMap:mousepressed(x, y, button, istouch, presses)
-    for i, col in ipairs(gs.run.stages[1].nodes) do
+    for i, col in ipairs(gs.run.stages[self.stage].nodes) do
         local yOffset = (adventureConfig.nodeIconSize * (adventureConfig.tallestCol - #col)) / 2 +
         (adventureConfig.nodeDistance * (adventureConfig.tallestCol - #col)) / 2
         for j, node in ipairs(col) do
@@ -39,6 +39,8 @@ function runMap:mousepressed(x, y, button, istouch, presses)
 end
 
 function runMap:enter(s)
+    self.stage = gs.run.currentStage
+
     adventureConfig.tallestCol = math.max(unpack(adventureConfig.format))
     adventureConfig.mapWidth = #adventureConfig.format * adventureConfig.nodeIconSize +
     (#adventureConfig.format - 1) * adventureConfig.colDistance
@@ -57,7 +59,7 @@ function runMap:enter(s)
     end
 
     -- screenX and screenY
-    for i, col in ipairs(gs.run.stages[1].nodes) do
+    for i, col in ipairs(gs.run.stages[self.stage].nodes) do
         local yOffset = (adventureConfig.nodeIconSize * (adventureConfig.tallestCol - #col)) / 2 +
         (adventureConfig.nodeDistance * (adventureConfig.tallestCol - #col)) / 2
         for j, node in ipairs(col) do
@@ -79,7 +81,7 @@ function runMap:update(dt)
 end
 
 function runMap:mousemoved(x, y)
-    for i, col in ipairs(gs.run.stages[1].nodes) do
+    for i, col in ipairs(gs.run.stages[self.stage].nodes) do
         for j, node in ipairs(col) do
             if j == 1 and i == 1 then
             end
@@ -105,7 +107,7 @@ function runMap:draw(s)
     love.graphics.rectangle('fill', 0, 0, RM.windowWidth, RM.windowHeight)
     love.graphics.setColor(1, 1, 1)
             
-    for i, col in ipairs(gs.run.stages[1].nodes) do
+    for i, col in ipairs(gs.run.stages[self.stage].nodes) do
         local yOffset = (adventureConfig.nodeIconSize * (adventureConfig.tallestCol - #col)) / 2 +
         (adventureConfig.nodeDistance * (adventureConfig.tallestCol - #col)) / 2
         for j, node in ipairs(col) do
@@ -116,9 +118,9 @@ function runMap:draw(s)
 
             if node.to then
                 for k, route in ipairs(node.to) do
-                    local toNodeYOffset = (adventureConfig.nodeIconSize * (adventureConfig.tallestCol - #gs.run.stages[1].nodes[i + 1])) /
+                    local toNodeYOffset = (adventureConfig.nodeIconSize * (adventureConfig.tallestCol - #gs.run.stages[self.stage].nodes[i + 1])) /
                     2 +
-                    (adventureConfig.nodeDistance * (adventureConfig.tallestCol - #gs.run.stages[1].nodes[i + 1])) / 2
+                    (adventureConfig.nodeDistance * (adventureConfig.tallestCol - #gs.run.stages[self.stage].nodes[i + 1])) / 2
 
                     local toNodeX = adventureConfig.mapX + route[1] * adventureConfig.nodeIconSize +
                     (route[1] - 1) * adventureConfig.colDistance - adventureConfig.nodeIconSize / 2
