@@ -119,17 +119,13 @@ function aiManager:pickMove(moves, difficulty)
         end
 
     elseif difficulty == "medium" then
-        local random = math.random() < 0.1
+        local random = math.random() < 0.2
 
         if random then
-            print("RRAAANDOOM")
             return moves[math.random(#moves)]
         else
             local leftIndex = #moves - math.max(1, math.floor(#moves * 0.3))
             local portion = splitTableByRange(moves, leftIndex, #moves)
-            print("moves size: ".. #moves)
-            print("portion size: " .. #portion)
-            print("left index: ", leftIndex)
             return portion[math.random(#portion)]
         end
 
@@ -159,7 +155,7 @@ function aiManager:getMove(teamID)
     local allMoves = {}
     
     for _, e in ipairs(self.currentMatch.teamManager.teams[teamID].members) do
-        if e.state.current == "alive" then
+        if e.state.current == "alive" and self.currentMatch.stateSystem:hasActions(e) then
             for _, move in ipairs(self:rateMoves(e)) do
                 table.insert(allMoves, move)
             end

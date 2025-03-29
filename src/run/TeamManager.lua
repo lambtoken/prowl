@@ -24,7 +24,7 @@ function teamManager:new(currentMatch)
             instance = o,
 
             enter = function(s) 
-                s.instance.states:set_state('main_phase')
+                s.instance.states:set_state('stand_by_phase')
             end,
             
             update = function(s, dt) 
@@ -39,7 +39,10 @@ function teamManager:new(currentMatch)
         stand_by_phase = {
             instance = o,
 
-            enter = function() 
+            enter = function(s) 
+                s.instance.currentMatch.statusEffectSystem:onStandBy()
+                s.instance.currentMatch.statusEffectSystem:applyAllStatusEffects()
+                s.instance.states:set_state('main_phase')
             end,
             
             update = function(s, dt) 
@@ -76,8 +79,10 @@ function teamManager:new(currentMatch)
                     end
 
                 else
-                    -- skip if team is empty or has no moves
-                    if #s.instance.teams[s.instance.turnTeamId].members == 0 or 
+                    -- skip if team is empty or has no moveso
+                    local currentTeam = s.instance.teams[s.instance.turnTeamId]
+                    if #currentTeam.members == 0 or 
+                    not s.instance:teamHasActions() and
                     s.instance.lastActiveMob and not s.instance.currentMatch:hasMovesLeft(s.instance.lastActiveMob) then
                         s.instance.states:set_state("end_phase")
                     else
@@ -117,7 +122,7 @@ function teamManager:new(currentMatch)
                     end
                 end
 
-                s.instance.states:set_state("start_phase")
+                s.instance.states:set_state("stand_by_phase")
             end,
             
             update = function(s, dt) 
@@ -198,6 +203,14 @@ end
 
 function teamManager:canCurrentTeamRest()
     return self.teams[self.turnTeamId].rest
+end
+
+function teamManager:teamHasActions()
+    local actions = false
+    for index, animal in ipairs(self.teams[self.turnTeamId]) do
+        actions = actions or self.currentMatch.stateSystem.hasActions(animal)
+    end    
+    return actions
 end
 
 function teamManager:draw()

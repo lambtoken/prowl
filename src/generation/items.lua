@@ -475,9 +475,22 @@ local items = {
         passive = {},
         active = {},
     },
+    stappler = {
+        name = 'stappler',
+        type = 'weapon',
+        rarity = 'common',
+        stats = {},
+        patern = {},
+        passive = {
+            onAttack = function(matchState, source, target)
+                if target.metadata.type == 'animal' then
+                    matchState.statusEffectSystem:giveStatusEffect(target, source, 'stun', 1)
+                end
+            end,
+            cooldown = 2
+        }
+    }
 }
-
-print('render', RM.renderDistanceX)
 
 local crownWidth = RM.renderDistanceX + 1
 

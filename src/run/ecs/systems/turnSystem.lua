@@ -154,6 +154,7 @@ end
 
 function turnSystem:handleStandBy()
     gs.buffsDebuffSystem:onStandBy()
+    gs.itemSystem:onStandBy()
     -- statusEffectSystem
     -- tags
     -- dot

@@ -50,12 +50,12 @@ function MatchManager:initialize(node)
         self.__systems.moveSystem,
         self.__systems.combatSystem,
         self.__systems.crowdControlSystem,
-        self.__systems.statusEffectSystem,
         self.__systems.itemSystem,
         self.__systems.statsSystem,
         self.__systems.stateSystem,
         self.__systems.timerSystem,
         self.__systems.buffDebuffSystem,
+        self.__systems.statusEffectSystem,
         self.__systems.turnSystem
     )
 
@@ -70,6 +70,8 @@ function MatchManager:initialize(node)
     self.timerSystem = self.ecs:getSystem(self.__systems.timerSystem)
     self.buffDebuffSystem = self.ecs:getSystem(self.__systems.buffDebuffSystem)
     self.turnSystem = self.ecs:getSystem(self.__systems.turnSystem)
+    self.statusEffectSystem = self.ecs:getSystem(self.__systems.statusEffectSystem)
+    self.stateSystem = self.ecs:getSystem(self.__systems.stateSystem)
     
     self.states = fsm({
         playing = {
@@ -147,13 +149,9 @@ function MatchManager:initialize(node)
             -- disabling, defensive
             -- dot
             -- passives
-
             -- phase starts on enter time of sliding text
 
             enter = function(s) 
-                if false then
-                    s.instance.phase:set_state("main_phase")
-                end
             end,
             
             update = function(s, dt) 

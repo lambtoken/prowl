@@ -75,5 +75,16 @@ function itemSystem:hasItem(entity, itemName)
     return false
 end
 
+function itemSystem:onStandBy()
+    for index, animal in ipairs(self.pool) do
+        for index, item in ipairs(animal.inventory.items) do
+            if item.passive.cooldown then
+                item.passive.cooldown = item.passive.cooldown - 1
+                
+            end
+        end    
+    end
+end
+
 
 return itemSystem

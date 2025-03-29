@@ -4,7 +4,7 @@ local soundManager = require("src.sound.SoundManager"):getInstance()
 local data = {
 
     stun = {
-        affects = {
+        mod = {
             canMove = false,
             canAttack = false,
             canUseAbilities = false,
@@ -18,7 +18,7 @@ local data = {
 
 
     snare = {
-        affects = {
+        mod = {
             canMove = false,
             canUseAbilities = false,
         },
@@ -30,7 +30,7 @@ local data = {
 
 
     disarm = {
-        affects = {
+        mod = {
             canAttack = false,
         },
         interuptsCasting = true,
@@ -41,7 +41,7 @@ local data = {
 
 
     suppression = {
-        affects = {
+        mod = {
             canMove = false,
             canAttack = false,
             canUseAbilities = false,
@@ -55,11 +55,10 @@ local data = {
 
 
     sleep = {
-        affects = {
+        mod = {
             canMove = false,
             canAttack = false,
             canUseAbilities = false,
-            displacable = true
         },
         interuptsCasting = true,
         duration = {1, 3},
@@ -83,7 +82,7 @@ local data = {
 
 
     ground = {
-        affects = {
+        mod = {
             canDash = false
         },
         interuptsCasting = false,
@@ -93,52 +92,50 @@ local data = {
     },
 
     
-    wound = {
-        affects = {
-            canMove = true,
-            canAttack = true,
-            canUseAbilities = true,
-            displacable = true,
-            takesExtraDamage = true
-        },
-        alter = {
-            decreaseP = {
-                healingReduction = 0.3,
-                def = 0.4
-            }
-        },
-        interuptsCasting = false,
-        duration = {1, 2},
-        animation = {},
-        adjective = "wounded"
-    },
+    -- wound = {
+    --     mod = {
+    --         canMove = true,
+    --         canAttack = true,
+    --         canUseAbilities = true,
+    --         displacable = true,
+    --         takesExtraDamage = true
+    --     },
+    --     alter = {
+    --         decreaseP = {
+    --             healingReduction = 0.3,
+    --             def = 0.4
+    --         }
+    --     },
+    --     interuptsCasting = false,
+    --     duration = {1, 2},
+    --     animation = {},
+    --     adjective = "wounded"
+    -- },
 
 
-    confusion = {
-        affects = {
-            canMove = true,
-            canAttack = true,
-            canUseAbilities = false,
-            displacable = true,
-        },
-        alter = {
-            customMovePattern = function(pattern)
-                -- scramble the pattern a bit
-            end
-        },
-        interuptsCasting = false,
-        duration = {1, 2},
-        animation = {},
-        adjective = "confused"
-    },
+    -- confusion = {
+    --     mod = {
+    --         canMove = true,
+    --         canAttack = true,
+    --         canUseAbilities = false,
+    --         displacable = true,
+    --     },
+    --     alter = {
+    --         customMovePattern = function(pattern)
+    --             -- scramble the pattern a bit
+    --         end
+    --     },
+    --     interuptsCasting = false,
+    --     duration = {1, 2},
+    --     animation = {},
+    --     adjective = "confused"
+    -- },
 
 
     jam = {
-        affects = {
-            canMove = true,
-            canAttack = true,
+        mod = {
             canUseAbilities = false,
-            displacable = true
+            isJammed = false
         },
         interuptsCasting = false,
         duration = 1,
@@ -148,7 +145,7 @@ local data = {
 
 
     exhaust = {
-        affects = {
+        mod = {
             canUseAbilities = false,
         },
         interuptsCasting = false,
@@ -159,7 +156,7 @@ local data = {
 
 
     invisibility = {
-        affects = {
+        mod = {
             visible = false
         },
         interuptsCasting = false,
@@ -170,7 +167,7 @@ local data = {
 
 
     invulnerability = {
-        affects = {
+        mod = {
             isInvulnerable = true
         },
         interuptsCasting = false,
@@ -180,7 +177,7 @@ local data = {
 
 
     playingDead = {
-        affects = {
+        mod = {
             isTargetable = true
         },
         interuptsCasting = false,

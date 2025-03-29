@@ -31,7 +31,7 @@ function itemSelect:enter()
     
     local randomItems = getRandomItems(3, nItems)
 
-    randomItems[1] = 'mace'
+    randomItems[1] = 'stappler'
 
     for i = 1, nItems do
         local item = Item:new(randomItems[i])

@@ -1,6 +1,7 @@
 local Concord = require("libs.concord")
 local EventManager = require("src.state.events"):getInstance()
 local soundManager = require("src.sound.SoundManager"):getInstance()
+local GameState    = require("src.state.GameState"):getInstance()
 
 local stateSystem = Concord.system({pool = {state}})
 
@@ -48,6 +49,17 @@ function stateSystem:onStateExit(entity, state)
         end
     elseif state == "dying" then
     elseif state == "dead" then
+    end
+end
+
+function stateSystem:hasActions(entity)
+    if entity.state then
+        if self:hasMovesLeft(entity) and
+           entity.status.canMove then
+        --    GameState.currentMatch.itemSystem:hasActives(entity) then
+                return true
+           end
+           return false
     end
 end
 

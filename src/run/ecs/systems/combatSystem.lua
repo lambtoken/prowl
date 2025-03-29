@@ -88,7 +88,6 @@ function combatSystem:init()
 
                         for _, item in ipairs(entity.inventory.items) do
                             if item.passive and item.passive.onAttack then
-                                print("item registered")
                                 item.passive.onAttack(matchState, entity, target)
                             end
                         end
@@ -101,7 +100,6 @@ function combatSystem:init()
                     end
 
                     if entity1OnAttack and entity1OnAttack.passive and entity1OnAttack.passive.onAttack then
-                        print("attack registered")
                         succesfulAttackPassive = entity1OnAttack.passive.onAttack(matchState, entity, target) or succesfulAttackPassive
                     end
 

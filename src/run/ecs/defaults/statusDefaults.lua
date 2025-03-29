@@ -1,13 +1,17 @@
 local statusDefaults = {
  
     canAttack = true,
+    canMeleeAttack = true,
+    canRangeAttack = true,
     canMove = true,
-    canUseAbilities = true,
+    canDash = true,
     isDisplaceable = true,
     isTargetable = true,
-    isIvulnerable = false,
-    isJammed = true,
-    isInvisible = false,
+    inVulnerable = true,
+    itemStats = true,
+    itemActives = true,
+    isVisible = true,
+    
 }
 
 return statusDefaults

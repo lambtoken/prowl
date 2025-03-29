@@ -3,6 +3,7 @@ local animalData = require "src.generation.mobs"
 local objectData = require "src.generation.objects"
 local tablex     = require "libs.batteries.tablex"
 local pretty     = require "libs.batteries.pretty"
+local statusDefaults = require "src.run.ecs.defaults.statusDefaults"
 
 local EntityFactory = {}
 
@@ -62,20 +63,7 @@ function EntityFactory:applyDefault(entity, comp)
             }
         end
     elseif comp == "status" then
-        local defaults = {
-            canAttack = true,
-            canMeleeAttack = true,
-            canRangeAttack = true,
-            canMove = true,
-            canUseAbilities = true,
-            canDash = true,
-            canTeleport = true,
-            isDisplaceable = true,
-            isTargetable = true,
-            isInvulnerable = false,
-            isJammed = false,
-            isConfussed = false
-        }
+        local defaults = statusDefaults
 
         local default = tablex.deep_copy(defaults)
 

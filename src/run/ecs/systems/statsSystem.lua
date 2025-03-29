@@ -22,9 +22,7 @@ function statsSystem:updateState()
 end
 
 function statsSystem:calculateStats()
-    print(123)
     for _, entity in ipairs(self.pool) do
-        print(123321)
 
         local items = entity.inventory.items
         local baseStats = entity.stats.base
