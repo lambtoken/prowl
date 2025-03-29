@@ -1105,6 +1105,37 @@ local mobs = {
             {0, 0, 0, 0, 0}
         }
     },
+    hydra =
+    {
+        name = 'hydra',
+        sprite = 'hydra',
+        stats = {
+            atk = 57,
+            def = 3,
+            maxHp = 10,
+            moves = 1,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck
+        },
+        stepsOn = DEFAULT.stepsOn,
+
+        movePattern = {
+            {0, 0, 0, 0, 0},
+            {1, 1, 1, 1, 1},
+            {1, 1, 0, 1, 1},
+            {1, 1, 1, 1, 1},
+            {0, 0, 0, 0, 0}
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 1, 1, 1, 0},
+            {0, 1, 0, 1, 0},
+            {0, 1, 1, 1, 0},
+            {0, 0, 0, 0, 0}
+        }
+    },
 }
 
 -- for key, value in pairs(mobs) do

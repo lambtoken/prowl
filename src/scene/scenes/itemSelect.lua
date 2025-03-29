@@ -7,6 +7,7 @@ local pretty         = require 'libs.batteries.pretty'
 local checkerShader = love.graphics.newShader(require('src.render.shaders.checker_shader'))
 local SoundManager  = require('src.sound.SoundManager'):getInstance()
 -- local newItem = require 'src.run.newItem'
+local gs = require("src.state.GameState"):getInstance()
 
 local itemMargin = 100
 local itemSize = 200
@@ -29,9 +30,9 @@ end
 function itemSelect:enter()
     self.items = {} 
     
-    local randomItems = getRandomItems(3, nItems)
+    local randomItems = getRandomItems(gs.run.currentStage, nItems)
 
-    randomItems[1] = 'stappler'
+    -- randomItems[1] = 'stappler'
 
     for i = 1, nItems do
         local item = Item:new(randomItems[i])

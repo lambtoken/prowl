@@ -325,7 +325,7 @@ function MatchManager:getSpawnPositions(side)
 
     if side == "top" then
         heightTop = 0
-        heightBottom = math.floor(self.height / 2) - 2
+        heightBottom = math.floor(self.height / 2) - 1
     elseif side == "bottom" then
         heightTop = math.floor(self.height / 2)
         heightBottom = self.height - 1
@@ -369,8 +369,8 @@ function MatchManager:generateEnemies()
     local species = {}
 
     -- -1 to acount for start node
-    local amountMin = stageMobAmount[1][self.matchNode.x - 1][1]
-    local amountMax = stageMobAmount[1][self.matchNode.x - 1][2]
+    local amountMin = stageMobAmount[gs.run.currentStage][self.matchNode.x - 1][1]
+    local amountMax = stageMobAmount[gs.run.currentStage][self.matchNode.x - 1][2]
 
     local amount = amountMin + math.ceil(math.random() * (amountMax - amountMin))
     
@@ -390,8 +390,6 @@ function MatchManager:generateEnemies()
             level = math.floor(self.matchNode.x / 2)
         end
         -- end
-
-        print('generate enemies ' .. level)
 
         local animal = self:newAnimal(value, positions[pos][1], positions[pos][2], level)
 

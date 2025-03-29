@@ -19,7 +19,6 @@ function ItemSelectItem:new(itemName)
     
     o.itemDetails:init()
 
-    print(itemName)
     o.texture = love.graphics.newQuad(spriteTable[o.itemName][1] * RM.spriteSize, spriteTable[o.itemName][2] * RM.spriteSize, RM.spriteSize, RM.spriteSize, RM.image)
 
     setmetatable(o, self)

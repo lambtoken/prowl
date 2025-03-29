@@ -91,6 +91,15 @@ local rates = {
             {name = 'spikes', rate = 10, limit = 0},
         },
     },
+    hydra = {
+        normal = {
+            { name = 'vase',         rate = 20, limit = 0 },
+            { name = 'apple',        rate = 10, limit = 3 },
+            { name = 'small_pillar', rate = 2,  limit = 0 },
+            { name = 'crack',        rate = 3,  limit = 1 },
+            { name = 'spikes',       rate = 10, limit = 0 },
+        },
+    },
     swamp = {
         normal = {
             -- FIX: object limit is causing a bug

@@ -190,6 +190,25 @@ function terrain.phoenix.normal(width, height)
 
 end
 
+terrain.hydra = {}
+
+function terrain.hydra.normal(width, height)
+
+    local board = {}
+    board.terrain = {}
+    board.decoration = {}
+
+    for i = 1, height do
+        board.terrain[i] = {}
+        for j = 1, width do
+            board.terrain[i][j] = Tile:new('floor', 'ground', true)
+        end
+    end
+
+    return board
+
+end
+
 terrain.swamp = {}
 
 function terrain.swamp.normal(width, height)
