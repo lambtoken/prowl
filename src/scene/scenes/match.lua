@@ -117,6 +117,7 @@ function match:update(dt)
         self.turnTracker:update(dt)
         self.TextBubbleManager:update(dt)
         self.particleSystem:update(dt)
+        self.hearts:update(dt)
         
         if self.isShaking then    
             self.shakeTimer = self.shakeTimer - dt

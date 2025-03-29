@@ -24,6 +24,11 @@ end
 function statsSystem:calculateStats()
     for _, entity in ipairs(self.pool) do
 
+        if not entity.inventory or not entity.stats then
+            print("Entity missing required components, skipping")
+            goto continue
+        end
+
         local items = entity.inventory.items
         local baseStats = entity.stats.base
         local statEffects = {}
@@ -200,6 +205,8 @@ function statsSystem:calculateStats()
                 case[effect[1]](effect[2], effect[3])
             end
         end
+
+        ::continue::
 
     end
 end

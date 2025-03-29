@@ -14,6 +14,11 @@ function animalStats:new()
         hpBarHeight = 20,
         margin = 10,
         portraitQuad = nil,
+        itemSize = 32,
+        maxItems = 4,
+        animationTime = 0,
+        animationSpeed = 2, -- How fast the bar moves
+        animationAmplitude = 2, -- How far the bar moves
     }
 
     o.textHeight = o.font:getHeight()
@@ -37,8 +42,11 @@ function animalStats:loadAnimal(animal)
     end
 end
 
-function animalStats:draw()
+function animalStats:update(dt)
+    self.animationTime = self.animationTime + dt * self.animationSpeed
+end
 
+function animalStats:draw()
     love.graphics.setColor(0, 0, 0)
     love.graphics.rectangle('fill', self.screenX, self.screenY, self.width, self.height)
 
@@ -58,15 +66,16 @@ function animalStats:draw()
     love.graphics.draw(RM.image, self.portraitQuad, self.screenX + self.margin, self.screenY + self.margin, 0, self.portraitScaleFactor, self.portraitScaleFactor)
 
     local currentHpBarWidth = self.hpBarWidth * hp / maxHp
+    local hpBarY = self.screenY + self.margin + self.portraitSize - self.hpBarHeight + math.sin(self.animationTime) * self.animationAmplitude
 
     love.graphics.setColor(0.5, 0.5, 0.5)
-    love.graphics.rectangle("fill", self.screenX + self.portraitSize + 2 * self.margin, self.screenY + self.margin + self.portraitSize - self.hpBarHeight, self.hpBarWidth, self.hpBarHeight)
+    love.graphics.rectangle("fill", self.screenX + self.portraitSize + 2 * self.margin, hpBarY, self.hpBarWidth, self.hpBarHeight)
     
     local green = hp / maxHp
     local red = 1 - green + (1 - green) * 0.2
 
     love.graphics.setColor(red, green, 0.4)
-    love.graphics.rectangle("fill", self.screenX + self.portraitSize + 2 * self.margin, self.screenY + self.margin + self.portraitSize - self.hpBarHeight, currentHpBarWidth, self.hpBarHeight)
+    love.graphics.rectangle("fill", self.screenX + self.portraitSize + 2 * self.margin, hpBarY, currentHpBarWidth, self.hpBarHeight)
 
     love.graphics.setColor(1, 1, 1)
 
@@ -79,7 +88,7 @@ function animalStats:draw()
     local statsSecondRowY =  self.screenY + 3 * self.margin + self.portraitSize + self.textHeight
 
     local hpX = self.screenX + self.portraitSize + 2 * self.margin + self.hpBarWidth / 2 
-    local hpY = self.screenY + self.margin + self.portraitSize - self.hpBarHeight
+    local hpY = hpBarY
 
     local hpText = hp .. '/' .. maxHp
 
@@ -95,6 +104,28 @@ function animalStats:draw()
 
     love.graphics.print(level, levelX, self.screenY + self.margin)
 
+    -- Draw items
+    local itemsStartX = self.screenX + self.portraitSize + 2 * self.margin + self.hpBarWidth + self.margin
+    local itemsStartY = self.screenY + self.margin
+    local itemSpacing = self.itemSize + self.margin
+
+    -- Draw empty item slots
+    for i = 1, self.maxItems do
+        love.graphics.setColor(0.3, 0.3, 0.3)
+        love.graphics.rectangle("line", itemsStartX + (i-1) * itemSpacing, itemsStartY, self.itemSize, self.itemSize)
+    end
+
+    -- Draw actual items
+    if self.animalRef.inventory and self.animalRef.inventory.items then
+        for i, item in ipairs(self.animalRef.inventory.items) do
+            if i <= self.maxItems then
+                love.graphics.setColor(1, 1, 1)
+                local itemQuad = love.graphics.newQuad(spriteTable[item.name][1] * RM.spriteSize, spriteTable[item.name][2] * RM.spriteSize, RM.spriteSize, RM.spriteSize, RM.image)
+                local itemScale = self.itemSize / RM.spriteSize
+                love.graphics.draw(RM.image, itemQuad, itemsStartX + (i-1) * itemSpacing, itemsStartY, 0, itemScale, itemScale)
+            end
+        end
+    end
 end
 
 return animalStats

@@ -276,6 +276,7 @@ function MatchManager:addToTeam(teamId, animal)
 
     self.teamManager:addToTeam(teamId, animal)
     self.ecs:addEntity(animal)
+    self.statsSystem:calculateStats()
 end
 
 
