@@ -56,7 +56,8 @@ function MatchManager:initialize(node)
         self.__systems.buffDebuffSystem,
         self.__systems.statusEffectSystem,
         self.__systems.stateSystem,
-        self.__systems.turnSystem
+        self.__systems.turnSystem,
+        self.__systems.damageOverTimeSystem
     )
 
     self.moveSystem = self.ecs:getSystem(self.__systems.moveSystem)
@@ -72,7 +73,7 @@ function MatchManager:initialize(node)
     self.turnSystem = self.ecs:getSystem(self.__systems.turnSystem)
     self.statusEffectSystem = self.ecs:getSystem(self.__systems.statusEffectSystem)
     self.stateSystem = self.ecs:getSystem(self.__systems.stateSystem)
-    
+    self.damageOverTimeSystem = self.ecs:getSystem(self.__systems.damageOverTimeSystem)
     self.states = fsm({
         playing = {
             instance = self,
@@ -653,6 +654,38 @@ function MatchManager:update(dt)
 
     shimmerShader:send('time', love.timer.getTime())
     noiseShader:send("time", love.timer.getTime())
+end
+
+function MatchManager:initSystems()
+    self.__systems = {
+        stateSystem = "stateSystem",
+        moveSystem = "moveSystem",
+        combatSystem = "combatSystem",
+        timerSystem = "timerSystem",
+        tagSystem = "tagSystem",
+        itemSystem = "itemSystem",
+        buffsDebuffSystem = "buffDebuffSystem",
+        renderSystem = "renderSystem",
+        statusEffectSystem = "statusEffectSystem",
+        animationSystem = "animationSystem",
+        crowdControlSystem = "crowdControlSystem",
+        damageOverTimeSystem = "damageOverTimeSystem"
+    }
+
+    self.stateSystem = self.ecs:getSystem(self.__systems.stateSystem)
+    self.moveSystem = self.ecs:getSystem(self.__systems.moveSystem)
+    self.combatSystem = self.ecs:getSystem(self.__systems.combatSystem)
+    self.timerSystem = self.ecs:getSystem(self.__systems.timerSystem)
+    self.tagSystem = self.ecs:getSystem(self.__systems.tagSystem)
+    self.itemSystem = self.ecs:getSystem(self.__systems.itemSystem)
+    self.buffsDebuffSystem = self.ecs:getSystem(self.__systems.buffsDebuffSystem)
+    self.renderSystem = self.ecs:getSystem(self.__systems.renderSystem)
+    self.statusEffectSystem = self.ecs:getSystem(self.__systems.statusEffectSystem)
+    self.animationSystem = self.ecs:getSystem(self.__systems.animationSystem)
+    self.crowdControlSystem = self.ecs:getSystem(self.__systems.crowdControlSystem)
+    self.damageOverTimeSystem = self.ecs:getSystem(self.__systems.damageOverTimeSystem)
+    
+    gs.damageOverTimeSystem = self.damageOverTimeSystem
 end
 
 return MatchManager

@@ -34,7 +34,6 @@ function stateSystem:onStateEnter(entity, state)
             soundManager:playSound('death')
             SceneManager.currentScene.TextBubbleManager:killEntityBubbles(entity)
             EventManager:emit("playAnimation", entity, "death")
-            print("we are killing: ", entity.metadata.id, entity.metadata.species)
         end
         
     elseif state == "dead" then

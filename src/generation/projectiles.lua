@@ -41,7 +41,7 @@ local projectiles = {
         end,
         onHit = function(matchState, entity, source)
             if matchState.combatSystem:isValidTarget(entity, source) then
-                matchState.combatSystem:dealDamage(entity, 1)
+                matchState.combatSystem:hit(entity, 1)
             end
         end
     },
@@ -53,7 +53,7 @@ local projectiles = {
         end,
         onHit = function(matchState, entity, source)
             if matchState.combatSystem:isValidTarget(entity, source) then
-                matchState.combatSystem:dealDamage(entity, 1)
+                matchState.combatSystem:hit(entity, 1)
                 matchState.crowdControlSystem:applyEffect(entity, "freeze", 2) -- Freeze for 2 seconds
             end
         end

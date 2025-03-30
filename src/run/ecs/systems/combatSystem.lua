@@ -225,6 +225,12 @@ function combatSystem:dealDamage(entity, amount)
         if entity.stats.current.hp <= 0 then
             EventManager:emit("setState", entity, "dying")
         end
+    end
+end
+
+function combatSystem:hit(entity, amount)
+    if entity.stats then
+        self:dealDamage(entity, amount)
         EventManager:emit("playAnimation", entity, "hit")
         EventManager:emit("damageBubble", entity, amount)
         soundManager:playSound("hit3")
@@ -262,7 +268,7 @@ function combatSystem:explode(entity, damage)
     local targets = gs.currentMatch.moveSystem:findInSquare(entity.position.x, entity.position.y, 3)
 
     for _, t in ipairs(targets) do
-        self:dealDamage(t, damage)
+        self:basicAttack(t, damage)
     end
 end
 

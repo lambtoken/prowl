@@ -42,16 +42,37 @@ function teamManager:new(currentMatch)
             enter = function(s) 
                 s.instance.currentMatch.statusEffectSystem:onStandBy(s.instance.turnTeamId)
                 s.instance.currentMatch.statusEffectSystem:applyAllStatusEffects()
-                s.instance.states:set_state('main_phase')
+                s.instance.currentMatch.damageOverTimeSystem:onStandBy(s.instance.turnTeamId)
+                
+                if s.instance.currentMatch:areAllMobsIdle() then
+                    s.instance.states:set_state('main_phase')
+                else
+                    s.instance.dotCheckTimer = 0
+                end
             end,
             
             update = function(s, dt) 
+                -- Check if DoT effects are complete before moving to main phase
+                if s.instance.dotCheckTimer then
+                    s.instance.dotCheckTimer = s.instance.dotCheckTimer + dt
+                    
+                    -- Check every 100ms
+                    if s.instance.dotCheckTimer >= 0.1 then
+                        s.instance.dotCheckTimer = 0
+                        
+                        if s.instance.currentMatch:areAllMobsIdle() then
+                            s.instance.dotCheckTimer = nil
+                            s.instance.states:set_state('main_phase')
+                        end
+                    end
+                end
             end,
 
             draw = function() 
             end,
             
-            exit = function() 
+            exit = function(s) 
+                s.instance.dotCheckTimer = nil
             end
         },
         main_phase = {

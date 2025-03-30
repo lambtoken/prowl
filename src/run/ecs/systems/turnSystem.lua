@@ -92,17 +92,24 @@ function turnSystem:init()
 
             enter = function(s)
                 
-                for index, entity in ipairs(s.instance.pool) do
-                    if entity.passive and entity.passive.onStandBy then
-                        entity.passive.onStandBy(gs.currentMatch, entity)
-                    end
-                end
-
+                -- for index, entity in ipairs(s.instance.pool) do
+                --     if entity.passive and entity.passive.onStandBy then
+                --         entity.passive.onStandBy(gs.currentMatch, entity)
+                --     end
+                -- end
+                
+                -- -- Handle standby phase effects
+                -- s.instance:handleStandBy()
             end,
             
             update = function(s, dt) 
                 -- check for actions here.
                 -- if no actions anymore switch to main_phase
+                
+                -- Check if all DoT effects are done before moving to main phase
+                -- if gs.currentMatch and gs.damageOverTimeSystem:allDotEffectsDone() then
+                --     s.instance.phase:set_state("main_phase")
+                -- end
             end,
 
             draw = function() 
@@ -149,12 +156,13 @@ end
 
 function turnSystem:update(dt)
     for _, entity in ipairs(self.pool) do
+
     end
 end
 
 function turnSystem:handleStandBy()
-    gs.buffsDebuffSystem:onStandBy()
-    gs.itemSystem:onStandBy()
+    -- gs.buffsDebuffSystem:onStandBy()
+    -- gs.itemSystem:onStandBy()
     -- statusEffectSystem
     -- tags
     -- dot

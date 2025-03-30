@@ -222,7 +222,7 @@ local objects = {
         steppable = true,
         passive = {
             onStepped = function(matchState, entity, object)
-                matchState.combatSystem:dealDamage(entity, 2)
+                matchState.combatSystem:hit(entity, 2)
                 soundManager:playSound("bear_trap")
                 matchState.stateSystem:changeState(object, "dead")
             end
@@ -242,7 +242,7 @@ local objects = {
         steppable = true,
         passive = {
             onStepped = function(matchState, entity, object)
-                matchState.combatSystem:dealDamage(entity, 1)
+                matchState.combatSystem:hit(entity, 1)
                 matchState.animationSystem:playAnimation(object, "trigger_death")
                 soundManager:playSound("mouse_trap")
             end
@@ -277,7 +277,7 @@ local objects = {
         steppable = true,
         passive = {
             onStepped = function(matchState, entity, object)
-                matchState.combatSystem:dealDamage(entity, 1)
+                matchState.combatSystem:hit(entity, 1)
             end
         },
         status = {
@@ -321,7 +321,7 @@ local objects = {
                         matchState.animationSystem:playAnimation(object, "trigger")
                         for index, animal in ipairs(touching) do
                             if animal ~= entity then
-                                matchState.combatSystem:dealDamage(animal, 1)
+                                matchState.combatSystem:hit(animal, 1)
                             end
                         end
                         return true
@@ -331,7 +331,7 @@ local objects = {
             end,
             onTouched = function(matchState, object, entity)
                 if entity.state.current == "alive" then
-                    matchState.combatSystem:dealDamage(entity, 1)
+                    matchState.combatSystem:hit(entity, 1)
                 end
             end
         },
@@ -352,7 +352,7 @@ local objects = {
         passive = {
             onTouched = function(matchState, object, entity)
                 if entity.state.current == "alive" then
-                    matchState.combatSystem:dealDamage(entity, 1)
+                    matchState.combatSystem:hit(entity, 1)
                 end
             end
         },
@@ -401,7 +401,7 @@ local objects = {
         steppable = true,
         passive = {
             onStepped = function(matchState, entity, object)
-                matchState.combatSystem:dealDamage(entity, 1)
+                matchState.combatSystem:hit(entity, 1)
             end
         },
         status = {
@@ -419,7 +419,7 @@ local objects = {
         steppable = true,
         passive = {
             -- onStepped = function(matchState, entity, object)
-            --     matchState.combatSystem:dealDamage(entity, 1)
+            --     matchState.combatSystem:hit(entity, 1)
             -- end
         },
         status = {

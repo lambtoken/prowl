@@ -123,7 +123,8 @@ function EntityFactory:createAnimal(species, x, y, level)
         :give('crowdControl')
         :give('inventory')
         :give('timers')
-
+        :give('dot')
+        
     entity.metadata.type = 'animal'
     entity.stats.level = level or 1
     self:applyDefault(entity, 'stats')

@@ -158,7 +158,13 @@ local items = {
             -- {'onHit', 'poison', 1, 20}
         },
         pattern = {},
-        passive = {},
+        passive = {
+            description = "Attacks apply poison damage over time.",
+            onAttack = function(matchState, entity, target)
+                -- Apply poison DoT for 3 turns
+                matchState.damageOverTimeSystem:giveDotEffect(target, entity, "poison", 3)
+            end
+        },
         active = {},
     },
     mace = {
@@ -429,7 +435,7 @@ local items = {
         passive = {
             description = "Moving over enemies causes them to take 1 damage.",
             onHover = function(matchState, target, source)
-                matchState.combatSystem:dealDamage(target, 1)
+                matchState.combatSystem:hit(target, 1)
             end
         },
         active = {},

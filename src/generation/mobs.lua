@@ -1038,7 +1038,7 @@ local mobs = {
         passive = {
             onTouched = function(matchState, entity, source)
                 if entity.metadata.teamID ~= source.metadata.teamID then
-                    matchState.combatSystem:dealDamage(source, 1)
+                    matchState.combatSystem:hit(source, 1)
                 end
             end
         }
