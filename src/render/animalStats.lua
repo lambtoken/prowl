@@ -15,7 +15,7 @@ function animalStats:new()
         margin = 10,
         portraitQuad = nil,
         itemSize = 32,
-        maxItems = 4,
+        maxItems = 8,
         animationTime = 0,
         animationSpeed = 2, -- How fast the bar moves
         animationAmplitude = 2, -- How far the bar moves
@@ -106,7 +106,7 @@ function animalStats:draw()
 
     -- Draw items
     local itemsStartX = self.screenX + self.portraitSize + 2 * self.margin + self.hpBarWidth + self.margin
-    local itemsStartY = self.screenY + self.margin
+    local itemsStartY = RM.windowHeight - self.itemSize - self.margin
     local itemSpacing = self.itemSize + self.margin
 
     -- Draw empty item slots

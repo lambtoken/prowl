@@ -184,7 +184,7 @@ local data = {
         duration = 1,
         adjective = "playing dead",
         animation = "playing_dead"
-    }
+    },
 }
 
 return data

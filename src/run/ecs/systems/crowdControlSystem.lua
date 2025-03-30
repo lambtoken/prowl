@@ -17,19 +17,26 @@ function crowdControlSystem:createCC(type)
     return cc
 end
 
-
 function crowdControlSystem:applyCC(entity, type, source)
     local cc = self:createCC(type)
-
     local matchState = sceneManager.currentScene.currentMatch
+
     if cc.callback(matchState, entity, source) then
+        -- Create status effect bubble
         EventManager:emit("shortCCBubble", entity, cc.adjective)
+        
+        -- Set up removal of bubble when effect ends
+        if cc.duration then
+            EventManager:emit("registerTimer", entity, cc.duration, "removeStatusEffect", {
+                entity = entity,
+                effectName = cc.adjective
+            })
+        end
+        
         return true
     end
 
     return false
-    --table.insert(entity.crowdControl.ccEffects, self:createCC(type))
-    -- print("applied cc to ", entity.metadata.species)
 end
 
 function crowdControlSystem:updateEffects()
@@ -55,7 +62,6 @@ function crowdControlSystem:update(dt)
                 effect = nil  -- Remove expired effect
             end
         end
-
     end
 end
 
@@ -64,6 +70,5 @@ end
 --         if entity.crowdControl.ccEffects
 --     end
 -- end
-
 
 return crowdControlSystem

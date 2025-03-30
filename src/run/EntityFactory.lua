@@ -4,8 +4,9 @@ local objectData = require "src.generation.objects"
 local tablex     = require "libs.batteries.tablex"
 local pretty     = require "libs.batteries.pretty"
 local statusDefaults = require "src.run.ecs.defaults.statusDefaults"
-
-local EntityFactory = {}
+local EntityFactory = {
+    idCounter = 1  -- Add ID counter here
+}
 
 function EntityFactory:loadSystems()
     self.__systems = {}
@@ -23,7 +24,11 @@ function EntityFactory:loadComponents()
 end
 
 function EntityFactory:applyDefault(entity, comp)
-    if comp == "stats" then
+    if comp == "metadata" then
+        entity.metadata.id = self.idCounter
+        print("setting id", entity.metadata.id, entity.metadata.species)
+        self.idCounter = self.idCounter + 1
+    elseif comp == "stats" then
         if entity.metadata.type == "animal" and animalData[entity.metadata.species].stats then
             
             entity.stats.base = tablex.deep_copy(animalData[entity.metadata.species].stats)
@@ -106,8 +111,6 @@ function EntityFactory:createAnimal(species, x, y, level)
     assert(animalData[species], "Species does not exist!")
     if level then
         assert(type(level) == "number", "Level must be a number!")
-        -- assert(level > 0 and level <= 3, "Level is too large or too small!")
-        -- assert(level > 0, "Level provided is " .. level .. ", should be a positive intiger!")
     end
     
     local entity = Concord.entity()
@@ -126,6 +129,7 @@ function EntityFactory:createAnimal(species, x, y, level)
     self:applyDefault(entity, 'stats')
     self:applyDefault(entity, 'status')
     self:applyDefault(entity, 'position')
+    self:applyDefault(entity, 'metadata')
 
     return entity
 end
@@ -168,7 +172,6 @@ function EntityFactory:createFlower(name, x, y)
     entity.metadata.objectName = name
     self:applyDefault(entity, 'status')
     self:applyDefault(entity, 'position')
-
 
     return entity
 end

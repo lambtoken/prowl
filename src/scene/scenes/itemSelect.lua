@@ -32,7 +32,7 @@ function itemSelect:enter()
     
     local randomItems = getRandomItems(gs.run.currentStage, nItems)
 
-    -- randomItems[1] = 'stappler'
+    randomItems[1] = 'stappler'
 
     for i = 1, nItems do
         local item = Item:new(randomItems[i])

@@ -52,10 +52,10 @@ function MatchManager:initialize(node)
         self.__systems.crowdControlSystem,
         self.__systems.itemSystem,
         self.__systems.statsSystem,
-        self.__systems.stateSystem,
         self.__systems.timerSystem,
         self.__systems.buffDebuffSystem,
         self.__systems.statusEffectSystem,
+        self.__systems.stateSystem,
         self.__systems.turnSystem
     )
 
@@ -230,6 +230,15 @@ end
 
 function MatchManager:newFlower(name, x, y)
     self.ecs:addEntity(EntityFactory:createFlower(name, x , y))
+end
+
+function MatchManager:getEntityById(id)
+    for _, entity in ipairs(self.ecs:getEntities()) do
+        if entity.metadata.id == id then
+            return entity
+        end
+    end
+    return nil
 end
 
 function MatchManager:draw()

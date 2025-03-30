@@ -40,7 +40,7 @@ function teamManager:new(currentMatch)
             instance = o,
 
             enter = function(s) 
-                s.instance.currentMatch.statusEffectSystem:onStandBy()
+                s.instance.currentMatch.statusEffectSystem:onStandBy(s.instance.turnTeamId)
                 s.instance.currentMatch.statusEffectSystem:applyAllStatusEffects()
                 s.instance.states:set_state('main_phase')
             end,

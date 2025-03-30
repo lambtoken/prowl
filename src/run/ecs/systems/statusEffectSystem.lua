@@ -2,11 +2,14 @@ local Concord = require("libs.concord")
 local tablex = require "libs.batteries.tablex"
 local statusDefaults = require "src.run.ecs.defaults.statusDefaults"
 local statusEffectData = require "src.run.combat.statusEffectData"
+local EventManager = require("src.state.events"):getInstance()
+local SceneManager = require("src.scene.SceneManager"):getInstance()
+local gs = require("src.state.GameState"):getInstance()
 
 local statusEFfectSystem = Concord.system({pool = {status}})
 
 function statusEFfectSystem:newStatusEffect(name, source, duration)
-    assert(statusEffectData[name], "")
+    assert(statusEffectData[name], "Status effect: " .. name .. " does not exist.")
     duration = duration or 1
     
     local effect = {
@@ -14,15 +17,24 @@ function statusEFfectSystem:newStatusEffect(name, source, duration)
         source = source,
         duration = duration,
         mod = tablex.copy(statusEffectData[name].mod),
+        removeBubble = true
     }
 
     return effect
 end
 
 function statusEFfectSystem:giveStatusEffect(entity, source, name, duration)
+    local effect = self:newStatusEffect(name, source, duration)
 
-    table.insert(entity.status.effects, self:newStatusEffect(name, source, duration))
+    for index, e in ipairs(entity.status.effects) do
+        if e.name == name then
+            e.removeBubble = false
+        end
+    end
+
+    effect.bubbleId = SceneManager.currentScene.TextBubbleManager:newBubble("statusEffect", entity, statusEffectData[name].adjective)
     
+    table.insert(entity.status.effects, effect)
 end
 
 function statusEFfectSystem:applyAllStatusEffects()
@@ -42,8 +54,11 @@ function statusEFfectSystem:applyAllStatusEffects()
     end
 end
 
-function statusEFfectSystem:onStandBy()
+function statusEFfectSystem:onStandBy(teamId)
     for _, entity in ipairs(self.pool) do
+
+        if entity.metadata.teamID ~= teamId then goto continue end
+
         for i = #entity.status.effects, 1, -1 do
             local effect = entity.status.effects[i]
 
@@ -51,8 +66,12 @@ function statusEFfectSystem:onStandBy()
                 effect.duration = effect.duration - 1
             else
                 table.remove(entity.status.effects, i)
+                if effect.removeBubble then
+                    SceneManager.currentScene.TextBubbleManager:endStatusEffect(effect.bubbleId)
+                end
             end
         end
+        ::continue::
     end
 end
 

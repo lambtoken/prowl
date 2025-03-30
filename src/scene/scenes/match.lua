@@ -71,6 +71,9 @@ function match:enter()
     self.TextBubbleManager = TextBubbleManager:new()
     self.matchEvents:on("damageBubble", function(entity, amount, crit) self.TextBubbleManager:newBubble("damage", entity, amount, crit) end)
     self.matchEvents:on("shortCCBubble", function(entity, ccType) self.TextBubbleManager:newBubble("shortCC", entity, ccType) end)
+    self.matchEvents:on("statusEffectBubble", function(entity, effectName) self.TextBubbleManager:newBubble("statusEffect", entity, effectName) end)
+    self.matchEvents:on("removeStatusEffect", function(entity, effectName) self.TextBubbleManager:endStatusEffect(entity, effectName) end)
+    self.matchEvents:on("killEntityBubbles", function(entity) self.TextBubbleManager:killEntityBubbles(entity) end)
 
     self.isShaking = false
     self.shakeTime = 0.3

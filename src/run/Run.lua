@@ -13,6 +13,8 @@ function Run:initialize(starterSpecies, seed)
     self.currentNodeCoords = {1, 1}
     self.runHealth = 3
 
+    self.idCounter = 0
+
     self:addAnimal(starterSpecies)
 end
 

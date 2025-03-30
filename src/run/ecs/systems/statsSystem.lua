@@ -200,7 +200,7 @@ function statsSystem:calculateStats()
             end
         end
     
-        for i, effect in ipairs(patternEffects) do
+        for i, effect in ipairs(statEffects) do
             if (effect[1] == 'swap') then
                 case[effect[1]](effect[2], effect[3])
             end

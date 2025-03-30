@@ -2,7 +2,7 @@ local Concord = require("libs.concord")
 local EventManager = require("src.state.events"):getInstance()
 local soundManager = require("src.sound.SoundManager"):getInstance()
 local GameState    = require("src.state.GameState"):getInstance()
-
+local SceneManager = require("src.scene.SceneManager"):getInstance()
 local stateSystem = Concord.system({pool = {state}})
 
 function stateSystem:init()
@@ -32,7 +32,9 @@ function stateSystem:onStateEnter(entity, state)
         -- play death sound
         if entity.metadata.type == 'animal' then
             soundManager:playSound('death')
+            SceneManager.currentScene.TextBubbleManager:killEntityBubbles(entity)
             EventManager:emit("playAnimation", entity, "death")
+            print("we are killing: ", entity.metadata.id, entity.metadata.species)
         end
         
     elseif state == "dead" then

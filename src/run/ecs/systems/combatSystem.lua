@@ -43,7 +43,8 @@ function combatSystem:init()
             local succesfulAttack = false
             local succesfulAttackPassive = false
             local attemptedAttack = false
-            
+            local targetsKilled = {}            
+
             for _, target in ipairs(entitiesToHit) do
                 
                 missed = false
@@ -68,7 +69,9 @@ function combatSystem:init()
                         if not missed then
                             succesfulAttack = true
                             attemptedAttack = true
-                            self:attack(entity, target)
+                            if self:attack(entity, target) then
+                                table.insert(targetsKilled, target)
+                            end
                         else
                             SoundManager:playSound("miss")
                             EventManager:emit("shortCCBubble", target, "Missed")            
@@ -92,7 +95,7 @@ function combatSystem:init()
                             end
                         end
                     end
-                    
+
                     if target.metadata.type == 'animal' then
                         entity2OnAttacked = mobData[target.metadata.species]
                     elseif target.metadata.type == 'object' then
@@ -112,6 +115,12 @@ function combatSystem:init()
 
             if succesfulAttack or succesfulAttackPassive or missed then
                 EventManager:emit("playAnimation", entity, "attack")
+            end
+
+            if #targetsKilled > 0 then
+                for index, target in ipairs(targetsKilled) do
+                    EventManager:emit("setState", target, "dying") 
+                end
             end
         end
          
@@ -204,9 +213,10 @@ function combatSystem:attack(entity1, entity2)
     entity2.stats.current.hp = math.max(0, entity2.stats.current.hp - damage)
 
     if entity2.stats.current.hp <= 0 then
-        EventManager:emit("setState", entity2, "dying")
+        return true
     end
 
+    return false
 end
 
 function combatSystem:dealDamage(entity, amount)

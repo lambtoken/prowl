@@ -66,4 +66,8 @@ function GameState:removeRun()
     self.run = nil
 end
 
+function GameState:getRun()
+    return self.run
+end
+
 return GameState

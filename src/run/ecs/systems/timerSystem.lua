@@ -4,7 +4,12 @@ local gs = require("src.state.GameState"):getInstance()
 
 local callbackRegistry = {
     lifeSteal = function(data) gs.currentMatch.combatSystem:heal(data.entity, data.amount) end,
-    explosion = function(data) gs.currentMatch.combatSystem:explode(data.entity, data.amount) end
+    explosion = function(data) gs.currentMatch.combatSystem:explode(data.entity, data.amount) end,
+    removeStatusEffect = function(data) 
+        if gs.currentMatch and gs.currentMatch.TextBubbleManager then
+            gs.currentMatch.TextBubbleManager:endStatusEffect(data.bubbleId)
+        end
+    end
 }
 
 local timerSystem = Concord.system({pool = {timers}})

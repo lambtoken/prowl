@@ -457,7 +457,7 @@ local items = {
         stats = {{'increase', 'atk', 2}},
         pattern = {},
         passive = {
-            description = "Careful, it's got a recoil..",
+            description = "Careful, recoil..",
             onAttack = function(matchState, source, target)
                 if target.metadata.type == 'animal' then
                     matchState.crowdControlSystem:applyCC(source, "knockback", target)
@@ -484,12 +484,12 @@ local items = {
         passive = {
             onAttack = function(matchState, source, target)
                 if target.metadata.type == 'animal' then
-                    matchState.statusEffectSystem:giveStatusEffect(target, source, 'stun', 1)
+                    matchState.statusEffectSystem:giveStatusEffect(target, source, 'stun', 3)
                 end
             end,
             cooldown = 2
         }
-    }
+    },
 }
 
 local crownWidth = RM.renderDistanceX + 1
