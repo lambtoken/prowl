@@ -268,7 +268,7 @@ function combatSystem:explode(entity, damage)
     local targets = gs.currentMatch.moveSystem:findInSquare(entity.position.x, entity.position.y, 3)
 
     for _, t in ipairs(targets) do
-        self:basicAttack(t, damage)
+        self:hit(t, damage)
     end
 end
 

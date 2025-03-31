@@ -35,7 +35,7 @@ function EntityFactory:applyDefault(entity, comp)
             entity.stats.base = tablex.deep_copy(animalData[entity.metadata.species].stats)
 
             local scalings = {
-                atk = 1,
+                atk = 2,
                 def = 1,
                 maxHp = 2
             }

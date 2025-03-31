@@ -83,6 +83,7 @@ local spriteTable = {
 
     apple = {4, 23},
     green_apple = {5, 23},
+    gold_apple = {4, 24},
     mouse_trap = {8, 27},
     bear_trap = {7, 27},
     trampolline = {6, 26},

@@ -53,6 +53,27 @@ local objects = {
 
     },
 
+
+    gold_apple = {
+        name = 'gold_apple',
+        sprite = 'gold_apple',
+        type = 'heal',
+        steppable = true,
+        passive = {
+            onStepped = function(matchState, entity, object)
+                matchState.combatSystem:heal(entity, 3)
+                matchState.stateSystem:changeState(object, "dead")
+                soundManager:playSound("bite")
+            end
+        },
+        status = {
+            canTeleport = DEFAULT_STATUS.canTeleport,
+            isDisplaceable = DEFAULT_STATUS.isDisplaceable,
+            isTargetable = DEFAULT_STATUS.isTargetable,
+        },
+        stepsOn = DEFAULT.stepsOn,
+
+    },
     barrel = {
         name = 'barrel',
         sprite = 'barrel',

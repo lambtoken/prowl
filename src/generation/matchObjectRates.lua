@@ -31,7 +31,8 @@ local rates = {
             {name = 'bear_trap', rate = 10, limit = 0},
             {name = 'mouse_trap', rate = 10, limit = 0},
             {name = 'apple', rate = 10, limit = 3},
-            {name = 'mushroom', rate = 2, limit = 0}
+            {name = 'mushroom', rate = 2, limit = 0},
+            {name = 'gold_apple', rate = 1, limit = 1}
         },
         dense = {
             {name = 'spruce_tree', rate = 20, limit = 0},
@@ -71,6 +72,7 @@ local rates = {
         normal = {
             {name = 'apple', rate = 5, limit = 0},
             {name = 'green_apple', rate = 10, limit = 0},
+            {name = 'gold_apple', rate = 1, limit = 1}
         },
     },
     dragon = {
@@ -80,6 +82,7 @@ local rates = {
             {name = 'small_pillar', rate = 2, limit = 0},
             {name = 'crack', rate = 3, limit = 1},
             {name = 'spikes', rate = 10, limit = 0},
+            {name = 'gold_apple', rate = 1, limit = 1}
         },
     },
     phoenix = {
@@ -89,6 +92,7 @@ local rates = {
             {name = 'small_pillar', rate = 2, limit = 0},
             {name = 'crack', rate = 3, limit = 1},
             {name = 'spikes', rate = 10, limit = 0},
+            {name = 'gold_apple', rate = 1, limit = 1}
         },
     },
     hydra = {
@@ -98,6 +102,7 @@ local rates = {
             { name = 'small_pillar', rate = 2,  limit = 0 },
             { name = 'crack',        rate = 3,  limit = 1 },
             { name = 'spikes',       rate = 10, limit = 0 },
+            {name = 'gold_apple', rate = 1, limit = 1}
         },
     },
     swamp = {
