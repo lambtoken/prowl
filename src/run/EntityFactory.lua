@@ -4,8 +4,9 @@ local objectData = require "src.generation.objects"
 local tablex     = require "libs.batteries.tablex"
 local pretty     = require "libs.batteries.pretty"
 local statusDefaults = require "src.run.ecs.defaults.statusDefaults"
+
 local EntityFactory = {
-    idCounter = 1  -- Add ID counter here
+    idCounter = 1
 }
 
 function EntityFactory:loadSystems()

@@ -21,6 +21,9 @@ local gs = require("src.state.GameState"):getInstance()
 local shimmerShader = love.graphics.newShader(require('src.render.shaders.shimmer_shader'))
 local noiseShader = love.graphics.newShader(require('src.render.shaders.noise_shader'))
 local getRandomItems= require('src.generation.functions.getRandomItems')
+local stageMobItems = require('src.generation.stageMobItems')
+local items = require('src.generation.items')
+local stageMobLevels = require('src.generation.stageMobLevels')
 
 local MatchManager = class("MatchManager")
 
@@ -74,6 +77,7 @@ function MatchManager:initialize(node)
     self.statusEffectSystem = self.ecs:getSystem(self.__systems.statusEffectSystem)
     self.stateSystem = self.ecs:getSystem(self.__systems.stateSystem)
     self.damageOverTimeSystem = self.ecs:getSystem(self.__systems.damageOverTimeSystem)
+    
     self.states = fsm({
         playing = {
             instance = self,
@@ -221,7 +225,6 @@ end
 -- ditch these and just use the entity factory directly
 function MatchManager:newAnimal(species, x, y, level)
     assert(animalData[species], "Species does not exist!")
-    print('new animal' .. level)
     return EntityFactory:createAnimal(species,x , y, level)
 end
 
@@ -286,6 +289,8 @@ function MatchManager:addToTeam(teamId, animal)
 
     self.teamManager:addToTeam(teamId, animal)
     self.ecs:addEntity(animal)
+    -- do this somewhere else
+    self.ecs:emit('update', 0)
     self.statsSystem:calculateStats()
 end
 
@@ -392,16 +397,32 @@ function MatchManager:generateEnemies()
         local pos = math.random(#positions)
         local level = 1
         
-        -- if self.matchNode.x > math.random(10) then
-        print("x" , self.matchNode.x)
-        if math.random() < 0.5 then
+        if math.random() < stageMobLevels[gs.run.currentStage][self.matchNode.x - 1].negativeChance then
             level = -1
-        elseif self.matchNode.x > math.random(10) then                
-            level = math.floor(self.matchNode.x / 2)
         end
-        -- end
+
+        if math.random() < stageMobLevels[gs.run.currentStage][self.matchNode.x - 1].levelUpChance then                
+            local min = stageMobLevels[gs.run.currentStage][self.matchNode.x - 1].minLevel
+            local max = stageMobLevels[gs.run.currentStage][self.matchNode.x - 1].maxLevel
+
+            level = min + math.random(max-min) - 1
+        end
 
         local animal = self:newAnimal(value, positions[pos][1], positions[pos][2], level)
+
+        local chance = stageMobItems[gs.run.currentStage][self.matchNode.x - 1].chance
+        
+        if math.random() < chance then
+            local min = stageMobItems[gs.run.currentStage][self.matchNode.x - 1].min
+            local max = stageMobItems[gs.run.currentStage][self.matchNode.x - 1].max
+            local itemAmount = min + math.random(max-min)
+            local items = getRandomItems(gs.run.currentStage, itemAmount)
+
+            for _, item in ipairs(items) do
+                print("giving item" .. item)
+                self.itemSystem:giveItem(animal, item)
+            end
+        end
 
         -- local items = {}
 
@@ -411,53 +432,6 @@ function MatchManager:generateEnemies()
 
         table.remove(positions, pos)
         self:addToTeam(2, animal)
-    end
-
-    self.ecs:emit('update', 0.01)
-
-    return enemies
-end
-
-function MatchManager:generateFrenemies()
-    local positions = self:getSpawnPositions("bottom")
-
-    local species = {}
-
-    -- -1 to acount for start node
-    local amountMin = stageMobAmount[1][self.matchNode.x - 1][1]
-    local amountMax = stageMobAmount[1][self.matchNode.x - 1][2]
-
-    local amount = amountMin + math.ceil(math.random() * (amountMax - amountMin))
-    
-    pickLimited(matchMobRates[self.matchNode.place][self.matchNode.variant], amount, species)
-
-    local enemies = {}
-
-    for _, value in ipairs(species) do
-        local pos = math.random(#positions)
-        local level = 1
-        
-        -- if self.matchNode.x > math.random(10) then
-            print("x" , self.matchNode.x)
-            if math.random() > 0.3 and self.matchNode.x < 4 then
-                level = -1
-            elseif self.matchNode.x > math.random(10) then                
-                level = math.floor(self.matchNode.x / 2)
-            end
-        -- end
-
-        print('generate enemies ' .. level)
-
-        local animal = self:newAnimal(value, positions[pos][1], positions[pos][2], level)
-
-        -- local items = {}
-
-        -- if self.matchNode.x < math.random(10) then
-        --     self.itemSystem:giveItem(animal, getRandomItems(1, 1)[1])
-        -- end
-
-        table.remove(positions, pos)
-        self:addToTeam(1, animal)
     end
 
     self.ecs:emit('update', 0.01)
@@ -651,6 +625,7 @@ function MatchManager:update(dt)
     self.teamManager:update(dt)
     self.states:update(dt)
     self:checkForWinner()
+    -- self.statsSystem:calculateStats()
 
     shimmerShader:send('time', love.timer.getTime())
     noiseShader:send("time", love.timer.getTime())

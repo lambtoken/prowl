@@ -22,12 +22,13 @@ function statsSystem:updateState()
 end
 
 function statsSystem:calculateStats()
+    print("calculating stats for " .. #self.pool .. " entities")
     for _, entity in ipairs(self.pool) do
-
         if not entity.inventory or not entity.stats then
-            print("Entity missing required components, skipping")
+            print("Entity missing required components, skipping", entity.metadata.type)
             goto continue
         end
+        print("calculating stats for " .. entity.metadata.species)
 
         local items = entity.inventory.items
         local baseStats = entity.stats.base

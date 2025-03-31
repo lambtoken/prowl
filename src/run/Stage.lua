@@ -52,6 +52,13 @@ function Stage:generateNodes()
     end
 end
 
+function getNeighborNode(row1Size, row2Size, j)
+    if row1Size > row2Size then
+        return math.ceil(j / row2Size - 1)
+    else
+        return math.ceil(j / row1Size - 1)
+    end
+end
 
 function Stage:connectNodes()
 
@@ -82,43 +89,47 @@ function Stage:connectNodes()
                 local adjustedI = i + iOffset
                 local adjustedJ = i + j + jOffset
     
-                if adjustedI > 0 and adjustedI <= #row1 and adjustedJ > 0 and adjustedJ <= #row2 then
-                    if j == 1 then
-                        local topLeft = adjustedI + 1
-                        local topRight = adjustedJ - 1
-                        if topLeft > 0 and topLeft <= #row1 and topRight > 0 and topRight <= #row2 then
-                            if forward then
-                                if not tableContains(row1[topLeft].to, topRight) then
-                                    table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
-                                end
-                            else
-                                if not tableContains(row1[topLeft].from, topRight) then
-                                    table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
-                                end
+                if adjustedI <= 0 or adjustedI > #row1 or adjustedJ <= 0 or adjustedJ > #row2 then
+                    goto continue
+                end
+
+                if j == 1 then
+                    local topLeft = adjustedI + 1
+                    local topRight = adjustedJ - 1
+                    if topLeft > 0 and topLeft <= #row1 and topRight > 0 and topRight <= #row2 then
+                        if forward then
+                            if not tableContains(row1[topLeft].to, topRight) then
+                                table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
                             end
                         else
-                            table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
+                            if not tableContains(row1[topLeft].from, topRight) then
+                                table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
+                            end
                         end
-                        elseif j == 0 then
-                            table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
-                        elseif j == -1 then
-                            local bottomI = adjustedI - 1
-                            local bottomJ = adjustedJ + 1
-                        if bottomI > 0 and bottomI <= #row1 and bottomJ > 0 and bottomJ <= #row2 then
-                            if forward then
-                                if not tableContains(row1[bottomI].to, bottomJ) then
-                                    table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
-                                end
-                            else
-                                if not tableContains(row1[bottomI].from, bottomJ) then
-                                    table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
-                                end
+                    else
+                        table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
+                    end
+                elseif j == 0 then
+                        table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
+                elseif j == -1 then
+                    local bottomI = adjustedI - 1
+                    local bottomJ = adjustedJ + 1
+                    if bottomI > 0 and bottomI <= #row1 and bottomJ > 0 and bottomJ <= #row2 then
+                        if forward then
+                            if not tableContains(row1[bottomI].to, bottomJ) then
+                                table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
                             end
                         else
-                            table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
+                            if not tableContains(row1[bottomI].from, bottomJ) then
+                                table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
+                            end
                         end
+                    else
+                        table.insert(edges[i], {rowNumber + rowAdvance, adjustedJ})
                     end
                 end
+                ::continue::
+
             end
 
             local randomEdge = edges[i][math.random(#edges[i])]
@@ -137,8 +148,6 @@ function Stage:connectNodes()
                 end
 
             end
-
-
         end
         return edges
     end
@@ -156,8 +165,24 @@ function Stage:connectNodes()
 
         getValidEdges(currentRow, nextRow, i, false)
     end
-end
 
+    -- connect ramaining nodes
+    for i = #self.nodes - 1, 2, -1 do
+        local currentRow = self.nodes[i]
+        local previousRow = self.nodes[i - 1]
+
+        for j, node in ipairs(currentRow) do
+            if #node.from == 0 then
+                local previousNodeIndex = getNeighborNode(#previousRow, #currentRow, j)
+                local previousNode = previousRow[previousNodeIndex]
+                
+                table.insert(node.from, {i - 1, previousNodeIndex})
+                table.insert(previousNode.to, {i, j})
+            end
+        end
+    end
+
+end
 
 function Stage:generate()
     self:generateNodes()

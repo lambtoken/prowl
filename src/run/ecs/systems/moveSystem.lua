@@ -338,39 +338,40 @@ function moveSystem:update(dt)
         local hoveredX = position.lastStepX + sumX
         local hoveredY = position.lastStepY + sumY
 
-        --hover + event
+        local newPosX
+        local newPosY
+
         if position.dirX < -0.5 then
-            position.x = math.floor(hoveredX + 0.5 - stepThreshold)
+            newPosX = math.floor(hoveredX + 0.5 - stepThreshold)
         elseif position.dirX > 0.5 then
-            position.x = math.floor(hoveredX + 0.5 + stepThreshold)
+            newPosX = math.floor(hoveredX + 0.5 + stepThreshold)
         else
-            position.x = math.floor(hoveredX + 0.5)
+            newPosX = math.floor(hoveredX + 0.5)
         end
+
+        position.lastPositionX = position.x
 
         if position.dirY < -0.5 then
-            position.y = math.floor(hoveredY + 0.5 - stepThreshold)
+            newPosY = math.floor(hoveredY + 0.5 - stepThreshold)
         elseif position.dirY > 0.5 then
-            position.y = math.floor(hoveredY + 0.5 + stepThreshold)
+            newPosY = math.floor(hoveredY + 0.5 + stepThreshold)
         else
-            position.y = math.floor(hoveredY + 0.5)
+            newPosY = math.floor(hoveredY + 0.5)
         end
 
+        position.lastPositionY = position.y
 
-        -- if position.x ~= position.lastStepX or position.y ~= position.lastStepY then
-        --     events:emit("onHover", entity)
-        --     events:emit("onHovered", entity, position.x, position.y)
-            
-        --     -- position.lastStepX = position.x
-        --     -- position.lastStepY = position.y
-        -- end
+
+        if newPosX ~= position.lastPositionX or newPosY ~= position.lastPositionY then
+            events:emit("onHover", entity)
+            events:emit("onHovered", entity, position.x, position.y)             
+        end
 
         position.screenX = hoveredX * RM.tileSize
         position.screenY = hoveredY * RM.tileSize
 
-
-        --print(position.x, position.y, position.screenX, position.screenY)
-        --print(position.x, " ", position.y)
-        --print(position.screenX, " ", position.screenY)
+        position.x = newPosX
+        position.y = newPosY
         
         -- if position.snapTween ~= nil then
         --     print(dt)

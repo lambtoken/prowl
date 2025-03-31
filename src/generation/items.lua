@@ -19,8 +19,6 @@ local items = {
         type = 'weapon',
         rarity = 'common',
         stats = {{'increase', 'atk', 1}},
-        movPattern = {},
-        atkPattern = {},
         passive = {},
         active = {},
     },
@@ -31,7 +29,6 @@ local items = {
         stats = {
             {'increase', 'atk', 1},
         },
-        movePattern = {},
         pattern = {
             {'add', 'atkPattern', {
                 {0, 1, 0},

@@ -170,7 +170,7 @@ function aiManager:getMove(teamID)
         return nil
     end
 
-    local pickedMove = self:pickMove(allMoves, "medium")
+    local pickedMove = self:pickMove(allMoves, "hard")
 
     return pickedMove
 end
