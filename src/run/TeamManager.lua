@@ -43,7 +43,10 @@ function teamManager:new(currentMatch)
                 s.instance.currentMatch.statusEffectSystem:onStandBy(s.instance.turnTeamId)
                 s.instance.currentMatch.statusEffectSystem:applyAllStatusEffects()
                 s.instance.currentMatch.damageOverTimeSystem:onStandBy(s.instance.turnTeamId)
+                s.instance.currentMatch.buffDebuffSystem:onStandBy(s.instance.turnTeamId)
                 
+                s.instance.currentMatch.statsSystem:calculateStats()
+
                 if s.instance.currentMatch:areAllMobsIdle() then
                     s.instance.states:set_state('main_phase')
                 else

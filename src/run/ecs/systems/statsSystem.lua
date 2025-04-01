@@ -21,20 +21,33 @@ function statsSystem:updateState()
     end
 end
 
-function statsSystem:calculateStats()
-    print("calculating stats for " .. #self.pool .. " entities")
+function statsSystem:initializeStats()
+    self:calculateStats(false)
+end
+
+function statsSystem:calculateStats(perserveHp)
+    perserveHp = perserveHp or true
+
     for _, entity in ipairs(self.pool) do
         if not entity.inventory or not entity.stats then
-            print("Entity missing required components, skipping", entity.metadata.type)
             goto continue
         end
-        print("calculating stats for " .. entity.metadata.species)
+
+        local oldHp
+
+        if perserveHp then
+            oldHp = entity.stats.current.hp
+        end
 
         local items = entity.inventory.items
         local baseStats = entity.stats.base
         local statEffects = {}
         local patternEffects = {}
-
+        
+        if perserveHp then
+            baseStats.hp = oldHp
+        end
+        
         for _, item in ipairs(items) do
             if item.stats then
                 for _, s in ipairs(item.stats) do
@@ -49,8 +62,9 @@ function statsSystem:calculateStats()
             end
         end
 
-        if entity.buffsDebuffs and entity.buffsDebuffs.effects then        
-            for _, effect in ipairs(entity.buffsDebuffs.effects) do
+        if entity.buffDebuff and entity.buffDebuff.effects then        
+            for _, effect in ipairs(entity.buffDebuff.effects) do
+                print("effect", effect)
                 if effect.stats then
                     for _, s in ipairs(effect.stats) do
                         table.insert(statEffects, s)
@@ -77,13 +91,10 @@ function statsSystem:calculateStats()
         entity.stats.currentPatterns = tablex.deep_copy(entity.stats.basePatterns)
         local stats = entity.stats.current
     
-        -- base
-        -- items, effects
-    
     
         local case =
         {
-            ["increase"] = function (toIncrease, amount) 
+            ["increase"] = function (toIncrease, amount)
                 stats[toIncrease] = stats[toIncrease] + amount
             end,
             

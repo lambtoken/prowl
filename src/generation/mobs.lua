@@ -543,8 +543,8 @@ local mobs = {
         sprite = 'turtle',
         stats = {
             atk = 1,
-            def = 3,
-            maxHp = 6,
+            def = 4,
+            maxHp = 7,
             moves = DEFAULT.moves,
             crit = DEFAULT.crit,
             critDamage = DEFAULT.critDamage,
@@ -700,9 +700,9 @@ local mobs = {
         name = 'crab',
         sprite = 'crab',
         stats = {
-            atk = 1,
+            atk = 2,
             def = 4,
-            maxHp = 4,
+            maxHp = 6,
             moves = DEFAULT.moves,
             crit = DEFAULT.crit,
             critDamage = DEFAULT.critDamage,
@@ -733,7 +733,7 @@ local mobs = {
         stats = {
             atk = 1,
             def = 2,
-            maxHp = 3,
+            maxHp = 6,
             moves = DEFAULT.moves,
             crit = DEFAULT.crit,
             critDamage = DEFAULT.critDamage,
@@ -764,7 +764,7 @@ local mobs = {
         stats = {
             atk = 2,
             def = 2,
-            maxHp = 6,
+            maxHp = 7,
             moves = DEFAULT.moves,
             crit = DEFAULT.crit,
             critDamage = DEFAULT.critDamage,
@@ -1079,7 +1079,7 @@ local mobs = {
         name = 'phoenix',
         sprite = 'phoenix',
         stats = {
-            atk = 5,
+            atk = 4,
             def = 3,
             maxHp = 8,
             moves = 1,
@@ -1110,7 +1110,7 @@ local mobs = {
         name = 'hydra',
         sprite = 'hydra',
         stats = {
-            atk = 57,
+            atk = 5,
             def = 3,
             maxHp = 10,
             moves = 1,
@@ -1136,6 +1136,37 @@ local mobs = {
             {0, 0, 0, 0, 0}
         }
     },
+    wyvern =
+    {
+        name = 'wyvern',
+        sprite = 'wyvern',
+        stats = {
+            atk = 4,
+            def = 2,
+            maxHp = 8,
+            moves = 1,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck
+        },
+        stepsOn = DEFAULT.stepsOn,
+
+        movePattern = {
+            {0, 1, 0, 1, 0},
+            {1, 0, 1, 0, 1},
+            {0, 1, 0, 1, 0},
+            {1, 0, 1, 0, 1},
+            {0, 1, 0, 1, 0}
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        }
+    }
 }
 
 -- for key, value in pairs(mobs) do

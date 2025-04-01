@@ -51,9 +51,9 @@ end
 
 function itemSystem:giveItem(entity, itemName)
     table.insert(entity.inventory.items, self:newItem(itemName))
-    gs.currentMatch.ecs:getSystem(gs.currentMatch.__systems.statsSystem):calculateStats()
+    --gs.currentMatch.ecs:getSystem(gs.currentMatch.__systems.statsSystem):calculateStats()
 
-    EventManager:emit("calculateStats")
+    --EventManager:emit("calculateStats")
 end
 
 function itemSystem:unequipItem(entity, item)

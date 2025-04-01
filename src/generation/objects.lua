@@ -483,6 +483,46 @@ local objects = {
         },
         stepsOn = DEFAULT.stepsOn, -- change to water later on
     },
+
+    lucky_clover = {
+        name = 'lucky_clover',
+        sprite = 'lucky_clover',
+        type = 'consumable',
+        steppable = true,
+        passive = {
+            onStepped = function(matchState, entity, object)
+                matchState.buffDebuffSystem:applyEffect(entity, "lucky_clover", object)
+                matchState.stateSystem:changeState(object, "dead")
+                matchState.statsSystem:calculateStats()
+            end
+        },
+        status = {
+            canTeleport = false,
+            isDisplaceable = DEFAULT_STATUS.isDisplaceable,
+            isTargetable = DEFAULT_STATUS.isTargetable,
+        },
+        stepsOn = DEFAULT.stepsOn,
+    },
+
+    coffee = {
+        name = 'coffee',
+        sprite = 'coffee',
+        type = 'consumable',
+        steppable = true,
+        passive = {
+            onStepped = function(matchState, entity, object)
+                matchState.buffDebuffSystem:applyEffect(entity, "coffee", object)
+                matchState.stateSystem:changeState(object, "dead")
+                matchState.statsSystem:calculateStats()
+            end
+        },
+        status = {
+            canTeleport = false,
+            isDisplaceable = DEFAULT_STATUS.isDisplaceable,
+            isTargetable = DEFAULT_STATUS.isTargetable,
+        },
+        stepsOn = DEFAULT.stepsOn,
+    }
 }
 
 return objects

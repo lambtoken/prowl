@@ -44,6 +44,7 @@ local spriteTable = {
     phoenix = {31, 1},
     phoenix_egg = {30, 1},
     hydra = {31, 2},
+    wyvern = {32, 2},
 
     deerbugger = {0, 1},
 
@@ -84,6 +85,7 @@ local spriteTable = {
     apple = {4, 23},
     green_apple = {5, 23},
     gold_apple = {4, 24},
+    coffee = {6, 23},
     mouse_trap = {8, 27},
     bear_trap = {7, 27},
     trampolline = {6, 26},

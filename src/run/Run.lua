@@ -7,10 +7,10 @@ local Run = class("Run")
 
 function Run:initialize(starterSpecies, seed)
     self.starterSpecies = starterSpecies
-    self.currentStage = 1
+    self.currentStage = 3
     self.stages = {}
     self.team = {}
-    self.currentNodeCoords = {1, 1}
+    self.currentNodeCoords = {6, 1}
     self.runHealth = 5
 
     self.idCounter = 0

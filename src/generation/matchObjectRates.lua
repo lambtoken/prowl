@@ -9,7 +9,8 @@ local rates = {
             {name = 'mouse_trap', rate = 10, limit = 2},
             {name = 'crack', rate = 3, limit = 1},
             {name = 'spikes', rate = 10, limit = 0},
-            {name = 'bomb', rate = 2, limit = 3}
+            {name = 'bomb', rate = 2, limit = 3},
+            {name = 'coffee', rate = 200, limit = 0}
         },
         maze = {
             {name = 'crate', rate = 5, limit = 0},
@@ -32,7 +33,8 @@ local rates = {
             {name = 'mouse_trap', rate = 10, limit = 0},
             {name = 'apple', rate = 10, limit = 3},
             {name = 'mushroom', rate = 2, limit = 0},
-            {name = 'gold_apple', rate = 1, limit = 1}
+            {name = 'gold_apple', rate = 1, limit = 1},
+            {name = 'lucky_clover', rate = 2, limit = 0}
         },
         dense = {
             {name = 'spruce_tree', rate = 20, limit = 0},

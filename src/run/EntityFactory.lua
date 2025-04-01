@@ -35,7 +35,7 @@ function EntityFactory:applyDefault(entity, comp)
             entity.stats.base = tablex.deep_copy(animalData[entity.metadata.species].stats)
 
             local scalings = {
-                atk = 2,
+                atk = 1.5,
                 def = 1,
                 maxHp = 2
             }
@@ -49,14 +49,17 @@ function EntityFactory:applyDefault(entity, comp)
                 end
             end
 
+            -- we need a better and more balanced way to scale the stats
+            
             if entity.stats.level > 1 then
                 for key, value in pairs(entity.stats.base) do
                     if key == "atk" or key == "def" or key == "maxHp" then
-                        entity.stats.base[key] = value + scalings[key] ^ (entity.stats.level - 1)
+                        entity.stats.base[key] = math.floor(value + scalings[key] ^ (entity.stats.level - 1))
+                        -- entity.stats.base[key] = math.floor((value * 2) / 100) * (entity.stats.level)
                     end
                 end
             end
-            
+
             entity.stats.base.hp = entity.stats.base.maxHp
             entity.stats.current = tablex.deep_copy(entity.stats.base)
             entity.stats.basePatterns = {
@@ -122,6 +125,7 @@ function EntityFactory:createAnimal(species, x, y, level)
         :give('state')
         :give('status')
         :give('crowdControl')
+        :give('buffDebuff')
         :give('inventory')
         :give('timers')
         :give('dot')

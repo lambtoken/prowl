@@ -145,6 +145,39 @@ local data = {
             name = 'dragon',
             unlocked = false
         },
+        {
+            key = 'phoenix',
+            name = 'phoenix',
+            unlocked = false
+        },
+        {
+            key = 'hydra',
+            name = 'hydra',
+            unlocked = false
+        },
+        {
+            key = 'wyvern',
+            name = 'wyvern',
+            unlocked = false
+        },
+        -- {
+        --     key = 'unicorn',
+        --     name = 'unicorn',
+        --     unlocked = false
+        -- },
+        -- {
+        --     key = 'pegasus',
+        --     name = 'pegasus',
+        --     unlocked = false
+        -- },
+        -- {
+        --     key = 'griffin',
+        --     name = 'griffin',
+        --     unlocked = false
+        -- },
+        
+        
+        
     }
 }
 

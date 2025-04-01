@@ -37,7 +37,9 @@ end
 
 function MatchNode:bossRoom(level)
 
-    self.place = bosses[level]
+    self.place = bosses[level].name
+    self.level = bosses[level].level
+    
     self.variant = 'normal'
 
     self.spriteName = self.place

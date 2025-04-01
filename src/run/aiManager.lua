@@ -130,7 +130,7 @@ function aiManager:pickMove(moves, difficulty)
         end
 
     elseif difficulty == "hard" then
-        local random = math.random() < 0.05
+        local random = math.random() < 0.1
 
         if random then
             return moves[math.random(#moves)]

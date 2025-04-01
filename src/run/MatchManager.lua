@@ -291,7 +291,7 @@ function MatchManager:addToTeam(teamId, animal)
     self.ecs:addEntity(animal)
     -- do this somewhere else
     self.ecs:emit('update', 0)
-    self.statsSystem:calculateStats()
+    self.statsSystem:initializeStats()
 end
 
 
@@ -396,16 +396,20 @@ function MatchManager:generateEnemies()
     for _, value in ipairs(species) do
         local pos = math.random(#positions)
         local level = 1
-        
+
         if math.random() < stageMobLevels[gs.run.currentStage][self.matchNode.x - 1].negativeChance then
             level = -1
         end
-
+        
         if math.random() < stageMobLevels[gs.run.currentStage][self.matchNode.x - 1].levelUpChance then                
             local min = stageMobLevels[gs.run.currentStage][self.matchNode.x - 1].minLevel
             local max = stageMobLevels[gs.run.currentStage][self.matchNode.x - 1].maxLevel
 
             level = min + math.random(max-min) - 1
+        end
+
+        if value == self.matchNode.place then
+            level = self.matchNode.level
         end
 
         local animal = self:newAnimal(value, positions[pos][1], positions[pos][2], level)
@@ -625,7 +629,6 @@ function MatchManager:update(dt)
     self.teamManager:update(dt)
     self.states:update(dt)
     self:checkForWinner()
-    -- self.statsSystem:calculateStats()
 
     shimmerShader:send('time', love.timer.getTime())
     noiseShader:send("time", love.timer.getTime())

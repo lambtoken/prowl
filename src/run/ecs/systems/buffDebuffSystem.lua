@@ -1,9 +1,9 @@
 local Concord = require("libs.concord")
 local gs = require('src.state.GameState'):getInstance()
 local EffectFactory = require "src.run.EffectFactory"
-local effects = {}
+local buffDebuffData = require("src.run.combat.buffDebuffData")
 
-local buffDebuffSystem = Concord.system({pool = {position, stats, crowdControl, state}})
+local buffDebuffSystem = Concord.system({pool = {buffDebuff}})
 
 function buffDebuffSystem:update(dt)
     for _, entity in ipairs(self.pool) do
@@ -11,49 +11,35 @@ function buffDebuffSystem:update(dt)
     end
 end
 
-function buffDebuffSystem:applyEffect(entity, name)
-    if entity.buffDebuffSystem and entity.buffDebuffSystem.effects then
-        
+function buffDebuffSystem:applyEffect(entity, name, source)
+    if entity.buffDebuff and entity.buffDebuff.effects then
+        local data = buffDebuffData[name]
+        if data then
+            self:applyStatEffect(entity, source, data.stats, data.duration)
+        end
     end
 end
 
-function buffDebuffSystem:newEffect(name, source, stats, duration)
-    duration = duration or 1
-
-    local e = {
-        name = name or "untitled effect",
-        source = source,
-        stats = stats,
-        duration = duration
-    }
-
-    return e
-
-end
-
-function buffDebuffSystem:applyStatEffect(entity, source, mod, value, target, duration)
+function buffDebuffSystem:applyStatEffect(entity, source, stats, duration)
     duration = duration or 1
 
     local effect = {
         source = source,
         sourceId = source.metadata.id,
-        stats = {
-            EffectFactory.newStat(mod, value, target),
-        },
+        stats = stats,
         duration = duration,
         turn = 0
     }
 
     table.insert(entity.buffDebuff.effects, effect)
+    print(#entity.buffDebuff.effects, "effects")
 end
 
-function buffDebuffSystem:applyPatternEffect(entity, mod, value, target, duration)
+function buffDebuffSystem:applyPatternEffect(entity, pattern, duration)
     duration = duration or 1
 
     local effect = {
-        stats = {
-            EffectFactory.newPattern(mod, value, target)
-        },
+        pattern = pattern,
         duration = duration,
         turn = 0
     }
@@ -61,10 +47,13 @@ function buffDebuffSystem:applyPatternEffect(entity, mod, value, target, duratio
     table.insert(entity.buffDebuff.effects, effect)
 end
 
-function buffDebuffSystem:onStandBy()
+function buffDebuffSystem:onStandBy(teamId)
     for _, entity in ipairs(self.pool) do
+        if entity.metadata.teamID ~= teamId then
+            goto continue
+        end
 
-        local effects = entity.effect.effects
+        local effects = entity.buffDebuff.effects
 
         for i = #effects, 1, -1  do
             local effect = effects[i]
@@ -73,16 +62,18 @@ function buffDebuffSystem:onStandBy()
                 return
             end
 
-            if effect.turn > effect.duration then
-                -- if effects[effect.name].onExpire then
-                --     effects[effect.name].onExpire(tag.entity)
-                -- end
+            if effect.turn >= effect.duration then
+                if effect.onExpire then
+                    effect.onExpire(entity)
+                end
 
                 table.remove(effects, i)
+                print("removed effect", effect.name)
             else
                 effect.turn = effect.turn + 1
             end
         end
+        ::continue::
     end
 end
 

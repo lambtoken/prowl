@@ -1,7 +1,7 @@
 local EffectFactory = {}
 
 -- effecttype: increase, increaseP
-function EffectFactory.newStat(effectType, amount, target)
+function EffectFactory.newStat(effectType, target, amount)
     assert(type(effectType) == "string" and
             effectType == "increase" or
             effectType == "increaseP"
@@ -22,7 +22,7 @@ function EffectFactory.newStat(effectType, amount, target)
 end
 
 -- effecttype: swapBase, add, extend, swap, remove, append
-function EffectFactory.newPattern(effectType, pattern, target)
+function EffectFactory.newPattern(effectType, target, pattern)
     assert(type(effectType) == "string" and
             effectType == "swapBase" or
             effectType == "add" or
@@ -32,7 +32,9 @@ function EffectFactory.newPattern(effectType, pattern, target)
             effectType == "append"
         , "Invalid effecttype, got: " .. effectType)
     
-    return {effectType, pattern, target}
+    assert(type(pattern) == "table", "Expected table, got: " .. type(pattern))
+
+    return {effectType, target, pattern}
 end
 
 return EffectFactory
