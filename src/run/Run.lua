@@ -10,7 +10,7 @@ function Run:initialize(starterSpecies, seed)
     self.currentStage = 3
     self.stages = {}
     self.team = {}
-    self.currentNodeCoords = {6, 1}
+    self.currentNodeCoords = {1, 1}
     self.runHealth = 5
 
     self.idCounter = 0

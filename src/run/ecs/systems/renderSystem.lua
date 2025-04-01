@@ -106,6 +106,8 @@ function renderSystem:draw()
 
             if state.pickedUp then
                 love.graphics.setColor(1, 1, 1, 0.4)
+            elseif entity.metadata.type == "mark" then
+                love.graphics.setColor(1, 1, 1, 0.6)
             else
                 love.graphics.setColor(1, 1, 1, 1)
             end

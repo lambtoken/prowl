@@ -94,6 +94,7 @@ function match:enter()
     self.currentMatch:generateObjects()
     self.currentMatch:generateEnemies()
     self.currentMatch:generateFlowers()
+    self.currentMatch:generateMarks()
 
     self.hearts = Hearts:new(gs.run.team[1])
 

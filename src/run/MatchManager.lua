@@ -24,6 +24,8 @@ local getRandomItems= require('src.generation.functions.getRandomItems')
 local stageMobItems = require('src.generation.stageMobItems')
 local items = require('src.generation.items')
 local stageMobLevels = require('src.generation.stageMobLevels')
+local stageMarkAmount = require('src.generation.stageMarkAmount')
+local matchMarkRates = require('src.generation.matchMarkRates')
 
 local MatchManager = class("MatchManager")
 
@@ -60,7 +62,8 @@ function MatchManager:initialize(node)
         self.__systems.statusEffectSystem,
         self.__systems.stateSystem,
         self.__systems.turnSystem,
-        self.__systems.damageOverTimeSystem
+        self.__systems.damageOverTimeSystem,
+        self.__systems.markSystem
     )
 
     self.moveSystem = self.ecs:getSystem(self.__systems.moveSystem)
@@ -77,7 +80,7 @@ function MatchManager:initialize(node)
     self.statusEffectSystem = self.ecs:getSystem(self.__systems.statusEffectSystem)
     self.stateSystem = self.ecs:getSystem(self.__systems.stateSystem)
     self.damageOverTimeSystem = self.ecs:getSystem(self.__systems.damageOverTimeSystem)
-    
+    self.markSystem = self.ecs:getSystem(self.__systems.markSystem)
     self.states = fsm({
         playing = {
             instance = self,
@@ -234,6 +237,10 @@ end
 
 function MatchManager:newFlower(name, x, y)
     self.ecs:addEntity(EntityFactory:createFlower(name, x , y))
+end
+
+function MatchManager:newMark(name, x, y)
+    self.ecs:addEntity(EntityFactory:createMark(name, x, y))
 end
 
 function MatchManager:getEntityById(id)
@@ -547,6 +554,21 @@ function MatchManager:generateObjects()
     self.ecs:emit('update', 0.01)
 end
 
+function MatchManager:generateMarks()
+    local poissonSamples = self:poissonDisk()   
+
+    local markNames = {}
+
+    pickLimited(matchMarkRates[self.matchNode.place][self.matchNode.variant], 10, markNames)
+
+    for _, name in ipairs(markNames) do
+        if #poissonSamples > 0 then
+            local pos = math.random(#poissonSamples)
+            self:newMark(name, poissonSamples[pos][1], poissonSamples[pos][2])
+            table.remove(poissonSamples, pos)
+        end
+    end
+end
 
 function MatchManager:hasMovesLeft(entity)
     return self.stateSystem:hasMovesLeft(entity)

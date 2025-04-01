@@ -5,6 +5,7 @@ local pretty = require("libs.batteries.pretty")
 local events = require("src.state.events"):getInstance()
 local mobData = require("src.generation.mobs")
 local objectData = require("src.generation.objects")
+local markData = require("src.generation.marks")
 local gs = require("src.state.GameState"):getInstance()
 
 local CELLSIZE = RM.tileSize
@@ -59,6 +60,10 @@ local MOVES = {
     displace = {
         func = 'outQuad',
         duration = 1
+    },
+    tp = {
+        func = 'linear',
+        duration = 0.2
     }
 }
 
@@ -195,7 +200,7 @@ function moveSystem:getTouching(x, y, type)
 end
 
 
-function moveSystem:getNearbyEntities(entity)
+function moveSystem:getNearbyEntities(entity, type)
     local sources = {}
 
     for i = -1, 1 do
@@ -204,7 +209,7 @@ function moveSystem:getNearbyEntities(entity)
                 local x = entity.position.x + i
                 local y = entity.position.y + j
 
-                local potentialSources = self:findByCoordinates(x, y)
+                local potentialSources = self:findByCoordinates(x, y, type)
                 if #potentialSources > 0 then
                     table.move(potentialSources, 1, #potentialSources, #sources + 1, sources)
                 end
@@ -264,11 +269,18 @@ end
 function moveSystem:handleOnStepped(entity)
 
     local tileObjects = self:findByCoordinates(entity.position.x, entity.position.y, 'object')
+    local tileMarks = self:findByCoordinates(entity.position.x, entity.position.y, 'mark')
 
     if #tileObjects == 1 and tileObjects[1] ~= entity then
         local object = tileObjects[1]
         if objectData[object.metadata.objectName].passive and objectData[object.metadata.objectName].passive.onStepped then
             objectData[object.metadata.objectName].passive.onStepped(gs.currentMatch, entity, object)
+        end
+    end
+
+    for _, mark in ipairs(tileMarks) do
+        if markData[mark.metadata.markName].passive and markData[mark.metadata.markName].passive.onStepped then
+            markData[mark.metadata.markName].passive.onStepped(gs.currentMatch, entity, mark)
         end
     end
 end

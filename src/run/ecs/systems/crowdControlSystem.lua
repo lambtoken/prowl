@@ -4,7 +4,7 @@ local sceneManager = require("src.scene.SceneManager"):getInstance()
 local EventManager = require("src.state.events"):getInstance()
 local tablex = require "libs.batteries.tablex"
 
-local crowdControlSystem = Concord.system({pool = {statusEffect, crowdControl}})
+local crowdControlSystem = Concord.system({pool = {"status", "crowdControl"}})
 
 -- standby event
 -- seconds timer
@@ -40,7 +40,7 @@ function crowdControlSystem:applyCC(entity, type, source)
 end
 
 function crowdControlSystem:updateEffects()
-    for _, entity in ipairs(self.entities) do
+    for _, entity in ipairs(self.pool) do
         for _, effect in pairs(entity.crowdControl.effects) do
             if effect.duration > 0 then
                 effect.duration = effect.duration - 1
@@ -53,7 +53,7 @@ end
 
 function crowdControlSystem:update(dt)
     for _, entity in ipairs(self.pool) do
-        local state = entity.state
+        print(entity.metadata.type)
 
         for _, effect in ipairs(entity.crowdControl.ccEffects) do
             if effect.duration > 0 then

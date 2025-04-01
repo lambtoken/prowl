@@ -12,7 +12,7 @@ local callbackRegistry = {
     end
 }
 
-local timerSystem = Concord.system({pool = {timers}})
+local timerSystem = Concord.system({pool = {"timers"}})
 
 function timerSystem:init()
     EventManager:on("registerTimer", function(entity, time, callbackId, data)

@@ -32,7 +32,6 @@ function buffDebuffSystem:applyStatEffect(entity, source, stats, duration)
     }
 
     table.insert(entity.buffDebuff.effects, effect)
-    print(#entity.buffDebuff.effects, "effects")
 end
 
 function buffDebuffSystem:applyPatternEffect(entity, pattern, duration)

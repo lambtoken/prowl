@@ -83,6 +83,9 @@ function EntityFactory:applyDefault(entity, comp)
         elseif entity.metadata.type == "flower" then
             default.isTargetable = false
             default.isDisplaceable = false
+        elseif entity.metadata.type == "mark" then
+            default.isTargetable = false
+            default.isDisplaceable = false
         elseif entity.metadata.type == "object" and objectData[entity.metadata.objectName].status then
             for key, value in pairs(objectData[entity.metadata.objectName].status) do
                 default[key] = value
@@ -99,6 +102,9 @@ function EntityFactory:applyDefault(entity, comp)
                 entity.position.stepsOn = tablex.deep_copy(animalData[entity.metadata.species].stepsOn)
             end
         elseif entity.metadata.type == "flower" then
+            entity.position.isSteppable = true
+            entity.position.stepsOn = { "ground" }
+        elseif entity.metadata.type == "mark" then
             entity.position.isSteppable = true
             entity.position.stepsOn = { "ground" }
         elseif entity.metadata.type == "object" and objectData[entity.metadata.objectName].stepsOn then
@@ -179,6 +185,25 @@ function EntityFactory:createFlower(name, x, y)
     self:applyDefault(entity, 'status')
     self:applyDefault(entity, 'position')
 
+    return entity
+end
+
+function EntityFactory:createMark(name, x, y)
+    self:loadComponents()
+    
+    local entity = Concord.entity()
+        :give('metadata')
+        :give('position', x, y)
+        :give('renderable', name)
+        :give('state')
+        :give('status')
+
+    entity.metadata.type = 'mark'
+    entity.metadata.markName = name
+    entity.metadata.subType = 'mark'
+
+    self:applyDefault(entity, 'position')
+    self:applyDefault(entity, 'status')
     return entity
 end
 

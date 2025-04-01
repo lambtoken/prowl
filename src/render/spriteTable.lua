@@ -108,6 +108,13 @@ local spriteTable = {
     sand_waves = {17, 17},
     snow = {6, 16},
 
+    --marks
+    bloodletter_mark = {22, 21},
+    blink_mark = {23, 21},
+    echo = {25, 21},
+    living_mark = {26, 21},
+    singularity_mark = {30, 21},
+    
     cobble1 = {1, 9},
     cobble2 = {2, 9},
     cobble3 = {3, 9},
