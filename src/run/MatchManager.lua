@@ -566,7 +566,7 @@ function MatchManager:generateMarks()
 
     local markNames = {}
 
-    pickLimited(matchMarkRates[self.matchNode.place][self.matchNode.variant], 10, markNames)
+    pickLimited(matchMarkRates[self.matchNode.place][self.matchNode.variant], 2, markNames)
 
     for _, name in ipairs(markNames) do
         if #poissonSamples > 0 then
