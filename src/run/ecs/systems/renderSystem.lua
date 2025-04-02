@@ -8,7 +8,9 @@ local tween = require "libs.tween"
 local renderStats = false
 local outlineShader = love.graphics.newShader(outline_shader)
 
-local renderSystem = Concord.system({pool = {position, renderable, animation, state}})
+local renderSystem = Concord.system({pool = {"position", "renderable"}})
+
+local drawColliders = false
 
 function renderSystem:init()
     self.pusleDuration = 1
@@ -87,7 +89,7 @@ function renderSystem:draw()
             love.graphics.pop()
             
         else
-            if state.current == "dead" then
+            if state and state.current == "dead" then
                 goto continue
             end
     
@@ -103,8 +105,12 @@ function renderSystem:draw()
             )
 
             love.graphics.rotate(renderable.transform.rotation)
+            
+            if entity.projectile then
+                love.graphics.rotate(entity.projectile.angle)
+            end
 
-            if state.pickedUp then
+            if state and state.pickedUp then
                 love.graphics.setColor(1, 1, 1, 0.4)
             elseif entity.metadata.type == "mark" then
                 love.graphics.setColor(1, 1, 1, 0.6)
@@ -156,6 +162,11 @@ function renderSystem:draw()
     
             ::continue::
 
+        end
+        if drawColliders and entity.collider then
+            love.graphics.setColor(1, 0, 0, 1)
+            love.graphics.rectangle("line", entity.position.screenX, entity.position.screenY, entity.collider.width, entity.collider.height)
+            love.graphics.setColor(1, 1, 1, 1)
         end
     end
 end

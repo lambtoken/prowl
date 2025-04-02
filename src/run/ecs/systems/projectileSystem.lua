@@ -1,23 +1,16 @@
 local Concord = require("libs.concord")
 local CC = require("src.run.combat.crowdControlData")
-
-local projectileSystem = Concord.system({pool = {pos, renderable}})
-
+local projectileData = require("src.generation.projectiles")
+local projectileSystem = Concord.system({pool = {"projectile", "position", "renderable", "collider"}})
 
 function projectileSystem:update()
     for _, entity in pairs(self.entities) do
-        for _, effect in pairs(entity.crowdControl.effects) do
-            if effect.duration > 0 then
-                effect.duration = effect.duration - 1
-            else
-                effect = nil  -- Remove expired effect
-            end
-        end
     end
 end
 
-function projectileSystem:newProjectile(type, startX, startY, targetX, targetY, velocity, onHitCallback)
-
+function createProjectile(type, startX, startY, targetX, targetY, ownerId)
+    local gs = require("src.state.GameState"):getInstance()
+    gs.currentMatch:newProjectile(type, startX, startY, targetX, targetY, ownerId)
 end
 
 return projectileSystem

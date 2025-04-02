@@ -1,61 +1,79 @@
 local Concord = require("libs.concord")
+local isInTable = require("src.utility.isInTable")
 
-local collisionSystem = Concord.system({pool = {collision, position}})
+local collisionSystem = Concord.system({pool = {"collider", "position"}})
 
 function collisionSystem:update()
-    for i = 1, #self.pool do
-        local entityA = self.pool[i]
+    for i, entityA in ipairs(self.pool) do
         local posA = entityA.position
-        local colA = entityA.collision
+        local colA = entityA.collider
 
-        colA.inCollisionWith = {}
+        if colA.disabled then
+            goto continue
+        end
 
-        for j = i + 1, #self.pool do
-            local entityB = self.pool[j]
+        colA.collidedWith = {}
+
+        for j, entityB in ipairs(self.pool) do
+            if entityA == entityB then
+                goto continue2
+            end
+    
             local posB = entityB.position
-            local colB = entityB.collision
+            local colB = entityB.collider
 
+            if isInTable(colA.ignoreIds, entityB.metadata.id)
+            or isInTable(colB.ignoreIds, entityA.metadata.id) then
+                goto continue2
+            end
+            
+            if colB.disabled then
+                goto continue2
+            end
+            
             if self:checkAABB(posA, colA, posB, colB) then
                 
-                if not colA.collidedWith[entityB] then
+                if not colA.collidedWith[entityB.metadata.id] then
 
-                    table.insert(colA.inCollisionWith, entityB)
-                    table.insert(colB.inCollisionWith, entityA)
+                    table.insert(colA.collidedWith, entityB.metadata.id)
+                    table.insert(colB.collidedWith, entityA.metadata.id)
 
-                    if entityA.onCollision then
-                        entityA.onCollision(entityB)
+                    if colA.onCollision then
+                        colA.onCollision(entityA, entityB)
                     end
-                    if entityB.onCollision then
-                        entityB.onCollision(entityA)
+                    if colB.onCollision then
+                        colB.onCollision(entityB, entityA)
                     end
 
                     -- Mark as colliding
-                    colA.collidedWith[entityB] = true
-                    colB.collidedWith[entityA] = true
+                    colA.collidedWith[entityB.metadata.id] = true
+                    colB.collidedWith[entityA.metadata.id] = true
                 end
             else
-                if colA.collidedWith[entityB] then
+                if colA.collidedWith[entityB.metadata.id] then
 
-                    if entityA.onExitCollision then
-                        entityA.onExitCollision(entityB)
+                    if colA.onExitCollision then
+                        colA.onExitCollision(entityB)
                     end
-                    if entityB.onExitCollision then
-                        entityB.onExitCollision(entityA)
+                    if colB.onExitCollision then
+                        colB.onExitCollision(entityA)
                     end
                     
-                    colA.collidedWith[entityB] = nil
-                    colB.collidedWith[entityA] = nil
+                    colA.collidedWith[entityB.metadata.id] = nil
+                    colB.collidedWith[entityA.metadata.id] = nil
                 end
             end
+            ::continue2::
         end
+        ::continue::
     end
 end
 
 function collisionSystem:checkAABB(posA, colA, posB, colB)
-    return posA.x < posB.x + colB.width and
-           posA.x + colA.width > posB.x and
-           posA.y < posB.y + colB.height and
-           posA.y + colA.height > posB.y
+    return posA.screenX < posB.screenX + colB.width and
+           posA.screenX + colA.width > posB.screenX and
+           posA.screenY < posB.screenY + colB.height and
+           posA.screenY + colA.height > posB.screenY
 end
 
 return collisionSystem

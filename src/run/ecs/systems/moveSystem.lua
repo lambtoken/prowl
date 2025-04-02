@@ -148,7 +148,7 @@ function moveSystem:findByCoordinates(x, y, type)
     
     for _, entity in ipairs(self.pool) do
         local typeCondition = not type or entity.metadata.type == type
-        if entity.position.x == x and entity.position.y == y and entity.state.current == "alive" and typeCondition then
+        if entity.position.x == x and entity.position.y == y and entity.state and entity.state.current == "alive" and typeCondition then
             table.insert(entities, entity)
         end
     end
@@ -297,6 +297,13 @@ function moveSystem:update(dt)
 
         local position = entity.position
 
+        if position.customMove then
+            position.customMove(entity, dt)
+            position.screenX = position.x * RM.tileSize
+            position.screenY = position.y * RM.tileSize
+            goto continue
+        end
+
         local forDeletion = {}
 
         local sumX = 0
@@ -393,6 +400,7 @@ function moveSystem:update(dt)
         -- end 
 
         ::continue::
+
     end
 end
 
@@ -432,6 +440,30 @@ function moveSystem:getAveragePosition(...)
     end
     
     return math.floor(sumX / n), math.floor(sumY / n)
+end
+
+function moveSystem:getNearestEntity(entity, type, teamID)
+    local nearestEntity = nil
+    local nearestDistance = 1000000
+
+    for _, otherEntity in ipairs(self.pool) do
+        if otherEntity.metadata and otherEntity.metadata.type == type then
+            
+            if teamID and otherEntity.metadata.teamID == teamID then
+                goto continue
+            end
+
+            -- use squared distance to avoid sqrt
+            local distance = (otherEntity.position.x - entity.position.x)^2 + (otherEntity.position.y - entity.position.y)^2
+            if distance < nearestDistance then
+                nearestDistance = distance
+                nearestEntity = otherEntity
+            end
+
+            ::continue::
+        end
+    end
+    return nearestEntity
 end
 
 function moveSystem:removeAll(entity)

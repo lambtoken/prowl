@@ -6,7 +6,7 @@ local EventManager = require("src.state.events"):getInstance()
 local SceneManager = require("src.scene.SceneManager"):getInstance()
 local gs = require("src.state.GameState"):getInstance()
 
-local statusEFfectSystem = Concord.system({pool = {status}})
+local statusEFfectSystem = Concord.system({pool = {"status"}})
 
 function statusEFfectSystem:newStatusEffect(name, source, duration)
     assert(statusEffectData[name], "Status effect: " .. name .. " does not exist.")

@@ -3,7 +3,8 @@ local EventManager = require("src.state.events"):getInstance()
 local soundManager = require("src.sound.SoundManager"):getInstance()
 local GameState    = require("src.state.GameState"):getInstance()
 local SceneManager = require("src.scene.SceneManager"):getInstance()
-local stateSystem = Concord.system({pool = {state}})
+
+local stateSystem = Concord.system({pool = {"state"}})
 
 function stateSystem:init()
     EventManager:on("setState", function(entity, newState)

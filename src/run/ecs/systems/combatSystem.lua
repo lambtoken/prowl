@@ -5,10 +5,11 @@ local soundManager = require('src.sound.SoundManager'):getInstance()
 local EventManager = require('src.state.events'):getInstance()
 local pretty       = require('libs.batteries.pretty')
 local mobData = require "src.generation.mobs"
+local itemData = require "src.generation.items"
 local objectData = require "src.generation.objects"
 local SoundManager = require("src.sound.SoundManager"):getInstance()
 
-local combatSystem = Concord.system({pool = {position}})
+local combatSystem = Concord.system({pool = {"position", "stats"}})
 
 -- helper function for calculating miss chance based on def value
 local function defMissChance(attacker, target)
@@ -29,7 +30,7 @@ function combatSystem:init()
 
     -- EVENTS
     EventManager:on("onStep", function(entity, attack)
-        local matchState = sceneManager.currentScene.currentMatch
+        local matchState = gs.currentMatch
 
         if not attack then
             return
@@ -122,8 +123,18 @@ function combatSystem:init()
                     EventManager:emit("setState", target, "dying") 
                 end
             end
+
         end
-         
+
+        -- on step items
+        for _, item in ipairs(entity.inventory.items) do
+            if item.passive and item.passive.onStep then
+                if itemData[item.name].passive and itemData[item.name].passive.onStep then
+                    itemData[item.name].passive.onStep(matchState, entity)
+                end
+            end
+        end
+        
     end)
 
 

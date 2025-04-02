@@ -1,10 +1,14 @@
-local defaultMove = function(tx, ty, target, proj, dt)
-    local damping = proj.projectile.damping
-    local speed = proj.projectile.speed
-    local pos = proj.position
+local defaultMove = function(entity, dt)
+    assert(entity.projectile, "Projectile component not found")
 
-    if target then
-        local dx, dy = target.x - pos.x, target.y - pos.y
+    local damping = entity.projectile.damping
+    local speed = entity.projectile.speed
+    local pos = entity.position
+    local targetX = entity.projectile.targetX
+    local targetY = entity.projectile.targetY
+
+    if targetX and targetY then
+        local dx, dy = targetX - pos.x, targetY - pos.y
         local lengthSq = dx * dx + dy * dy
         if lengthSq > 0 then
             local factor = dt * speed / lengthSq
@@ -12,8 +16,8 @@ local defaultMove = function(tx, ty, target, proj, dt)
             pos.y = pos.y + dy * factor
         end
     else
-        pos.dirX = tx - pos.x
-        pos.dirY = ty - pos.y
+        pos.dirX = targetX - pos.x
+        pos.dirY = targetY - pos.y
         local lengthSq = pos.dirX * pos.dirX + pos.dirY * pos.dirY
         if lengthSq > 0 then
             local factor = dt * speed / lengthSq
@@ -28,33 +32,67 @@ local defaultMove = function(tx, ty, target, proj, dt)
     speed = speed * damping
 end
 
+defaultMove = function(entity, dt)
+    assert(entity.projectile, "Projectile component not found")
+
+    local damping = entity.projectile.damping
+    local speed = entity.projectile.speed
+    local pos = entity.position
+    local targetX = entity.projectile.targetX
+    local targetY = entity.projectile.targetY
+
+    if targetX and targetY then
+        local dx, dy = targetX - pos.x, targetY - pos.y
+        local lengthSq = dx * dx + dy * dy
+        if lengthSq > 0.2 then
+            -- speed should be tile per second
+            local normalIzed = math.sqrt(lengthSq)
+            local normalizedX = dx / normalIzed
+            local normalizedY = dy / normalIzed
+            pos.x = pos.x + normalizedX * speed
+            pos.y = pos.y + normalizedY * speed
+            speed = speed * damping
+        end
+    end
+
+end
+
+function followTargetInstant(entity, dt)
+    local pos = entity.position
+    local targetX = entity.projectile.targetX
+    local targetY = entity.projectile.targetY
+    pos.x = targetX
+    pos.y = targetY
+end
+
 local DEFAULTS = {
-    DAMPING = 0.98
+    DAMPING = 0.98,
+    SPEED = 0.5,
 }
 
 local projectiles = {
     arrow = {
-        speed = 2,
-        dumping = DEFAULTS.DAMPING,
-        moveFunction = function(matchState, self, dt)
-            defaultMove(nil, nil, self.target, self, dt)
-        end,
-        onHit = function(matchState, entity, source)
-            if matchState.combatSystem:isValidTarget(entity, source) then
-                matchState.combatSystem:hit(entity, 1)
+        speed = DEFAULTS.SPEED,
+        damping = DEFAULTS.DAMPING,
+        moveFunction = defaultMove,
+        onHit = function(matchState, source, target)
+            if target.metadata.type == "animal" then
+                matchState.combatSystem:hit(target, 1)
+                source.collider.disabled = true
+                matchState.animationSystem:playAnimation(source, "trigger_death")
             end
+            
         end
     },
 
     snowball = {
         speed = 1.5,
-        moveFunction = function(matchState, self, dt)
-            defaultMove(nil, nil, self.target, self, dt)
-        end,
-        onHit = function(matchState, entity, source)
-            if matchState.combatSystem:isValidTarget(entity, source) then
-                matchState.combatSystem:hit(entity, 1)
-                matchState.crowdControlSystem:applyEffect(entity, "freeze", 2) -- Freeze for 2 seconds
+        damping = DEFAULTS.DAMPING,
+        moveFunction = defaultMove,
+        onHit = function(matchState, source, target)
+            if matchState.combatSystem:isValidTarget(target, source) then
+                matchState.combatSystem:hit(target, 1)
+                matchState.crowdControlSystem:applyEffect(target, "freeze", 2) -- Freeze for 2 seconds
             end
         end
     }

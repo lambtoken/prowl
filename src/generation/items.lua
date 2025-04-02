@@ -493,6 +493,22 @@ local items = {
             cooldown = 2
         }
     },
+    crossbow = {
+        name = 'crossbow',
+        type = 'weapon',
+        rarity = 'common',
+        stats = {{'increase', 'atk', 1}},
+        pattern = {},
+        passive = {
+            onStep = function(matchState, source)
+                local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.metadata.teamID)
+                if nearestEntity then
+                    matchState:newProjectile('arrow', source.position.x, source.position.y, nearestEntity.position.x, nearestEntity.position.y, source.metadata.id)
+                end
+            end
+        },
+        active = {},
+    }
 }
 
 local crownWidth = RM.renderDistanceX + 1

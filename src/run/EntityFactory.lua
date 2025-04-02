@@ -1,9 +1,11 @@
 local Concord = require("libs.concord")
 local animalData = require "src.generation.mobs"
 local objectData = require "src.generation.objects"
+local projectileData = require "src.generation.projectiles"
 local tablex     = require "libs.batteries.tablex"
 local pretty     = require "libs.batteries.pretty"
 local statusDefaults = require "src.run.ecs.defaults.statusDefaults"
+local gs = require('src.state.GameState'):getInstance()
 
 local EntityFactory = {
     idCounter = 1
@@ -107,17 +109,33 @@ function EntityFactory:applyDefault(entity, comp)
         elseif entity.metadata.type == "mark" then
             entity.position.isSteppable = true
             entity.position.stepsOn = { "ground" }
+        elseif entity.metadata.type == "projectile" then
+            entity.position.customMove = projectileData[entity.metadata.projectileType].moveFunction
+            entity.position.isSteppable = false
+            entity.position.stepsOn = { "ground" }
         elseif entity.metadata.type == "object" and objectData[entity.metadata.objectName].stepsOn then
             entity.position.isSteppable = objectData[entity.metadata.objectName].steppable or false
             if objectData[entity.metadata.objectName].stepsOn then
                 entity.position.stepsOn = tablex.deep_copy(objectData[entity.metadata.objectName].stepsOn)
             end
         end
+    elseif comp == "collider" then
+        entity.collider.onCollision = function(source, target)
+            local matchState = gs.currentMatch
+            projectileData[entity.metadata.projectileType].onHit(matchState, source, target)
+        end
     end
 end
 
 function EntityFactory:createAnimal(species, x, y, level)
     self:loadComponents()
+    
+    local entity = Concord.entity()
+        :give('metadata')
+        :give('position', x, y)
+        :give('renderable', animalData[species].sprite)
+        :give('state')
+        :give('status')
     assert(animalData[species], "Species does not exist!")
     if level then
         assert(type(level) == "number", "Level must be a number!")
@@ -135,6 +153,7 @@ function EntityFactory:createAnimal(species, x, y, level)
         :give('inventory')
         :give('timers')
         :give('dot')
+        :give('collider')
         
     entity.metadata.type = 'animal'
     entity.stats.level = level or 1
@@ -158,6 +177,7 @@ function EntityFactory:createObject(name, x, y)
         :give('status')
         :give('crowdControl')
         :give('timers')
+        :give('collider')
 
     entity.metadata.type = 'object'
     entity.metadata.objectName = name
@@ -204,6 +224,30 @@ function EntityFactory:createMark(name, x, y)
 
     self:applyDefault(entity, 'position')
     self:applyDefault(entity, 'status')
+    return entity
+end
+
+function EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId)
+    self:loadComponents()
+    
+    local entity = Concord.entity()
+        :give('metadata')
+        :give('position', x, y)
+        :give('renderable', type)
+        :give('projectile')
+        :give('collider')
+        :give('state')
+
+    entity.metadata.type = 'projectile'
+    entity.metadata.projectileType = type
+
+    entity.projectile.targetX = targetX
+    entity.projectile.targetY = targetY
+    entity.projectile.angle = math.atan2(targetY - y, targetX - x)
+   
+    self:applyDefault(entity, 'position')
+    self:applyDefault(entity, 'collider')
+    entity.collider.ignoreIds = {ownerId}
     return entity
 end
 

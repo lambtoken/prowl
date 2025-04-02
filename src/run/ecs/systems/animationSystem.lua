@@ -6,7 +6,7 @@ local tablex= require "libs.batteries.tablex"
 local animationDefaults = require "src.render.match.animationDefaults"
 
 
-local animationSystem = Concord.system({pool = {position, renderable, state}})
+local animationSystem = Concord.system({pool = {"position", "renderable"}})
 
 
 function animationSystem:init()
@@ -95,7 +95,7 @@ function animationSystem:update(dt)
     for _, entity in ipairs(self.pool) do 
         local state = entity.state
         
-        if state.current == "dead" then
+        if state and state.current == "dead" then
             goto continue
         end
         

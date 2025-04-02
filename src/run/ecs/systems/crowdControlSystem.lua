@@ -53,7 +53,6 @@ end
 
 function crowdControlSystem:update(dt)
     for _, entity in ipairs(self.pool) do
-        print(entity.metadata.type)
 
         for _, effect in ipairs(entity.crowdControl.ccEffects) do
             if effect.duration > 0 then

@@ -167,20 +167,20 @@ function Stage:connectNodes()
     end
 
     -- connect ramaining nodes
-    for i = #self.nodes - 1, 2, -1 do
-        local currentRow = self.nodes[i]
-        local previousRow = self.nodes[i - 1]
+    -- for i = #self.nodes - 1, 2, -1 do
+    --     local currentRow = self.nodes[i]
+    --     local previousRow = self.nodes[i - 1]
 
-        for j, node in ipairs(currentRow) do
-            if #node.from == 0 then
-                local previousNodeIndex = getNeighborNode(#previousRow, #currentRow, j)
-                local previousNode = previousRow[previousNodeIndex]
+    --     for j, node in ipairs(currentRow) do
+    --         if #node.from == 0 then
+    --             local previousNodeIndex = getNeighborNode(#previousRow, #currentRow, j)
+    --             local previousNode = previousRow[previousNodeIndex]
                 
-                table.insert(node.from, {i - 1, previousNodeIndex})
-                table.insert(previousNode.to, {i, j})
-            end
-        end
-    end
+    --             table.insert(node.from, {i - 1, previousNodeIndex})
+    --             table.insert(previousNode.to, {i, j})
+    --         end
+    --     end
+    -- end
 
 end
 

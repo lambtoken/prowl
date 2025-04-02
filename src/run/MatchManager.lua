@@ -63,7 +63,8 @@ function MatchManager:initialize(node)
         self.__systems.stateSystem,
         self.__systems.turnSystem,
         self.__systems.damageOverTimeSystem,
-        self.__systems.markSystem
+        self.__systems.markSystem,
+        self.__systems.collisionSystem
     )
 
     self.moveSystem = self.ecs:getSystem(self.__systems.moveSystem)
@@ -81,6 +82,8 @@ function MatchManager:initialize(node)
     self.stateSystem = self.ecs:getSystem(self.__systems.stateSystem)
     self.damageOverTimeSystem = self.ecs:getSystem(self.__systems.damageOverTimeSystem)
     self.markSystem = self.ecs:getSystem(self.__systems.markSystem)
+    self.collisionSystem = self.ecs:getSystem(self.__systems.collisionSystem)
+    
     self.states = fsm({
         playing = {
             instance = self,
@@ -241,6 +244,10 @@ end
 
 function MatchManager:newMark(name, x, y)
     self.ecs:addEntity(EntityFactory:createMark(name, x, y))
+end
+
+function MatchManager:newProjectile(type, x, y, targetX, targetY, ownerId)
+    self.ecs:addEntity(EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId))
 end
 
 function MatchManager:getEntityById(id)
