@@ -223,6 +223,27 @@ local spriteTable = {
     pattern_dots = {22, 25},
     pattern_remove = {22, 27},
     
+    generic_effect = {9, 23},
+
+    poison = {14, 24},
+    bleed = {14, 23},
+
+    disarm = {8, 24},
+    stun = {10, 24},
+    snare = {11, 24},
+    sleep = {12, 24},
+    freeze = {27, 25},
+    confusion = {11, 23},
+    exhaust = {12, 23},
+    invulnerability = {13, 23},
+    jam = {29, 24},
+    invisibility = {30, 24},
+    playing_dead = {31, 24},
+    
+    
+    
+
+
     heart = {14, 19},
     heart_empty = {13, 19},
 

@@ -1,6 +1,7 @@
 local RM = require ('src.render.RenderManager'):getInstance()
 local getFont = require 'src.render.getFont'
 local spriteTable = require 'src.render.spriteTable'
+local statusBar = require 'src.render.ui.match.StatusBar'
 
 local animalStats = {}
 animalStats.__index = animalStats
@@ -27,10 +28,24 @@ function animalStats:new()
     o.screenX = 0
     o.screenY = RM.windowHeight - o.height
 
+    o.statusBar = statusBar:new()
+
     setmetatable(o, self)
     o.__index = self
 
     return o
+end
+
+function animalStats:positionStatusBar()
+    self.statBoxSize = self.portraitSize + 2 * self.margin + self.hpBarWidth + 2 * self.margin
+    self.itemsStartX = self.screenX + self.statBoxSize
+    self.itemsStartY = RM.windowHeight - self.itemSize - self.margin
+    self.itemSpacing = self.itemSize + self.margin
+
+    self.statusBar.container:setPos(
+        self.itemsStartX, 
+        RM.windowHeight - self.statusBar.container.ch - self.itemSize * 2
+    )
 end
 
 function animalStats:loadAnimal(animal)
@@ -39,11 +54,16 @@ function animalStats:loadAnimal(animal)
         local species = animal.metadata.species
         self.portraitQuad = love.graphics.newQuad(spriteTable[species][1] * RM.spriteSize, spriteTable[species][2] * RM.spriteSize, RM.spriteSize, RM.spriteSize, RM.image)
         self.portraitScaleFactor = self.portraitSize / RM.spriteSize
+        self.statusBar:updateEffectIcons(animal)
+        self:positionStatusBar()
+        self.statusBar.root:resize()
+        print(self.statusBar.container.cx, self.statusBar.container.cy)
     end
 end
 
 function animalStats:update(dt)
     self.animationTime = self.animationTime + dt * self.animationSpeed
+    self.statusBar:update(dt)
 end
 
 function animalStats:draw()
@@ -105,14 +125,15 @@ function animalStats:draw()
     love.graphics.print(level, levelX, self.screenY + self.margin)
 
     -- Draw items
-    local itemsStartX = self.screenX + self.portraitSize + 2 * self.margin + self.hpBarWidth + self.margin
-    local itemsStartY = RM.windowHeight - self.itemSize - self.margin
-    local itemSpacing = self.itemSize + self.margin
+    self.statBoxSize = self.portraitSize + 2 * self.margin + self.hpBarWidth + 2 * self.margin
+    self.itemsStartX = self.screenX + self.statBoxSize
+    self.itemsStartY = RM.windowHeight - self.itemSize - self.margin
+    self.itemSpacing = self.itemSize + self.margin
 
     -- Draw empty item slots
     for i = 1, self.maxItems do
         love.graphics.setColor(0.3, 0.3, 0.3)
-        love.graphics.rectangle("line", itemsStartX + (i-1) * itemSpacing, itemsStartY, self.itemSize, self.itemSize)
+        love.graphics.rectangle("line", self.itemsStartX + (i-1) * self.itemSpacing, self.itemsStartY, self.itemSize, self.itemSize)
     end
 
     -- Draw actual items
@@ -122,10 +143,12 @@ function animalStats:draw()
                 love.graphics.setColor(1, 1, 1)
                 local itemQuad = love.graphics.newQuad(spriteTable[item.name][1] * RM.spriteSize, spriteTable[item.name][2] * RM.spriteSize, RM.spriteSize, RM.spriteSize, RM.image)
                 local itemScale = self.itemSize / RM.spriteSize
-                love.graphics.draw(RM.image, itemQuad, itemsStartX + (i-1) * itemSpacing, itemsStartY, 0, itemScale, itemScale)
+                love.graphics.draw(RM.image, itemQuad, self.itemsStartX + (i-1) * self.itemSpacing, self.itemsStartY, 0, itemScale, itemScale)
             end
         end
     end
+
+    self.statusBar:draw()
 end
 
 return animalStats

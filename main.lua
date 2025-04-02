@@ -51,6 +51,9 @@ function love.load()
     --soundM = SoundManager:getInstance()
     music.load()
 
+    -- Require the effect sprites to ensure they're loaded
+    require "src.render.effectSprites"
+
     love.window.setVSync(-1)
 end
 

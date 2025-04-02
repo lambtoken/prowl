@@ -36,6 +36,9 @@ function match:enter()
         --self.currentMatch:addToTeam(1, self.currentMatch:newAnimal("bear", 4, 4, 1))
     end
 
+    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "stappler")
+    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "poison_dart")
+
     self.currentMatch:preparePlayer()
     self.currentMatch:positionPlayer()
 
@@ -52,6 +55,8 @@ function match:enter()
 
     self.pattern = Pattern:new(self.inputManager)
     self.inputManager:setPatternDisplay(self.pattern)
+    
+    -- self.inputManager.currentMatch.animalStats = self.animalStats
 
     self.endTurnButton = button(
         "rest", 
@@ -97,6 +102,8 @@ function match:enter()
     self.currentMatch:generateMarks()
 
     self.hearts = Hearts:new(gs.run.team[1])
+
+    
 
     -- self.currentMatch:newObject('vase', 5, 5)
     -- self.currentMatch:newFlower('red_flower', 5, 6)
@@ -230,6 +237,8 @@ function match:draw()
     if self.animalStats.animalRef and self.animalStats.animalRef.state.current ~= "dead" then
         self.animalStats:draw()
     end
+    
+    
     self.turnTracker:draw()
 
     if self.currentMatch.teamManager.turnTeamId == 1 then

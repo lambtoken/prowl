@@ -13,7 +13,7 @@ local data = {
         duration = 1,
         animation = {},
         adjective = "stunned",
-        particle = "stun"
+        sprite = "stun"
     },
 
 
@@ -25,7 +25,8 @@ local data = {
         interuptsCasting = true,
         duration = 1,
         animation = {},
-        adjective = "snared"
+        adjective = "snared",
+        sprite = "snare"
     },
 
 
@@ -36,7 +37,8 @@ local data = {
         interuptsCasting = true,
         duration = 1,
         animation = {},
-        adjective = "disarmed"
+        adjective = "disarmed",
+        sprite = "disarm"
     },
 
 
@@ -50,7 +52,8 @@ local data = {
         interuptsCasting = true,
         duration = 1,
         animation = {},
-        adjective = "suppressed"
+        adjective = "suppressed",
+        sprite = "suppression"
     },
 
 
@@ -63,8 +66,8 @@ local data = {
         interuptsCasting = true,
         duration = {1, 3},
         animation = {},
-        adjective = "asleep"
-        -- particle animation
+        adjective = "asleep",
+        sprite = "sleep"
     },
 
 
@@ -88,7 +91,8 @@ local data = {
         interuptsCasting = false,
         duration = 1,
         animation = {},
-        adjective = "grounded"
+        adjective = "grounded",
+        sprite = "ground"
     },
 
     
@@ -140,7 +144,8 @@ local data = {
         interuptsCasting = false,
         duration = 1,
         animation = {},
-        adjective = "jammed"
+        adjective = "jammed",
+        sprite = "jam"
     },
 
 
@@ -151,7 +156,8 @@ local data = {
         interuptsCasting = false,
         duration = 1,
         animation = {},
-        adjective = "exhausted"
+        adjective = "exhausted",
+        sprite = "exhaust"
     },
 
 
@@ -162,7 +168,8 @@ local data = {
         interuptsCasting = false,
         duration = 1,
         animation = {},
-        adjective = "invisible"
+        adjective = "invisible",
+        sprite = "invisibility"
     },
 
 
@@ -172,7 +179,8 @@ local data = {
         },
         interuptsCasting = false,
         duration = 1,
-        adjective = "invulnerable"
+        adjective = "invulnerable",
+        sprite = "invulnerability"
     },
 
 
@@ -183,7 +191,8 @@ local data = {
         interuptsCasting = false,
         duration = 1,
         adjective = "playing dead",
-        animation = "playing_dead"
+        animation = "playing_dead",
+        sprite = "playing_dead"
     },
 }
 

@@ -425,6 +425,10 @@ function Box:draw()
     end
 end
 
+function Box:__remove()
+    self.parent = nil
+end
+
 -- units: px, percent, auto
 
 local Container = class("Container", Box)
@@ -491,6 +495,12 @@ function Container:setAlignContent(str)
     error("Invalid argument: " .. str, 1)
 end
 
+function Container:clearChildren()
+    for _, child in ipairs(self.children) do
+        child:__remove()
+    end
+    self.children = {}
+end
 
 function Container:resize()
     if self.isRoot then
@@ -2242,5 +2252,15 @@ return {
     Input = Input,
     ImageBox = ImageBox,
     QuadBox = QuadBox,
-    AnimatedQuadBox = AnimatedQuadBox
+    AnimatedQuadBox = AnimatedQuadBox,
+
+
+    TYPE = TYPE,
+    UNIT_TYPES = UNIT_TYPES,
+    POSITION_TYPES = POSITION_TYPES,
+    FLEX_JUSTIFY = FLEX_JUSTIFY,
+    FLEX_ALIGN = FLEX_ALIGN,
+    FLEX_DIRECTION = FLEX_DIRECTION,
+    OVERFLOW = OVERFLOW,
+    SCALE_BY = SCALE_BY,
 }
