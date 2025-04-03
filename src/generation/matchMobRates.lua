@@ -101,6 +101,31 @@ local rates = {
         }
     },
 
+    beach = {
+        normal = {
+            {name = 'crab', rate = 10, limit = 0},
+            {name = 'turtle', rate = 10, limit = 0},
+        }
+    },
+
+    savannah = {
+        normal = {
+            {name = 'lion', rate = 10, limit = 0},
+            {name = 'zebra', rate = 10, limit = 0},
+            {name = 'elephant', rate = 10, limit = 0},
+            {name = 'giraffe', rate = 10, limit = 0},
+        }
+    },
+
+    meadow = {
+        normal = {
+            {name = 'magpie', rate = 20, limit = 0},
+            {name = 'ram', rate = 10, limit = 0},
+            {name = 'deer', rate = 10, limit = 0},
+            {name = 'rabbit', rate = 10, limit = 0},            
+        }
+    },
+
     -- BOSS ROOMS
     dragon = {
         normal = {

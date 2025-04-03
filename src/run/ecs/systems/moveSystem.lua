@@ -413,7 +413,7 @@ end
 
 function moveSystem:allMovesDone()
     for _, entity in ipairs(self.pool) do
-        if #entity.position.moveTweens > 0 then
+        if #entity.position.moveTweens > 0 or entity.position.customMove then
             return false
         end
     end
@@ -447,6 +447,11 @@ function moveSystem:getNearestEntity(entity, type, teamID)
     local nearestDistance = 1000000
 
     for _, otherEntity in ipairs(self.pool) do
+
+        if otherEntity.state and otherEntity.state.current ~= "alive" then
+            goto continue
+        end
+
         if otherEntity.metadata and otherEntity.metadata.type == type then
             
             if teamID and otherEntity.metadata.teamID == teamID then
@@ -460,8 +465,8 @@ function moveSystem:getNearestEntity(entity, type, teamID)
                 nearestEntity = otherEntity
             end
 
-            ::continue::
         end
+        ::continue::
     end
     return nearestEntity
 end

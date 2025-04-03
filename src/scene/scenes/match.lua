@@ -36,8 +36,7 @@ function match:enter()
         --self.currentMatch:addToTeam(1, self.currentMatch:newAnimal("bear", 4, 4, 1))
     end
 
-    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "stappler")
-    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "poison_dart")
+    -- self.currentMatch.itemSystem:giveItem(gs.run.team[1], "crossbow")
 
     self.currentMatch:preparePlayer()
     self.currentMatch:positionPlayer()
@@ -220,8 +219,12 @@ function match:draw()
     love.graphics.setColor(1, 1, 1, 1)
 
     if self.inputManager.selectedAnimal then
+        RM:pushShader("shimmer")
+        RM:sendUniform("time", love.timer.getTime())
+        RM:sendUniform("frequency", 20.0)
         self.pattern:drawMovePattern()
         self.pattern:drawAttackPattern()
+        RM:popShader()
     end
     
     self.camera:detach()

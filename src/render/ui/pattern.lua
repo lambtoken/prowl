@@ -61,6 +61,7 @@ end
 function Pattern:draw(offsetX, offsetY)
 
     love.graphics.push()
+
     love.graphics.translate(offsetX, offsetY)
 
     love.graphics.setColor(0,0,0,1)

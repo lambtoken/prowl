@@ -24,6 +24,7 @@ function collisionSystem:update()
 
             if isInTable(colA.ignoreIds, entityB.metadata.id)
             or isInTable(colB.ignoreIds, entityA.metadata.id) then
+                print("ignore")
                 goto continue2
             end
             

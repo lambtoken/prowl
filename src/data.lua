@@ -160,6 +160,22 @@ local data = {
             name = 'wyvern',
             unlocked = false
         },
+        {
+            key = 'magpie',
+            name = 'magpie',
+            unlocked = false
+        },
+        {
+            key = 'zebra',
+            name = 'zebra',
+            unlocked = false
+        },
+        {
+            key = 'ram',
+            name = 'ram',
+            unlocked = false
+        },
+        
         -- {
         --     key = 'unicorn',
         --     name = 'unicorn',

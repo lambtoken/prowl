@@ -565,9 +565,13 @@ function MatchManager:generateMarks()
     local poissonSamples = self:poissonDisk()   
 
     local markNames = {}
-
-    pickLimited(matchMarkRates[self.matchNode.place][self.matchNode.variant], 2, markNames)
-
+    
+    if matchMarkRates[self.matchNode.place] and matchMarkRates[self.matchNode.place][self.matchNode.variant] then
+        pickLimited(matchMarkRates[self.matchNode.place][self.matchNode.variant], 2, markNames)
+    else
+        return
+    end
+    
     for _, name in ipairs(markNames) do
         if #poissonSamples > 0 then
             local pos = math.random(#poissonSamples)

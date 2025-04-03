@@ -112,7 +112,27 @@ local rates = {
             -- FIX: object limit is causing a bug
             {name = 'lilypad', rate = 2, limit = 0},
         },
-    }
+    },
+    beach = {
+        normal = {
+            {name = 'beach_ball', rate = 10, limit = 0},
+            {name = 'beach_umbrella', rate = 10, limit = 0},
+        },
+    },
+    savannah = {
+        normal = {
+            {name = 'meadow_rock', rate = 10, limit = 0},
+            {name = 'meadow_rock_2', rate = 10, limit = 0},
+            {name = 'meadow_rock_3', rate = 10, limit = 0}, 
+        },
+    },
+    meadow = {
+        normal = {
+            {name = 'meadow_rock', rate = 10, limit = 0},
+            {name = 'meadow_rock_2', rate = 10, limit = 0},
+            {name = 'meadow_rock_3', rate = 10, limit = 0},
+        },
+    },
 }
 
 return rates

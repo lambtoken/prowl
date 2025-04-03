@@ -230,5 +230,64 @@ function terrain.swamp.normal(width, height)
 
 end
 
+terrain.beach = {}
+
+function terrain.beach.normal(width, height)
+
+    local board = {}
+    board.terrain = {}
+    board.decoration = {}
+
+    for i = 1, height do
+        board.terrain[i] = {}
+        for j = 1, width do
+            board.terrain[i][j] = Tile:new('sand', 'ground', true)
+            if math.random() > 0.8 then board.terrain[i][j] = Tile:new('sand_checkers', 'ground', true) end
+            if math.random() > 0.9 then board.terrain[i][j] = Tile:new('sand_waves', 'ground', true) end
+        end
+    end
+
+    return board
+end
+
+terrain.savannah = {}
+
+function terrain.savannah.normal(width, height)
+
+    local board = {}
+    board.terrain = {}
+    board.decoration = {}
+
+    for i = 1, height do
+        board.terrain[i] = {}
+        for j = 1, width do
+            board.terrain[i][j] = Tile:new('savannah', 'ground', true)
+            if math.random() > 0.8 then board.terrain[i][j] = Tile:new('savannah_checkers', 'ground', true) end
+            if math.random() > 0.9 then board.terrain[i][j] = Tile:new('savannah_waves', 'ground', true) end
+        end
+    end
+
+    return board
+end 
+
+terrain.meadow = {}
+
+function terrain.meadow.normal(width, height)
+
+    local board = {}
+    board.terrain = {}
+    board.decoration = {}
+
+    for i = 1, height do
+        board.terrain[i] = {}
+        for j = 1, width do
+            board.terrain[i][j] = Tile:new('meadow_grass', 'ground', true)
+            if math.random() > 0.8 then board.terrain[i][j] = Tile:new('meadow_grass_patchy', 'ground', true) end
+            if math.random() > 0.9 then board.terrain[i][j] = Tile:new('meadow_grass_flowers', 'ground', true) end
+        end
+    end
+
+    return board
+end
 
 return terrain

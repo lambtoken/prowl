@@ -1,5 +1,5 @@
 local spriteTable = require "src.render.spriteTable"
--- import all shaders
+local shaders = require "src.render.shaders.shaders"
 
 local gray = love.graphics.newShader(require "src.render.shaders.gray_shader")
 
@@ -37,10 +37,14 @@ function RenderManager:init()
     self.teamColors = self:extractTeamColors()
     self.mainCanvas = love.graphics.newCanvas()
     self.bgCanvas = love.graphics.newCanvas()
-
+    self.tempCanvas = love.graphics.newCanvas()
+    
+    -- Track current canvas state
+    self.currentCanvas = nil
+    
     -- shaders
     self.shaderStack = {}
-
+    self:createShaders()
     -- camera shake
     self.xoffset = 0
     self.yoffset = 0
@@ -75,7 +79,10 @@ function RenderManager:extractTeamColors()
     return colors
 end
 
-function RenderManager:update(dt) end
+function RenderManager:update(dt)
+    -- Ensure canvas is reset at the start of update
+    -- self:resetCanvas()
+end
 
 function RenderManager:applyShake()
     love.graphics.translate(self.xoffset, self.yoffset)
@@ -87,35 +94,104 @@ function RenderManager:resize()
     self.tileSize = math.floor(self.windowHeight / 10 / 16) * 16
 end
 
-function RenderManager:pushShader(shdr)
-    table.insert(self.shaderStack, gray)
+function RenderManager:createShaders()
+    for name, shader in pairs(shaders) do
+        shader.shader = love.graphics.newShader(shader.code)
+    end
 end
 
-function RenderManager:popShader()
-    return table.remove(self.shaderStack)
+function RenderManager:sendDefaultUniforms(shader, name)
+    for _, uniform in ipairs(shaders[name].uniforms) do
+        shader:send(uniform.name, uniform.default)
+    end
+end
+
+function RenderManager:sendUniform(name, value)
+    self.shaderStack[#self.shaderStack]:send(name, value)
+end
+
+function RenderManager:pushShader(name)
+    local newShader = shaders[name].shader
+    assert(newShader, "Shader does not exist!")
+    self:sendDefaultUniforms(newShader, name)
+    table.insert(self.shaderStack, newShader)
+    love.graphics.setShader(newShader)
+end
+
+function RenderManager:popShader(num)
+    if not num or num == 1 then
+        table.remove(self.shaderStack)
+    else
+        -- this might be slow
+        for i = 1, num do
+            table.remove(self.shaderStack)
+        end
+    end
+
+    self:setShader()
+end
+
+function RenderManager:sendUniforms(uniforms)
+    for _, uniform in ipairs(uniforms) do
+        self.shaderStack[#self.shaderStack]:send(uniform.name, uniform.value)
+    end
+end
+
+function RenderManager:setCanvas(canvas)
+    if self.currentCanvas ~= canvas then
+        love.graphics.setCanvas(canvas)
+        self.currentCanvas = canvas
+    end
+end
+
+function RenderManager:resetCanvas()
+    if self.currentCanvas then
+        love.graphics.setCanvas()
+        self.currentCanvas = nil
+    end
+end
+
+function RenderManager:draw()
+    -- Reset any existing canvas state
+    love.graphics.setShader()
+        
+    -- self:setCanvas(self.bgCanvas)
+    -- love.graphics.clear(0, 0, 0, 0)
+
+    -- Draw to main canvas
+    -- self:setCanvas(self.mainCanvas)
+    -- love.graphics.setColor(1, 1, 1, 1)
+    
+    -- Draw main canvas to screen
+    love.graphics.setCanvas()
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(self.mainCanvas, 0, 0)
+    
+end
+
+function RenderManager:setShader()
+    if #self.shaderStack == 0 then
+        love.graphics.setShader()
+    else
+        love.graphics.setShader(self.shaderStack[#self.shaderStack])
+    end
+end
+
+function RenderManager:switchToTemp()
+    self:setCanvas(self.tempCanvas)
+    love.graphics.clear(0, 0, 0, 0)  -- Clear with transparent
 end
 
 function RenderManager:switchToBg()
-    love.graphics.setCanvas(self.bgCanvas)
-    love.graphics.clear(1, 1, 1, 1)
+    self:setCanvas(self.bgCanvas)
 end
 
-function RenderManager:flushToMain()
-    love.graphics.setCanvas(self.mainCanvas)
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.draw(self.bgCanvas, 0, 0)
-end
-
-function RenderManager:applyShaders()
-
-    if #self.shaderStack > 0 then
-        for index, shader in ipairs(self.shaderStack) do
-            love.graphics.setShader(shader)
-        end
-    else
-        love.graphics.setShader()
-    end
-
-end
+-- function RenderManager:flushToMain()
+--     self:setCanvas(self.mainCanvas)
+--     love.graphics.setColor(1, 1, 1, 1)
+--     love.graphics.draw(self.bgCanvas, 0, 0)
+--     self:resetCanvas()
+--     self:setShader()
+-- end
 
 return RenderManager

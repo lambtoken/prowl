@@ -53,8 +53,7 @@ end
 
 function animalBg:draw()
 
-    RM:pushShader()
-    RM:applyShaders()
+    RM:pushShader("gray")
 
     love.graphics.clear(193/255, 224/255, 201/255, 1)
     for index, a in ipairs(self.animals) do
@@ -66,7 +65,6 @@ function animalBg:draw()
     end
 
     RM:popShader()
-    RM:applyShaders()
 
 end
 

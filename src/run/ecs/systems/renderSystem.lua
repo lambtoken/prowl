@@ -8,7 +8,7 @@ local tween = require "libs.tween"
 local renderStats = false
 local outlineShader = love.graphics.newShader(outline_shader)
 
-local renderSystem = Concord.system({pool = {"position", "renderable"}})
+local renderSystem = Concord.system({pool = {"position", "renderable", "shader"}})
 
 local drawColliders = false
 
@@ -113,7 +113,7 @@ function renderSystem:draw()
             if state and state.pickedUp then
                 love.graphics.setColor(1, 1, 1, 0.4)
             elseif entity.metadata.type == "mark" then
-                love.graphics.setColor(1, 1, 1, 0.6)
+                love.graphics.setColor(1, 1, 1, 0.3)
             else
                 love.graphics.setColor(1, 1, 1, 1)
             end
@@ -129,6 +129,31 @@ function renderSystem:draw()
                     love.graphics.setShader(outlineShader)
                 end
 
+                if entity.shader then
+                    for _, shader in ipairs(entity.shader.shaders) do
+                        RM:pushShader(shader.name)
+                        RM:sendUniform("time", love.timer.getTime())
+                        
+                        -- For wobble shader, send quad information
+                        if shader.name == "wobble" and layer.texture then
+                            local quad = layer.texture
+                            -- Get quad viewport info (x, y, width, height in texture coordinates)
+                            local x, y, width, height = quad:getViewport()
+                            local textureWidth, textureHeight = RM.image:getDimensions()
+                            
+                            -- Convert to texture coordinates (0-1 range)
+                            local quadInfo = {
+                                x / textureWidth,
+                                y / textureHeight,
+                                width / textureWidth,
+                                height / textureHeight
+                            }
+                            
+                            RM:sendUniform("quadInfo", quadInfo)
+                        end
+                    end
+                end
+
                 love.graphics.draw(
                     RM.image,
                     layer.texture,
@@ -138,7 +163,10 @@ function renderSystem:draw()
                     RM.increaseFactor * layer.transform.scaleX * renderable.transform.flipX,
                     RM.increaseFactor * layer.transform.scaleY
                 )
-        
+                if #entity.shader.shaders > 0 then
+                    RM:popShader(#entity.shader.shaders)
+                end
+            
             end
 
             love.graphics.pop()
@@ -185,6 +213,7 @@ function renderSystem:update(dt)
             end    
         end
     end
+
 end
 
 return renderSystem

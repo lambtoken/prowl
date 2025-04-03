@@ -122,7 +122,11 @@ function EntityFactory:applyDefault(entity, comp)
     elseif comp == "collider" then
         entity.collider.onCollision = function(source, target)
             local matchState = gs.currentMatch
+            if target.state and target.state.current == "dead" then
+                return
+            end
             projectileData[entity.metadata.projectileType].onHit(matchState, source, target)
+            source.position.customMove = nil
         end
     end
 end
@@ -130,12 +134,6 @@ end
 function EntityFactory:createAnimal(species, x, y, level)
     self:loadComponents()
     
-    local entity = Concord.entity()
-        :give('metadata')
-        :give('position', x, y)
-        :give('renderable', animalData[species].sprite)
-        :give('state')
-        :give('status')
     assert(animalData[species], "Species does not exist!")
     if level then
         assert(type(level) == "number", "Level must be a number!")
@@ -154,7 +152,10 @@ function EntityFactory:createAnimal(species, x, y, level)
         :give('timers')
         :give('dot')
         :give('collider')
-        
+        :give('shader')
+
+    table.insert(entity.shader.shaders, {name = "wobble", uniforms = {}})
+
     entity.metadata.type = 'animal'
     entity.stats.level = level or 1
     self:applyDefault(entity, 'stats')
@@ -178,6 +179,7 @@ function EntityFactory:createObject(name, x, y)
         :give('crowdControl')
         :give('timers')
         :give('collider')
+        :give('shader')
 
     entity.metadata.type = 'object'
     entity.metadata.objectName = name
@@ -198,6 +200,7 @@ function EntityFactory:createFlower(name, x, y)
         :give('status')
         :give('timers')
         :give('crowdControl')
+        :give('shader')
 
     entity.metadata.type = 'flower'
     entity.metadata.subType = 'flower'
@@ -217,7 +220,10 @@ function EntityFactory:createMark(name, x, y)
         :give('renderable', name)
         :give('state')
         :give('status')
+        :give('shader')
 
+    table.insert(entity.shader.shaders, {name = "wobble", uniforms = {}})
+    
     entity.metadata.type = 'mark'
     entity.metadata.markName = name
     entity.metadata.subType = 'mark'
@@ -237,12 +243,13 @@ function EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId)
         :give('projectile')
         :give('collider')
         :give('state')
-
+        :give('shader')
     entity.metadata.type = 'projectile'
     entity.metadata.projectileType = type
 
     entity.projectile.targetX = targetX
     entity.projectile.targetY = targetY
+    entity.projectile.speed = projectileData[type].speed
     entity.projectile.angle = math.atan2(targetY - y, targetX - x)
    
     self:applyDefault(entity, 'position')

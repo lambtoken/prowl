@@ -41,13 +41,21 @@ local rates = {
         {name = "normal", rate = 30}, 
     },
 
+    meadow = {
+        {name = "normal", rate = 30}, 
+    },
+
     -- jungle = {
     --     {name = "normal", rate = 30}, 
     -- },
 
-    -- savanna = {
-    --     {name = "normal", rate = 30}, 
-    -- },
+    beach = {
+        {name = "normal", rate = 30}, 
+    },
+
+    savannah = {
+        {name = "normal", rate = 30}, 
+    },
 
     -- cave = {
     --     {name = "normal", rate = 30}, 

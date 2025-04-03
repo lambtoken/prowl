@@ -55,7 +55,6 @@ local rates = {
             {'snow_dec2', 10},
             {'snow_dec3', 10}      
         },
-    }
-}
+    },}
 
 return rates

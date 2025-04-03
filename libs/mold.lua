@@ -2113,6 +2113,8 @@ function QuadBox:initialize(texture, x, y, w, h)
     self.tsx = 1
     self.tsy = 1
     self.tr = 0
+
+    self.texture:setWrap("clamp", "clamp")
 end
 
 function QuadBox:setScale()

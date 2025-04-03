@@ -1043,6 +1043,99 @@ local mobs = {
             end
         }
     },
+    ram = 
+    {
+        name = 'ram',
+        sprite = 'ram',
+        stats = {
+            atk = 3,
+            def = 2,
+            maxHp = 5,
+            moves = DEFAULT.moves,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck
+        },
+        stepsOn = DEFAULT.stepsOn,
+
+        movePattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        }
+    },
+    magpie = 
+    {
+        name = 'magpie',
+        sprite = 'magpie',
+        stats = {
+            atk = 3,
+            def = 2,
+            maxHp = 5,
+            moves = DEFAULT.moves,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = 0.1
+        },
+        stepsOn = DEFAULT.stepsOn,
+
+        movePattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {1, 1, 0, 1, 1},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        }
+    },
+    zebra = 
+    {
+        name = 'zebra',
+        sprite = 'zebra',
+        stats = {
+            atk = 3,
+            def = 2,
+            maxHp = 5,
+            moves = DEFAULT.moves,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck
+        },
+        stepsOn = DEFAULT.stepsOn,
+
+        movePattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        }
+    },
     dragon = 
     {
         name = 'dragon',

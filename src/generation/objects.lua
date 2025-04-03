@@ -522,7 +522,92 @@ local objects = {
             isTargetable = DEFAULT_STATUS.isTargetable,
         },
         stepsOn = DEFAULT.stepsOn,
-    }
+    },
+
+    beach_ball = {
+        name = 'beach_ball',
+        sprite = 'beach_ball',
+        type = 'dumb',
+        steppable = false,
+        passive = {
+            onAttacked = function(matchState, object, entity)
+                local knockback = matchState.crowdControlSystem:applyCC(object, "knockback", entity)
+                if knockback then 
+                    matchState.animationSystem:playAnimation(object, "tumble")
+                    return true
+                end
+                return false
+            end,
+            onTouched = function(matchState, object, entity)
+                if entity.state.current == "alive" then
+                    matchState.combatSystem:hit(entity, 1)
+                end
+            end
+        },
+        status = {
+            canTeleport = false,
+            isDisplaceable = true,
+            isTargetable = true,
+        },
+        stepsOn = DEFAULT.stepsOn,
+    },
+
+    beach_umbrella = {
+        name = 'beach_umbrella',
+        sprite = 'beach_umbrella',
+        type = 'dumb',
+        steppable = false,
+        passive = {},
+        status = {
+            canTeleport = DEFAULT_STATUS.canTeleport,
+            isDisplaceable = DEFAULT_STATUS.isDisplaceable,
+            isTargetable = DEFAULT_STATUS.isTargetable,
+        },
+        stepsOn = DEFAULT.stepsOn,
+    },
+
+    meadow_rock = {
+        name = 'meadow_rock',
+        sprite = 'meadow_rock',
+        type = 'dumb',
+        steppable = false,
+        passive = {},
+        status = {
+            canTeleport = DEFAULT_STATUS.canTeleport,
+            isDisplaceable = DEFAULT_STATUS.isDisplaceable,
+            isTargetable = DEFAULT_STATUS.isTargetable,
+        },
+        stepsOn = DEFAULT.stepsOn,
+    },
+
+    meadow_rock_2 = {
+        name = 'meadow_rock_2',
+        sprite = 'meadow_rock_2',
+        type = 'dumb',
+        steppable = false,
+        passive = {},
+        status = {
+            canTeleport = DEFAULT_STATUS.canTeleport,
+            isDisplaceable = DEFAULT_STATUS.isDisplaceable,
+            isTargetable = DEFAULT_STATUS.isTargetable,
+        },
+        stepsOn = DEFAULT.stepsOn,
+    },
+
+    meadow_rock_3 = {
+        name = 'meadow_rock_3',
+        sprite = 'meadow_rock_3',
+        type = 'dumb',
+        steppable = false,
+        passive = {},
+        status = {
+            canTeleport = DEFAULT_STATUS.canTeleport,
+            isDisplaceable = DEFAULT_STATUS.isDisplaceable,
+            isTargetable = DEFAULT_STATUS.isTargetable,
+        },
+        stepsOn = DEFAULT.stepsOn,
+    },
+
 }
 
 return objects
