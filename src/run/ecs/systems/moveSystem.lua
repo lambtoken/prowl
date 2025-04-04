@@ -332,6 +332,7 @@ function moveSystem:update(dt)
                 -- should change this later to go of when entity just enters the tile (last hover)
                 if tween.attack then
                     events:emit("onStep", entity, tween.attack)
+                    --onStepAny
                 end
     
                 table.insert(forDeletion, _)
@@ -383,7 +384,9 @@ function moveSystem:update(dt)
 
         if newPosX ~= position.lastPositionX or newPosY ~= position.lastPositionY then
             events:emit("onHover", entity)
+            --onHoverAny
             events:emit("onHovered", entity, position.x, position.y)             
+            --onHoveredAny
         end
 
         position.screenX = hoveredX * RM.tileSize

@@ -6,9 +6,40 @@ local SceneManager = require("src.scene.SceneManager"):getInstance()
 
 local stateSystem = Concord.system({pool = {"state"}})
 
+function on(callback, entity, ...)
+    if entity.passive and entity.passive[callback] then
+        entity.passive[callback](entity, ...)
+    end
+    
+    if entity.inventory and entity.inventory.items then
+        for _, item in ipairs(entity.inventory.items) do
+            if item.passive and item.passive[callback] then
+                item.passive[callback](entity, ...)
+            end
+        end
+    end
+    
+end
+
 function stateSystem:init()
     EventManager:on("setState", function(entity, newState)
         self:changeState(entity, newState)
+    end)
+
+    EventManager:on("onDeath", function(entity)
+        on("onDeath", entity)
+    end)
+
+    EventManager:on("onDying", function(entity)
+        on("onDying", entity)
+    end)
+
+    EventManager:on("onDeathAny", function(entity)
+        on("onDeathAny", entity)
+    end)
+
+    EventManager:on("onDyingAny", function(entity)
+        on("onDyingAny", entity)
     end)
 end
 
@@ -35,11 +66,15 @@ function stateSystem:onStateEnter(entity, state)
             soundManager:playSound('death')
             SceneManager.currentScene.TextBubbleManager:killEntityBubbles(entity)
             EventManager:emit("playAnimation", entity, "death")
+            EventManager:emit("onDying", entity)
+            EventManager:emit("onDyingAny", entity)
         end
         
     elseif state == "dead" then
         if entity.metadata.type == 'animal' then
             EventManager:emit("checkTeamStatus", entity.metadata.teamID)
+            EventManager:emit("onDeath", entity)
+            EventManager:emit("onDeathAny", entity)
         end
     end
 end

@@ -11,6 +11,29 @@ local SoundManager = require("src.sound.SoundManager"):getInstance()
 
 local combatSystem = Concord.system({pool = {"position", "stats"}})
 
+local function on(callback, matchState, entity, ...)
+    if entity.metadata.type == 'animal' then
+        local animal = mobData[entity.metadata.species]
+        if animal.passive and animal.passive[callback] then
+            animal.passive[callback](matchState, entity, ...)
+        end
+        if entity.inventory and entity.inventory.items then
+            for _, item in ipairs(entity.inventory.items) do
+                if item.passive and item.passive[callback] then
+                    item.passive[callback](matchState, entity, ...)
+                end
+            end
+        end
+    end
+
+    if entity.metadata.type == 'object' then
+        local object = objectData[entity.metadata.objectName]
+        if object.passive and object.passive[callback] then
+            object.passive[callback](matchState, entity, ...)
+        end
+    end
+end
+
 -- helper function for calculating miss chance based on def value
 local function defMissChance(attacker, target)
     local base = 0.1
@@ -27,10 +50,11 @@ local function defMissChance(attacker, target)
 end
 
 function combatSystem:init()
-
     -- EVENTS
     EventManager:on("onStep", function(entity, attack)
         local matchState = gs.currentMatch
+
+        EventManager:emit("onStepAny", entity)
 
         if not attack then
             return
@@ -53,64 +77,69 @@ function combatSystem:init()
 
                 if entity.metadata.teamID ~= target.metadata.teamID and target.status.current.isTargetable then
 
-                    if target.stats and target.state.current == "alive" then
+                    if target.stats and target.state.current ~= "alive" then
+                        goto continue
+                    end
                         
-                        local missChance = gs.run.rng:get('combat')
+                    local missChance = gs.run.rng:get('combat')
+                    local luckDiff = target.stats.current.luck - entity.stats.current.luck
 
-                        if (target.stats.current.luck - entity.stats.current.luck) > missChance then
-                            print("target luck: ", target.stats.current.luck)
-                            print("atker luck: ", entity.stats.current.luck)
-                            missed = true
+                    if luckDiff > missChance then
+                        missed = true
+                        EventManager:emit("onMiss", entity, target)
+                        EventManager:emit("onDodge", target, entity)
+                    end
+                    
+                    -- if defMissChance(entity, target) >= gs.run.rng:get('combat') then
+                    --     missed = true
+                    -- end
+
+                    if not missed then
+                        succesfulAttack = true
+                        attemptedAttack = true
+                        if self:attack(entity, target) then
+                            table.insert(targetsKilled, target)
                         end
-                        
-                        -- if defMissChance(entity, target) >= gs.run.rng:get('combat') then
-                        --     missed = true
-                        -- end
+                    else
+                        SoundManager:playSound("miss")
+                        EventManager:emit("shortCCBubble", target, "Missed")            
+                    end
 
-                        if not missed then
-                            succesfulAttack = true
-                            attemptedAttack = true
-                            if self:attack(entity, target) then
-                                table.insert(targetsKilled, target)
-                            end
-                        else
-                            SoundManager:playSound("miss")
-                            EventManager:emit("shortCCBubble", target, "Missed")            
-                        end
-
-                    end 
+                    ::continue::
                 end
                 
-                
-                if entity.metadata.teamID ~= target.metadata.teamID then
-                    
-                    local entity1OnAttack
-                    local entity2OnAttacked
-                    
-                    if entity.metadata.type == 'animal' then
-                        entity1OnAttack = mobData[entity.metadata.species]
+                -- onAttackAny
+                -- onAttackedAny
 
-                        for _, item in ipairs(entity.inventory.items) do
-                            if item.passive and item.passive.onAttack then
-                                item.passive.onAttack(matchState, entity, target)
-                            end
+                if entity.metadata.teamID == target.metadata.teamID then
+                    return
+                end
+                    
+                local entity1OnAttack
+                local entity2OnAttacked
+                
+                if entity.metadata.type == 'animal' then
+                    entity1OnAttack = mobData[entity.metadata.species]
+
+                    for _, item in ipairs(entity.inventory.items) do
+                        if item.passive and item.passive.onAttack then
+                            item.passive.onAttack(matchState, entity, target)
                         end
                     end
+                end
 
-                    if target.metadata.type == 'animal' then
-                        entity2OnAttacked = mobData[target.metadata.species]
-                    elseif target.metadata.type == 'object' then
-                        entity2OnAttacked = objectData[target.metadata.objectName]
-                    end
+                if target.metadata.type == 'animal' then
+                    entity2OnAttacked = mobData[target.metadata.species]
+                elseif target.metadata.type == 'object' then
+                    entity2OnAttacked = objectData[target.metadata.objectName]
+                end
 
-                    if entity1OnAttack and entity1OnAttack.passive and entity1OnAttack.passive.onAttack then
-                        succesfulAttackPassive = entity1OnAttack.passive.onAttack(matchState, entity, target) or succesfulAttackPassive
-                    end
+                if entity1OnAttack and entity1OnAttack.passive and entity1OnAttack.passive.onAttack then
+                    succesfulAttackPassive = entity1OnAttack.passive.onAttack(matchState, entity, target) or succesfulAttackPassive
+                end
 
-                    if entity2OnAttacked and entity2OnAttacked.passive and entity2OnAttacked.passive.onAttacked then
-                        succesfulAttackPassive = entity2OnAttacked.passive.onAttacked(matchState, target, entity) or succesfulAttackPassive
-                    end
-                    
+                if entity2OnAttacked and entity2OnAttacked.passive and entity2OnAttacked.passive.onAttacked then
+                    succesfulAttackPassive = entity2OnAttacked.passive.onAttacked(matchState, target, entity) or succesfulAttackPassive
                 end
             end
 
@@ -137,26 +166,55 @@ function combatSystem:init()
         
     end)
 
+    EventManager:on("onStepAny", function(entity)
+        local matchState = sceneManager.currentScene.currentMatch
+
+        if entity.metadata.type == 'animal' then
+            if entity.passive and entity.passive.onStepAny then
+                entity.passive.onStepAny(matchState, entity)
+            end
+        end
+
+        for _, item in ipairs(entity.inventory.items) do
+            if item.passive and item.passive.onStepAny then
+                item.passive.onStepAny(matchState, entity)
+            end
+        end
+    end)
 
     EventManager:on("onHover", function(entity) 
         local matchState = sceneManager.currentScene.currentMatch
 
         local targets = matchState.moveSystem:findByCoordinates(entity.position.x, entity.position.y)
         
+        EventManager:emit("onHoverAny", entity)
+        
         if entity.metadata.type == 'animal' then
             for _, target in ipairs(targets) do
-                if target ~= entity and target.state.current == "alive" then
-                    local mob = mobData[entity.metadata.species]
-                    if mob.passive and mob.passive.onHover then
-                        mob.passive.onHover(matchState, target, entity)
-                    end
+                if target == entity or target.state.current ~= "alive" then 
+                    goto continue  -- Skip this target instead of returning
+                end
+                    
+                local mob = mobData[entity.metadata.species]
+                
+                if mob.passive and mob.passive.onHover then
+                    mob.passive.onHover(matchState, target, entity)
+                end
 
-                    for _, item in ipairs(entity.inventory.items) do
-                        if item.passive and item.passive.onHover then
-                            item.passive.onHover(matchState, target, entity)
-                        end
+                for _, item in ipairs(entity.inventory.items) do
+                    if item.passive and item.passive.onHover then
+                        item.passive.onHover(matchState, target, entity)
                     end
                 end
+                
+                ::continue::
+            end
+        end
+
+        if entity.metadata.type == 'object' then
+            local object = objectData[entity.metadata.objectName]
+            if object.passive and object.passive.onHover then
+                object.passive.onHover(matchState, entity)
             end
         end
     end)
@@ -168,24 +226,67 @@ function combatSystem:init()
         local targets = matchState.moveSystem:findByCoordinates(x, y)
         
         for _, target in ipairs(targets) do
-            if target.metadata.type == 'object' then
-                if target ~= entity and target.state.current == "alive" then
-                    local object = objectData[target.metadata.objectName]
-                    if object.passive and object.passive.onHovered then
-                        object.passive.onHovered(matchState, target, entity)
-                    end
+            EventManager:emit("onHoveredAny", target)
 
-                    -- iteam idea. heal on hovered
-                    -- for _, item in ipairs(entity.inventory.items) do
-                    --     if item.passive and item.passive.onHover then
-                    --         item.passive.onHover(matchState, target, entity)
-                    --     end
-                    -- end
+            if target.metadata.type == 'object' then
+                if target == entity or target.state.current ~= "alive" then
+                    goto continue
+                end
+                local object = objectData[target.metadata.objectName]
+                if object.passive and object.passive.onHovered then
+                    object.passive.onHovered(matchState, target, entity)
+                end                
+            end
+
+            if target.metadata.type == 'animal' then
+                if target == entity and target.state.current ~= "alive" then
+                    goto continue
+                end
+                
+                local animal = mobData[target.metadata.species]
+                if animal.passive and animal.passive.onHovered then
+                    animal.passive.onHovered(matchState, target, entity)
+                end
+
+                for _, item in ipairs(target.inventory.items) do
+                    if item.passive and item.passive.onHovered then
+                        item.passive.onHovered(matchState, target, entity)
+                    end
                 end
             end
+
+            ::continue::
         end
     end)
 
+    EventManager:on("onHoveredAny", function(entity)
+        on("onHoveredAny", gs.currentMatch, entity)
+    end)
+
+    EventManager:on("onHoverAny", function(entity)
+        on("onHoverAny", gs.currentMatch, entity)
+    end)
+
+    EventManager:on("onMiss", function(entity, target)
+        on("onMiss", gs.currentMatch, entity, target)
+    end)
+
+    EventManager:on("onDodge", function(entity, target)
+        on("onDodge", gs.currentMatch, entity, target)
+    end)
+
+    EventManager:on("onKill", function(entity)
+        on("onKill", gs.currentMatch, entity)
+        on("onKillAny", gs.currentMatch, entity)
+    end)
+
+    EventManager:on("onCrit", function(entity)
+        on("onCrit", gs.currentMatch, entity)
+    end)
+
+    EventManager:on("onCrited", function(entity)
+        on("onCrited", gs.currentMatch, entity)
+    end)
 end
 
 
@@ -197,6 +298,8 @@ function combatSystem:attack(entity1, entity2)
     if entity1.stats.current.crit >= gs.run.rng:get('combat') then
         damage = damage * entity1.stats.current.critDamage
         EventManager:emit("screenShake")
+        EventManager:emit("onCrit", entity1)
+        EventManager:emit("onCrited", entity2)
         crit = true
     end
 
@@ -224,6 +327,7 @@ function combatSystem:attack(entity1, entity2)
     entity2.stats.current.hp = math.max(0, entity2.stats.current.hp - damage)
 
     if entity2.stats.current.hp <= 0 then
+        EventManager:emit("onKill", entity1)
         return true
     end
 

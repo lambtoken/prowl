@@ -47,6 +47,22 @@ function teamManager:new(currentMatch)
                 
                 s.instance.currentMatch.statsSystem:calculateStats()
 
+                local team = s.instance.teams[s.instance.turnTeamId]
+
+                for _, animal in ipairs(team.members) do
+                    if animal.metadata.teamID == s.instance.turnTeamId then
+                        if animal.passive and animal.passive.onStandBy then
+                            animal.passive.onStandBy(s.instance.currentMatch, animal)
+                        end
+                    end
+
+                    for _, item in ipairs(animal.inventory) do
+                        if item.passive and item.passive.onStandBy then
+                            item.passive.onStandBy(s.instance.currentMatch, animal)
+                        end
+                    end
+                end
+
                 if s.instance.currentMatch:areAllMobsIdle() then
                     s.instance.states:set_state('main_phase')
                 else
@@ -138,6 +154,20 @@ function teamManager:new(currentMatch)
 
                 local team = s.instance.teams[s.instance.turnTeamId]
 
+                for _, animal in ipairs(team.members) do
+                    if animal.metadata.teamID == s.instance.turnTeamId then
+                        if animal.passive and animal.passive.onEndTurn then
+                            animal.passive.onEndTurn(s.instance.currentMatch, animal)
+                        end
+                    end
+
+                    for _, item in ipairs(animal.inventory) do
+                        if item.passive and item.passive.onEndTurn then
+                            item.passive.onEndTurn(s.instance.currentMatch, animal)
+                        end
+                    end
+                end
+
                 if not team.rest then
                     team.restCounter = team.restCounter + 1
                     if team.restCounter > 1 then
@@ -162,7 +192,6 @@ function teamManager:new(currentMatch)
         }
     ,'start_phase'})
     
-    o.states:set_state("start_phase")
     return o
 end
 
@@ -176,7 +205,7 @@ function teamManager:load()
         end
 
         self.teams[teamID]:setAliveState(false)
-    end)
+    end)    
 end
 
 function teamManager:newTeam(agentType)

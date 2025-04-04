@@ -700,8 +700,8 @@ local mobs = {
         name = 'crab',
         sprite = 'crab',
         stats = {
-            atk = 2,
-            def = 4,
+            atk = 3,
+            def = 3,
             maxHp = 6,
             moves = DEFAULT.moves,
             crit = DEFAULT.crit,
@@ -731,8 +731,8 @@ local mobs = {
         name = 'giraffe',
         sprite = 'giraffe',
         stats = {
-            atk = 1,
-            def = 2,
+            atk = 3,
+            def = 1,
             maxHp = 6,
             moves = DEFAULT.moves,
             crit = DEFAULT.crit,
@@ -1086,7 +1086,12 @@ local mobs = {
             crit = DEFAULT.crit,
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
-            luck = 0.1
+            luck = 0.8 -- 0.1 default
+        },
+        passive = {
+            onKill = function(matchState, entity)
+                matchState.combatSystem:hit(entity, 1)
+            end
         },
         stepsOn = DEFAULT.stepsOn,
 

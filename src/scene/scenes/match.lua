@@ -102,7 +102,7 @@ function match:enter()
 
     self.hearts = Hearts:new(gs.run.team[1])
 
-    
+    self.currentMatch.teamManager.states:set_state("start_phase")
 
     -- self.currentMatch:newObject('vase', 5, 5)
     -- self.currentMatch:newFlower('red_flower', 5, 6)
