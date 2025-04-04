@@ -8,31 +8,9 @@ local mobData = require "src.generation.mobs"
 local itemData = require "src.generation.items"
 local objectData = require "src.generation.objects"
 local SoundManager = require("src.sound.SoundManager"):getInstance()
+local on = require "src.run.ecs.on"
 
 local combatSystem = Concord.system({pool = {"position", "stats"}})
-
-local function on(callback, matchState, entity, ...)
-    if entity.metadata.type == 'animal' then
-        local animal = mobData[entity.metadata.species]
-        if animal.passive and animal.passive[callback] then
-            animal.passive[callback](matchState, entity, ...)
-        end
-        if entity.inventory and entity.inventory.items then
-            for _, item in ipairs(entity.inventory.items) do
-                if item.passive and item.passive[callback] then
-                    item.passive[callback](matchState, entity, ...)
-                end
-            end
-        end
-    end
-
-    if entity.metadata.type == 'object' then
-        local object = objectData[entity.metadata.objectName]
-        if object.passive and object.passive[callback] then
-            object.passive[callback](matchState, entity, ...)
-        end
-    end
-end
 
 -- helper function for calculating miss chance based on def value
 local function defMissChance(attacker, target)

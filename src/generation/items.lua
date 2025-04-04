@@ -517,7 +517,7 @@ local items = {
         pattern = {},
         passive = {
             onCrit = function(matchState, attacker, target)
-                matchState.combatSystem:taunt(target, attacker, 0.1)
+                matchState.combatSystem:taunt(attacker, target, 0.1)
             end
         },
         active = {},
@@ -531,6 +531,37 @@ local items = {
         passive = {
             onAttacked = function(matchState, target, attacker)
                 matchState.combatSystem:hit(attacker, 1)
+            end
+        },
+        active = {},
+    },
+    fan = {
+        name = 'fan',
+        type = 'misc',
+        rarity = 'epic',
+        stats = {},
+        pattern = {},
+        data = {
+            buffLevel = 0,
+            maxLevel = 5,
+        },
+        cooldowns = {
+            onStandBy = 3,
+        },
+        passive = {
+            description = "Grants increasing attack each turn.",
+            
+            onStandBy = function(matchState, entity, item)
+                
+                local itemId = item.itemId
+                
+                if item.data.buffLevel < item.data.maxLevel then
+                    item.data.buffLevel = item.data.buffLevel + 1
+                end
+                
+                local stats = {{'increase', 'atk', item.data.buffLevel}}
+                
+                local effect = matchState.buffDebuffSystem:updateItemEffect(entity, itemId, stats, 3)
             end
         },
         active = {},

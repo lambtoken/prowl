@@ -4,6 +4,7 @@ local EventManager = require ("src.state.events"):getInstance()
 local tablex = require "libs.batteries.tablex"
 local pretty = require "libs.batteries.pretty"
 local gs = require("src.state.GameState"):getInstance()
+local uuid = require "src.utility.uuid"
 
 local itemSystem = Concord.system({pool = {inventory, stats}})
 
@@ -20,46 +21,29 @@ function itemSystem:newItem(name)
 
     local item = {}
     item.name = name
+    item.id = uuid()
+    
+    -- Copy all standard properties directly
     if itemData[name].stats then item.stats = tablex.deep_copy(itemData[name].stats) end
     if itemData[name].pattern then item.pattern = tablex.deep_copy(itemData[name].pattern) end
     if itemData[name].passive then item.passive = tablex.deep_copy(itemData[name].passive) end
+    if itemData[name].active then item.active = tablex.deep_copy(itemData[name].active) end
+    if itemData[name].cooldowns then item.cooldowns = tablex.deep_copy(itemData[name].cooldowns) end
+    if itemData[name].data then item.data = tablex.deep_copy(itemData[name].data) end
+    
     return item
 end
 
-
--- function itemSystem:disableItemStats(entity, item)
---     local items = entity.items
-
---     for i, equippedItem in ipairs(entity.items) do
---         if equippedItem == item then
---             item.disabled = true
---             break
---         end
---     end    
--- end
-
--- function itemSystem:enableItemStats(entity, item)
---     local items = entity.items
-
---     for i, equippedItem in ipairs(entity.items) do
---         if equippedItem == item then
---             item.disabled = false
---             break
---         end
---     end    
--- end
-
 function itemSystem:giveItem(entity, itemName)
-    table.insert(entity.inventory.items, self:newItem(itemName))
-    --gs.currentMatch.ecs:getSystem(gs.currentMatch.__systems.statsSystem):calculateStats()
-
-    --EventManager:emit("calculateStats")
+    local newItem = self:newItem(itemName)
+    table.insert(entity.inventory.items, newItem)
+    return newItem -- Return the created item with its ID
 end
 
 function itemSystem:unequipItem(entity, item)
     for i, equippedItem in ipairs(entity.inventory) do
-        if equippedItem == 0 then
-            table.remove(entity.items, i)
+        if equippedItem == item then
+            table.remove(entity.inventory.items, i)
             EventManager:emit("calculateStats")
             break
         end
@@ -67,7 +51,7 @@ function itemSystem:unequipItem(entity, item)
 end
 
 function itemSystem:hasItem(entity, itemName)
-    for _, item in ipairs(entity.inventory) do
+    for _, item in ipairs(entity.inventory.items) do
         if item.name == itemName then
             return true
         end
@@ -75,14 +59,49 @@ function itemSystem:hasItem(entity, itemName)
     return false
 end
 
-function itemSystem:onStandBy()
-    for index, animal in ipairs(self.pool) do
-        for index, item in ipairs(animal.inventory.items) do
-            if item.passive.cooldown then
-                item.passive.cooldown = item.passive.cooldown - 1
-                
+function itemSystem:findItemById(entity, itemId)
+    for _, item in ipairs(entity.inventory.items) do
+        if item.id == itemId then
+            return item
+        end
+    end
+    return nil
+end
+
+function itemSystem:reduceCooldown(item, event)
+    if item.cooldowns and item.cooldowns[event] then
+        if item.cooldowns[event] > 0 then
+            item.cooldowns[event] = item.cooldowns[event] - 1
+        end
+    end
+end
+
+function itemSystem:restoreCooldown(item, event)
+    print("restoreCooldown", item.name, event)
+    if item.cooldowns and item.cooldowns[event] then
+        item.cooldowns[event] = itemData[item.name].cooldowns[event]
+    end
+end
+
+function itemSystem:onStandBy(teamId)
+    for _, animal in ipairs(self.pool) do
+        if not animal.inventory or animal.metadata.teamID ~= teamId then
+            goto skip_animal
+        end
+
+        for _, item in ipairs(animal.inventory.items) do
+            if item.passive and item.passive.onStandBy then
+                if item.cooldowns and item.cooldowns["onStandBy"] then print("onStandBy", item.cooldowns["onStandBy"]) end
+                if item.cooldowns and item.cooldowns["onStandBy"] > 0 then
+                    self:reduceCooldown(item, "onStandBy")
+                    goto skip_item
+                end
+                item.passive.onStandBy(gs.currentMatch, animal, item)
+                self:restoreCooldown(item, "onStandBy")
             end
+            ::skip_item::
         end    
+        ::skip_animal::
     end
 end
 

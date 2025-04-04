@@ -37,6 +37,9 @@ function match:enter()
     end
 
     self.currentMatch.itemSystem:giveItem(gs.run.team[1], "spike_collar")
+    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "fan")
+    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "spike_collar")
+
 
     self.currentMatch:preparePlayer()
     self.currentMatch:positionPlayer()

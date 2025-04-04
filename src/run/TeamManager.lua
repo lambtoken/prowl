@@ -45,8 +45,6 @@ function teamManager:new(currentMatch)
                 s.instance.currentMatch.damageOverTimeSystem:onStandBy(s.instance.turnTeamId)
                 s.instance.currentMatch.buffDebuffSystem:onStandBy(s.instance.turnTeamId)
                 
-                s.instance.currentMatch.statsSystem:calculateStats()
-
                 local team = s.instance.teams[s.instance.turnTeamId]
 
                 for _, animal in ipairs(team.members) do
@@ -55,13 +53,11 @@ function teamManager:new(currentMatch)
                             animal.passive.onStandBy(s.instance.currentMatch, animal)
                         end
                     end
-
-                    for _, item in ipairs(animal.inventory) do
-                        if item.passive and item.passive.onStandBy then
-                            item.passive.onStandBy(s.instance.currentMatch, animal)
-                        end
-                    end
                 end
+
+                s.instance.currentMatch.itemSystem:onStandBy(s.instance.turnTeamId)
+
+                s.instance.currentMatch.statsSystem:calculateStats()
 
                 if s.instance.currentMatch:areAllMobsIdle() then
                     s.instance.states:set_state('main_phase')
@@ -161,9 +157,9 @@ function teamManager:new(currentMatch)
                         end
                     end
 
-                    for _, item in ipairs(animal.inventory) do
+                    for _, item in ipairs(animal.inventory.items) do
                         if item.passive and item.passive.onEndTurn then
-                            item.passive.onEndTurn(s.instance.currentMatch, animal)
+                            item.passive.onEndTurn(s.instance.currentMatch, animal, item)
                         end
                     end
                 end
