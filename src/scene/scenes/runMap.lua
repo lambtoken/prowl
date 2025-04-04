@@ -103,10 +103,15 @@ local c = love.graphics.newCanvas()
 
 function runMap:draw(s)
     
+    RM:pushShader("checker")
+    RM:sendUniform("time", love.timer.getTime())
+
     love.graphics.setColor(0.4, 0.4, 0.4)
     love.graphics.rectangle('fill', 0, 0, RM.windowWidth, RM.windowHeight)
     love.graphics.setColor(1, 1, 1)
-            
+    
+    RM:popShader()
+
     for i, col in ipairs(gs.run.stages[self.stage].nodes) do
         local yOffset = (adventureConfig.nodeIconSize * (adventureConfig.tallestCol - #col)) / 2 +
         (adventureConfig.nodeDistance * (adventureConfig.tallestCol - #col)) / 2
@@ -135,7 +140,7 @@ function runMap:draw(s)
 
             -- set node background color accordingly
             if not nodeContains(node.from, gs.run.currentNodeCoords) then
-                love.graphics.setColor(0.5, 0.4, 0.6)
+                love.graphics.setColor(190/255, 163/255, 201/255)
             else
                 love.graphics.setColor(0.6, 0.3, 0.6)
             end
@@ -143,11 +148,17 @@ function runMap:draw(s)
             if node.passed then
                 love.graphics.setColor(0.3, 0.3, 0.3)
             end
+            
+            -- Apply a slight Y-offset elevation effect when hovering
+            local elevationOffset = 0
+            if adventureConfig.hoveredNode == node then
+                elevationOffset = -5  -- Lift the node up by 5 pixels
+            end
 
             love.graphics.rectangle(
                 'fill',
                 nodeX,
-                nodeY,
+                nodeY + elevationOffset,  -- Apply the offset here
                 adventureConfig.nodeIconSize,
                 adventureConfig.nodeIconSize
             )
@@ -167,7 +178,7 @@ function runMap:draw(s)
                         adventureConfig.mapX + (i - 1) * adventureConfig.nodeIconSize +
                         (i - 1) * adventureConfig.colDistance,
                         adventureConfig.mapY + (j - 1) * adventureConfig.nodeIconSize + yOffset +
-                        (j - 1) * adventureConfig.nodeDistance,
+                        (j - 1) * adventureConfig.nodeDistance + elevationOffset,  -- Apply the offset here
                         0,
                         adventureConfig.increaseFactor
                     )
@@ -184,7 +195,7 @@ function runMap:draw(s)
                         adventureConfig.mapX + (i - 1) * adventureConfig.nodeIconSize +
                         (i - 1) * adventureConfig.colDistance,
                         adventureConfig.mapY + (j - 1) * adventureConfig.nodeIconSize + yOffset +
-                        (j - 1) * adventureConfig.nodeDistance,
+                        (j - 1) * adventureConfig.nodeDistance + elevationOffset,  -- Apply the offset here
                         0,
                         adventureConfig.increaseFactor
                     )
@@ -202,14 +213,18 @@ function runMap:draw(s)
                     RM.image
                 )
 
+                local x = adventureConfig.mapX + (gs.run.currentNodeCoords[1] - 1) * adventureConfig.nodeIconSize +
+                         (gs.run.currentNodeCoords[1] - 1) * adventureConfig.colDistance
+                local y = adventureConfig.mapY + (gs.run.currentNodeCoords[2] - 1) * adventureConfig.nodeIconSize + yOffset +
+                         (gs.run.currentNodeCoords[2] - 1) * adventureConfig.nodeDistance
+
                 love.graphics.draw(
                     RM.image,
                     quad,
-                    adventureConfig.mapX + (gs.run.currentNodeCoords[1] - 1) * adventureConfig.nodeIconSize +
-                    (gs.run.currentNodeCoords[1] - 1) * adventureConfig.colDistance,
-                    adventureConfig.mapY + (gs.run.currentNodeCoords[2] - 1) * adventureConfig.nodeIconSize + yOffset +
-                    (gs.run.currentNodeCoords[2] - 1) * adventureConfig.nodeDistance,
+                    x + RM.spriteSize * adventureConfig.increaseFactor,
+                    y,
                     0,
+                    -adventureConfig.increaseFactor,
                     adventureConfig.increaseFactor
                 )
             end

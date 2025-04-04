@@ -22,9 +22,13 @@ local soundTable = {
     click6 = {type = 'click', file = 'click6.wav'},
     click7 = {type = 'click', file = 'click7.wav'},
     click8 = {type = 'click', file = 'click8.wav'},
-    click10 = {type = 'click', file = 'click10.wav'},
+    click10 = {type = 'click', file = 'click10.wav', volume = 0.7},
     click11 = {type = 'click', file = 'click11.wav', volume = 0.8},
     click12 = {type = 'click', file = 'click12.wav'},
+
+    softclick = {type = 'click', file = 'softclick.wav', volume = 0.7},
+    softclick2 = {type = 'click', file = 'softclick2.wav', volume = 0.7},
+    softclick3 = {type = 'click', file = 'softclick3.wav', volume = 0.7},
 
     knockback = {type = 'knockback', file = 'knockback.wav', volume = 0.7},
     displace = {type = 'displace', file = 'displace.wav', volume = 1},

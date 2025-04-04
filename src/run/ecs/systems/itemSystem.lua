@@ -23,7 +23,6 @@ function itemSystem:newItem(name)
     item.name = name
     item.id = uuid()
     
-    -- Copy all standard properties directly
     if itemData[name].stats then item.stats = tablex.deep_copy(itemData[name].stats) end
     if itemData[name].pattern then item.pattern = tablex.deep_copy(itemData[name].pattern) end
     if itemData[name].passive then item.passive = tablex.deep_copy(itemData[name].passive) end

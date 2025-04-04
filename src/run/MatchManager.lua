@@ -123,7 +123,6 @@ function MatchManager:initialize(node)
                     -- change scene to pick Item Scene
                     
                     if s.instance.winnerId == 1 then
-                        if math.random() > 0.5 then music.changeSong() end
                         SceneManager:switchScene("itemSelect")
                     else
                         gs.run:decreaseHealth()

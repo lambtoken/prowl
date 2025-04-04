@@ -222,12 +222,15 @@ function match:draw()
     love.graphics.setColor(1, 1, 1, 1)
 
     if self.inputManager.selectedAnimal then
+        local wx, wy = self.camera:cameraCoords(0, 0)
+        love.graphics.intersectScissor(wx, wy, 6 * RM.tileSize, 6 * RM.tileSize)
         RM:pushShader("shimmer")
         RM:sendUniform("time", love.timer.getTime())
         RM:sendUniform("frequency", 20.0)
         self.pattern:drawMovePattern()
         self.pattern:drawAttackPattern()
         RM:popShader()
+        love.graphics.setScissor()
     end
     
     self.camera:detach()
