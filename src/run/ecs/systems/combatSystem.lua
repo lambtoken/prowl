@@ -111,35 +111,10 @@ function combatSystem:init()
                 -- onAttackAny
                 -- onAttackedAny
 
-                if entity.metadata.teamID == target.metadata.teamID then
-                    return
-                end
-                    
-                local entity1OnAttack
-                local entity2OnAttacked
-                
-                if entity.metadata.type == 'animal' then
-                    entity1OnAttack = mobData[entity.metadata.species]
-
-                    for _, item in ipairs(entity.inventory.items) do
-                        if item.passive and item.passive.onAttack then
-                            item.passive.onAttack(matchState, entity, target)
-                        end
-                    end
-                end
-
-                if target.metadata.type == 'animal' then
-                    entity2OnAttacked = mobData[target.metadata.species]
-                elseif target.metadata.type == 'object' then
-                    entity2OnAttacked = objectData[target.metadata.objectName]
-                end
-
-                if entity1OnAttack and entity1OnAttack.passive and entity1OnAttack.passive.onAttack then
-                    succesfulAttackPassive = entity1OnAttack.passive.onAttack(matchState, entity, target) or succesfulAttackPassive
-                end
-
-                if entity2OnAttacked and entity2OnAttacked.passive and entity2OnAttacked.passive.onAttacked then
-                    succesfulAttackPassive = entity2OnAttacked.passive.onAttacked(matchState, target, entity) or succesfulAttackPassive
+                -- this was changed recently!
+                if not missed then
+                    succesfulAttackPassive = on("onAttack", gs.currentMatch, entity, target) or succesfulAttackPassive
+                    succesfulAttackPassive = on("onAttacked", gs.currentMatch, target, entity) or succesfulAttackPassive
                 end
             end
 
@@ -280,12 +255,12 @@ function combatSystem:init()
         on("onKillAny", gs.currentMatch, entity)
     end)
 
-    EventManager:on("onCrit", function(entity)
-        on("onCrit", gs.currentMatch, entity)
+    EventManager:on("onCrit", function(entity, target)
+        on("onCrit", gs.currentMatch, entity, target)
     end)
 
-    EventManager:on("onCrited", function(entity)
-        on("onCrited", gs.currentMatch, entity)
+    EventManager:on("onCrited", function(entity, attacker)
+        on("onCrited", gs.currentMatch, entity, attacker)
     end)
 end
 
@@ -298,8 +273,8 @@ function combatSystem:attack(entity1, entity2)
     if entity1.stats.current.crit >= gs.run.rng:get('combat') then
         damage = damage * entity1.stats.current.critDamage
         EventManager:emit("screenShake")
-        EventManager:emit("onCrit", entity1)
-        EventManager:emit("onCrited", entity2)
+        EventManager:emit("onCrit", entity1, entity2)
+        EventManager:emit("onCrited", entity2, entity1)
         crit = true
     end
 
@@ -334,8 +309,15 @@ function combatSystem:attack(entity1, entity2)
     return false
 end
 
+function combatSystem:taunt(attacker, target, atkReduction)
+    EventManager:emit("playAnimation", attacker, "attack")
+    local damage = attacker.stats.current.atk * (1 - atkReduction)
+    self:hit(target, damage)
+end
+
 function combatSystem:dealDamage(entity, amount)
     if entity.stats then
+        amount = math.max(1, math.floor(amount))
         entity.stats.current.hp = math.max(0, entity.stats.current.hp - amount)
         if entity.stats.current.hp <= 0 then
             EventManager:emit("setState", entity, "dying")
@@ -345,6 +327,7 @@ end
 
 function combatSystem:hit(entity, amount)
     if entity.stats then
+        amount = math.max(1, math.floor(amount))
         self:dealDamage(entity, amount)
         EventManager:emit("playAnimation", entity, "hit")
         EventManager:emit("damageBubble", entity, amount)

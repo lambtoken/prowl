@@ -129,6 +129,8 @@ local data = {
         interuptsCasting = true,
         animation = {},
         callback = function(matchState, targetEntity, sourceEntity)
+            -- This is a "forced attack" where target attacks source (different from combatSystem:taunt)
+            -- Fixes parameter order: target attacks source in this crowd control
             matchState.combatSystem:attack(targetEntity, sourceEntity)
         end,
         adjective = "taunted"

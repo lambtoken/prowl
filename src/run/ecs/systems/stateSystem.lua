@@ -3,43 +3,56 @@ local EventManager = require("src.state.events"):getInstance()
 local soundManager = require("src.sound.SoundManager"):getInstance()
 local GameState    = require("src.state.GameState"):getInstance()
 local SceneManager = require("src.scene.SceneManager"):getInstance()
+local mobData = require("src.generation.mobs")
+local objectData = require("src.generation.objects")
 
 local stateSystem = Concord.system({pool = {"state"}})
 
-function on(callback, entity, ...)
-    if entity.passive and entity.passive[callback] then
-        entity.passive[callback](entity, ...)
-    end
-    
-    if entity.inventory and entity.inventory.items then
-        for _, item in ipairs(entity.inventory.items) do
-            if item.passive and item.passive[callback] then
-                item.passive[callback](entity, ...)
+local function on(callback, matchState, entity, ...)
+    if entity.metadata.type == 'animal' then
+        local animal = mobData[entity.metadata.species]
+        if animal.passive and animal.passive[callback] then
+            animal.passive[callback](matchState, entity, ...)
+        end
+        if entity.inventory and entity.inventory.items then
+            for _, item in ipairs(entity.inventory.items) do
+                if item.passive and item.passive[callback] then
+                    item.passive[callback](matchState, entity, ...)
+                end
             end
         end
     end
-    
+
+    if entity.metadata.type == 'object' then
+        local object = objectData[entity.metadata.objectName]
+        if object.passive and object.passive[callback] then
+            object.passive[callback](matchState, entity, ...)
+        end
+    end
 end
 
 function stateSystem:init()
+    
+    local matchState = GameState.currentMatch
+
     EventManager:on("setState", function(entity, newState)
         self:changeState(entity, newState)
     end)
 
     EventManager:on("onDeath", function(entity)
-        on("onDeath", entity)
+        on("onDeath", matchState, entity)
     end)
 
     EventManager:on("onDying", function(entity)
-        on("onDying", entity)
+        on("onDying", matchState, entity)
     end)
 
     EventManager:on("onDeathAny", function(entity)
-        on("onDeathAny", entity)
+        on("onDeathAny", matchState, entity)
     end)
 
     EventManager:on("onDyingAny", function(entity)
-        on("onDyingAny", entity)
+        on("onDyingAny", matchState, entity)
     end)
 end
 

@@ -508,6 +508,32 @@ local items = {
             end
         },
         active = {},
+    },
+    boxing_gloves = {
+        name = 'boxing gloves',
+        type = 'weapon',
+        rarity = 'common',
+        stats = {{'increase', 'critDamage', 0.25}},
+        pattern = {},
+        passive = {
+            onCrit = function(matchState, attacker, target)
+                matchState.combatSystem:taunt(target, attacker, 0.1)
+            end
+        },
+        active = {},
+    },
+    spike_collar = {
+        name = 'spike collar',
+        type = 'weapon',
+        rarity = 'common',
+        stats = {},
+        pattern = {},
+        passive = {
+            onAttacked = function(matchState, target, attacker)
+                matchState.combatSystem:hit(attacker, 1)
+            end
+        },
+        active = {},
     }
 }
 
