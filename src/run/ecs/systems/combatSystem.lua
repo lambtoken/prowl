@@ -10,7 +10,7 @@ local objectData = require "src.generation.objects"
 local SoundManager = require("src.sound.SoundManager"):getInstance()
 local on = require "src.run.ecs.on"
 
-local combatSystem = Concord.system({pool = {"position", "stats"}})
+local combatSystem = Concord.system({pool = {"position"}})
 
 -- helper function for calculating miss chance based on def value
 local function defMissChance(attacker, target)
@@ -30,9 +30,11 @@ end
 function combatSystem:init()
     -- EVENTS
     EventManager:on("onStep", function(entity, attack)
-        local matchState = gs.currentMatch
+    local matchState = gs.currentMatch
 
         EventManager:emit("onStepAny", entity)
+
+        on("onStep", matchState, entity)
 
         if not attack then
             return
@@ -45,20 +47,22 @@ function combatSystem:init()
             local missed = false
             local succesfulAttack = false
             local succesfulAttackPassive = false
-            local attemptedAttack = false
             local targetsKilled = {}            
 
             for _, target in ipairs(entitiesToHit) do
                 
                 missed = false
-                attemptedAttack = false
 
-                if entity.metadata.teamID ~= target.metadata.teamID and target.status.current.isTargetable then
+                if entity.metadata.teamID ~= target.metadata.teamID and target.status and target.status.current.isTargetable then
 
-                    if target.stats and target.state.current ~= "alive" then
+                    if target.state and target.state.current ~= "alive" then
                         goto continue
                     end
-                        
+
+                    if not target.stats then
+                        goto passive
+                    end
+
                     local missChance = gs.run.rng:get('combat')
                     local luckDiff = target.stats.current.luck - entity.stats.current.luck
 
@@ -74,7 +78,6 @@ function combatSystem:init()
 
                     if not missed then
                         succesfulAttack = true
-                        attemptedAttack = true
                         if self:attack(entity, target) then
                             table.insert(targetsKilled, target)
                         end
@@ -83,17 +86,16 @@ function combatSystem:init()
                         EventManager:emit("shortCCBubble", target, "Missed")            
                     end
 
-                    ::continue::
                 end
                 
                 -- onAttackAny
                 -- onAttackedAny
-
+                ::passive::                
                 -- this was changed recently!
-                if not missed then
-                    succesfulAttackPassive = on("onAttack", gs.currentMatch, entity, target) or succesfulAttackPassive
-                    succesfulAttackPassive = on("onAttacked", gs.currentMatch, target, entity) or succesfulAttackPassive
-                end
+                EventManager:emit("onAttack", entity, target)
+                EventManager:emit("onAttacked", target, entity)
+                
+                ::continue::
             end
 
             if succesfulAttack or succesfulAttackPassive or missed then
@@ -121,18 +123,7 @@ function combatSystem:init()
 
     EventManager:on("onStepAny", function(entity)
         local matchState = sceneManager.currentScene.currentMatch
-
-        if entity.metadata.type == 'animal' then
-            if entity.passive and entity.passive.onStepAny then
-                entity.passive.onStepAny(matchState, entity)
-            end
-        end
-
-        for _, item in ipairs(entity.inventory.items) do
-            if item.passive and item.passive.onStepAny then
-                item.passive.onStepAny(matchState, entity)
-            end
-        end
+        on("onStepAny", matchState, entity )
     end)
 
     EventManager:on("onHover", function(entity) 
@@ -240,6 +231,16 @@ function combatSystem:init()
     EventManager:on("onCrited", function(entity, attacker)
         on("onCrited", gs.currentMatch, entity, attacker)
     end)
+
+    EventManager:on("onAttack", function(entity, target)
+        on("onAttack", gs.currentMatch, entity, target)
+    end)
+
+    EventManager:on("onAttacked", function(target, entity)
+        on("onAttacked", gs.currentMatch, target, entity)
+    end)
+
+
 end
 
 

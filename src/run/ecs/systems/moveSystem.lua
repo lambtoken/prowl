@@ -330,11 +330,8 @@ function moveSystem:update(dt)
                 -- callback(matchState, target(entity), source)
     
                 -- should change this later to go of when entity just enters the tile (last hover)
-                if tween.attack then
-                    events:emit("onStep", entity, tween.attack)
-                    --onStepAny
-                end
-    
+                events:emit("onStep", entity, tween.attack)
+
                 table.insert(forDeletion, _)
             end
         end

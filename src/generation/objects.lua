@@ -538,9 +538,13 @@ local objects = {
                 end
                 return false
             end,
-            onTouched = function(matchState, object, entity)
-                if entity.state.current == "alive" then
-                    matchState.combatSystem:hit(entity, 1)
+            onStep = function(matchState, object)
+                print("WEE HIT THIS BOI")
+                if object.state.current == "alive" then
+                    local targets = matchState.moveSystem:getTouching(object.position.x, object.position.y, "animal")
+                    for index, target in ipairs(targets) do
+                        matchState.combatSystem:hit(target, 1)
+                    end
                 end
             end
         },

@@ -29,7 +29,7 @@ function runMap:mousepressed(x, y, button, istouch, presses)
         for j, node in ipairs(col) do
             if node.screenX < x and node.screenX + adventureConfig.nodeIconSize > x and
                 node.screenY < y and node.screenY + adventureConfig.nodeIconSize > y and button == 1 then
-                if nodeContains(node.from, gs.run.currentNodeCoords) then
+                if true then --nodeContains(node.from, gs.run.currentNodeCoords) then
                     gs.currentMatchNode = node
                     sceneM:switchScene('match')
                 end
