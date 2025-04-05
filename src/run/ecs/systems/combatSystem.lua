@@ -29,12 +29,43 @@ end
 
 function combatSystem:init()
     -- EVENTS
+    -- EventManager:on("onStep", function() 
+    --     on("onStep", matchState, entity)
+    -- end)
     EventManager:on("onStep", function(entity, attack)
-    local matchState = gs.currentMatch
+        local matchState = gs.currentMatch
 
         EventManager:emit("onStepAny", entity)
 
+        print(entity.metadata.species)
+
+        local callback = "onStep"
+
         on("onStep", matchState, entity)
+        
+        -- if entity.metadata.type == 'animal' then
+        --     local animal = mobData[entity.metadata.species]
+        --     if animal.passive and animal.passive[callback] then
+        --         return animal.passive[callback](matchState, entity)
+        --     end
+        --     if entity.inventory and entity.inventory.items then
+        --         for _, item in ipairs(entity.inventory.items) do
+        --             local item = entity.inventory.items[_]
+        --             local itemDef = itemData[item.name]
+        --             if itemDef.passive and itemDef.passive[callback] then
+        --                 if item.cooldowns and item.cooldowns[callback] and item.cooldowns[callback] > 0 then
+        --                     goto continue
+        --                 end
+        --                 itemDef.passive[callback](matchState, entity, item)
+        --                 return matchState.itemSystem:reduceCooldown(item, callback)
+        --             end
+        --             ::continue::
+        --         end
+        --     end
+        -- end
+
+
+        --on("onStep", matchState, entity)
 
         if not attack then
             return
@@ -50,52 +81,39 @@ function combatSystem:init()
             local targetsKilled = {}            
 
             for _, target in ipairs(entitiesToHit) do
-                
                 missed = false
-
-                if entity.metadata.teamID ~= target.metadata.teamID and target.status and target.status.current.isTargetable then
-
-                    if target.state and target.state.current ~= "alive" then
-                        goto continue
-                    end
-
-                    if not target.stats then
-                        goto passive
-                    end
-
-                    local missChance = gs.run.rng:get('combat')
-                    local luckDiff = target.stats.current.luck - entity.stats.current.luck
-
-                    if luckDiff > missChance then
-                        missed = true
-                        EventManager:emit("onMiss", entity, target)
-                        EventManager:emit("onDodge", target, entity)
-                    end
-                    
-                    -- if defMissChance(entity, target) >= gs.run.rng:get('combat') then
-                    --     missed = true
-                    -- end
-
-                    if not missed then
-                        succesfulAttack = true
-                        if self:attack(entity, target) then
-                            table.insert(targetsKilled, target)
+            
+                local isEnemy = entity.metadata.teamID ~= target.metadata.teamID
+                local isTargetable = target.status and target.status.current.isTargetable
+                local isAlive = not (target.state and target.state.current ~= "alive")
+            
+                if isEnemy and isTargetable and isAlive then
+                    if target.stats then
+                        local missChance = gs.run.rng:get('combat')
+                        local luckDiff = target.stats.current.luck - entity.stats.current.luck
+            
+                        if luckDiff > missChance then
+                            missed = true
+                            EventManager:emit("onMiss", entity, target)
+                            EventManager:emit("onDodge", target, entity)
+                        end
+            
+                        if not missed then
+                            succesfulAttack = true
+                            if self:attack(entity, target) then
+                                table.insert(targetsKilled, target)
+                            end
+                        else
+                            SoundManager:playSound("miss")
+                            EventManager:emit("shortCCBubble", target, "Missed")
                         end
                     else
-                        SoundManager:playSound("miss")
-                        EventManager:emit("shortCCBubble", target, "Missed")            
+                        succesfulAttackPassive = true
                     end
-
+            
+                    succesfulAttackPassive = EventManager:emit("onAttack", entity, target)
+                    EventManager:emit("onAttacked", target, entity)
                 end
-                
-                -- onAttackAny
-                -- onAttackedAny
-                ::passive::                
-                -- this was changed recently!
-                EventManager:emit("onAttack", entity, target)
-                EventManager:emit("onAttacked", target, entity)
-                
-                ::continue::
             end
 
             if succesfulAttack or succesfulAttackPassive or missed then
@@ -244,7 +262,11 @@ function combatSystem:init()
 end
 
 
-function combatSystem:attack(entity1, entity2)    
+function combatSystem:attack(entity1, entity2)
+    if not entity1.status.canAttack then
+        return false
+    end
+
     local damage = entity1.stats.current.atk
     local crit = false
 

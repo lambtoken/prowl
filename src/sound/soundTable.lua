@@ -8,7 +8,7 @@ local soundTable = {
     death = {type = 'death', file = 'something2.wav'},
     bear_trap = {type = 'effect', file = 'bear_trap.wav'},
     mouse_trap = {type = 'effect', file = 'mouse_trap.wav'},
-    explosion = {type = 'effect', file = 'explosion.wav', volume = 0.6},
+    explosion = {type = 'effect', file = 'explosion.wav', volume = 0.5},
     hiss = {type = 'effect', file = 'hiss.wav', volume = 1},
     bite = {type = 'effect', file = 'bite3.wav'},
     heal = {type = 'heal', file = 'heal.wav'},
@@ -22,7 +22,7 @@ local soundTable = {
     click6 = {type = 'click', file = 'click6.wav'},
     click7 = {type = 'click', file = 'click7.wav'},
     click8 = {type = 'click', file = 'click8.wav'},
-    click10 = {type = 'click', file = 'click10.wav', volume = 0.7},
+    click10 = {type = 'click', file = 'click10.wav', volume = 0.5},
     click11 = {type = 'click', file = 'click11.wav', volume = 0.8},
     click12 = {type = 'click', file = 'click12.wav'},
 
@@ -35,7 +35,7 @@ local soundTable = {
     victory = {type = 'ui', file = 'victory.wav', volume = 1},
     loss = {type = 'ui', file = 'slowmo.wav', volume = 0.6},
     arrow = {type = 'effect', file = 'oawn.wav', volume = 1},
-    miss = {type = 'effect', file = 'miss.wav', volume = 0.7},
+    miss = {type = 'effect', file = 'miss.wav', volume = 0.6},
 }
 
 return soundTable

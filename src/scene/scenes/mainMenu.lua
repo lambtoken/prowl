@@ -53,7 +53,7 @@ end
 
 function animalBg:draw()
 
-    RM:pushShader("gray")
+    -- RM:pushShader("gray")
 
     love.graphics.clear(193/255, 224/255, 201/255, 1)
     for index, a in ipairs(self.animals) do
@@ -64,7 +64,7 @@ function animalBg:draw()
         love.graphics.pop()
     end
 
-    RM:popShader()
+    -- RM:popShader()
 
 end
 
@@ -189,7 +189,7 @@ function mainMenu:enter()
     end
 
     -- version
-    local ver = root:addChild(mold.TextBox:new("v0.0.6"))
+    local ver = root:addChild(mold.TextBox:new("v0.0.7"))
         :setPosition("fixed")
         :setMargin("auto", "top")
         :setSize(50)

@@ -539,7 +539,6 @@ local objects = {
                 return false
             end,
             onStep = function(matchState, object)
-                print("WEE HIT THIS BOI")
                 if object.state.current == "alive" then
                     local targets = matchState.moveSystem:getTouching(object.position.x, object.position.y, "animal")
                     for index, target in ipairs(targets) do

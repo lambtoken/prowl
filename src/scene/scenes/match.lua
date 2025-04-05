@@ -36,9 +36,7 @@ function match:enter()
         --self.currentMatch:addToTeam(1, self.currentMatch:newAnimal("bear", 4, 4, 1))
     end
 
-    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "spike_collar")
-    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "fan")
-    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "spike_collar")
+    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "gear")
 
 
     self.currentMatch:preparePlayer()
@@ -101,17 +99,11 @@ function match:enter()
     self.currentMatch:generateObjects()
     self.currentMatch:generateEnemies()
     self.currentMatch:generateFlowers()
-    self.currentMatch:generateMarks()
+    --self.currentMatch:generateMarks()
 
     self.hearts = Hearts:new(gs.run.team[1])
 
     self.currentMatch.teamManager.states:set_state("start_phase")
-
-    -- self.currentMatch:newObject('vase', 5, 5)
-    -- self.currentMatch:newFlower('red_flower', 5, 6)
-    -- self.currentMatch:newFlower('red_flower', 2, 6)
-    -- self.currentMatch:newFlower('red_flower', 5, 4)
-    -- self.currentMatch:newFlower('red_flower', 7, 4)
 end
 
 function match:update(dt) 

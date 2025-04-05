@@ -8,7 +8,7 @@ function projectileSystem:update()
     end
 end
 
-function createProjectile(type, startX, startY, targetX, targetY, ownerId)
+function projectileSystem:createProjectile(type, startX, startY, targetX, targetY, ownerId)
     local gs = require("src.state.GameState"):getInstance()
     gs.currentMatch:newProjectile(type, startX, startY, targetX, targetY, ownerId)
 end

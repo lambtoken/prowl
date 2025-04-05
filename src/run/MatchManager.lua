@@ -329,9 +329,15 @@ function MatchManager:isSteppable(x, y, entity)
         local entities = self.moveSystem:findByCoordinates(x, y)
 
         for i, e in ipairs(entities) do
+            if e == entity then
+                goto continue
+            end
+
             if not e.position.isSteppable then
                 return false
             end
+
+            ::continue::
         end
         
         return true

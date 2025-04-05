@@ -24,11 +24,10 @@ function collisionSystem:update()
 
             if isInTable(colA.ignoreIds, entityB.metadata.id)
             or isInTable(colB.ignoreIds, entityA.metadata.id) then
-                print("ignore")
                 goto continue2
             end
             
-            if colB.disabled then
+            if colB.disabled or colA.disabled then
                 goto continue2
             end
             

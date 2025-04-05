@@ -5,8 +5,10 @@ local pretty = require("libs.batteries.pretty")
 local events = require("src.state.events"):getInstance()
 local mobData = require("src.generation.mobs")
 local objectData = require("src.generation.objects")
+local itemData = require("src.generation.items")
 local markData = require("src.generation.marks")
 local gs = require("src.state.GameState"):getInstance()
+local on = require("src.run.ecs.on")
 
 local CELLSIZE = RM.tileSize
 
@@ -114,6 +116,10 @@ end
 
 function moveSystem:move(entity, type, targetX, targetY, attack, cancelPrev)
     
+    if type == "walk" then
+        on("onMove", gs.currentMatch, entity)
+    end
+
     attack = attack or false
 
     local position = entity.position
@@ -230,6 +236,14 @@ function moveSystem:handleTouched(entity)
             if mobData[src.metadata.species].passive and mobData[src.metadata.species].passive.onTouched then
                 mobData[src.metadata.species].passive.onTouched(gs.currentMatch, src, entity)
             end
+
+            for index, item in ipairs(src.inventory.items) do
+                local itemDef = itemData[item.name]
+                if itemDef.passive and itemDef.passive.onTouched then
+                    itemDef.passive.onTouched(gs.currentMatch, src, entity)
+                end
+            end
+            
         elseif src.metadata.type == 'object' then
             if objectData[src.metadata.objectName].passive and objectData[src.metadata.objectName].passive.onTouched then
                 objectData[src.metadata.objectName].passive.onTouched(gs.currentMatch, src, entity)
@@ -468,6 +482,9 @@ function moveSystem:getNearestEntity(entity, type, teamID)
         end
         ::continue::
     end
+
+
+    print("nearest", nearestEntity.metadata.species)
     return nearestEntity
 end
 

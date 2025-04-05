@@ -154,6 +154,12 @@ local items = {
             {'increase', 'atk', 1},
             -- {'onHit', 'poison', 1, 20}
         },
+        cooldowns = {
+            onAttack = 3
+        },
+        startCooldowns = {
+            onAttack = 0
+        },
         pattern = {},
         passive = {
             description = "Attacks apply poison damage over time.",
@@ -251,7 +257,7 @@ local items = {
     flip_flops = {
         name = 'flip flops',
         type = 'weapon',
-        rarity = 'uncommon',
+        rarity = 'rare',
         stats = {
             
         },
@@ -379,18 +385,18 @@ local items = {
         passive = {},
         active = {},
     },
-    queens_crown = {
-        name = 'queen\' s crown',
-        type = 'protection',
-        rarity = 'legendary',
-        stats = {},
-        pattern = {
-            {'add', 'movePattern', {
-            }}
-        },
-        passive = {},
-        active = {},
-    },
+    -- queens_crown = {
+    --     name = 'queen\' s crown',
+    --     type = 'protection',
+    --     rarity = 'legendary',
+    --     stats = {},
+    --     pattern = {
+    --         {'add', 'movePattern', {
+    --         }}
+    --     },
+    --     passive = {},
+    --     active = {},
+    -- },
     scope = {
         name = 'scope',
         type = 'weapon',
@@ -478,37 +484,42 @@ local items = {
         passive = {},
         active = {},
     },
-    stappler = {
-        name = 'stappler',
-        type = 'weapon',
-        rarity = 'common',
-        stats = {},
-        patern = {},
-        passive = {
-            onAttack = function(matchState, source, target)
-                if target.metadata.type == 'animal' then
-                    matchState.statusEffectSystem:giveStatusEffect(target, source, 'stun', 3)
-                end
-            end,
-            cooldown = 2
-        }
-    },
-    crossbow = {
-        name = 'crossbow',
-        type = 'weapon',
-        rarity = 'common',
-        stats = {{'increase', 'atk', 1}},
-        pattern = {},
-        passive = {
-            onStep = function(matchState, source)
-                local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.metadata.teamID)
-                if nearestEntity then
-                    matchState:newProjectile('arrow', source.position.x, source.position.y, nearestEntity.position.x, nearestEntity.position.y, source.metadata.id)
-                end
-            end
-        },
-        active = {},
-    },
+    -- stappler = {
+    --     name = 'stappler',
+    --     type = 'weapon',
+    --     rarity = 'common',
+    --     cooldowns = {
+    --         onAttack = 3,
+    --     },
+    --     startCooldowns = {
+    --         onAttack = 0
+    --     },
+    --     stats = {},
+    --     patern = {},
+    --     passive = {
+    --         onAttack = function(matchState, source, target)
+    --             if target.metadata.type == 'animal' then
+    --                 matchState.statusEffectSystem:giveStatusEffect(target, source, 'stun', 3)
+    --             end
+    --         end,
+    --     }
+    -- },
+    -- crossbow = {
+    --     name = 'crossbow',
+    --     type = 'weapon',
+    --     rarity = 'common',
+    --     stats = {{'increase', 'atk', 1}},
+    --     pattern = {},
+    --     passive = {
+    --         onStep = function(matchState, source)
+    --             local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.metadata.teamID)
+    --             if nearestEntity then
+    --                 matchState:newProjectile('arrow', source.position.x, source.position.y, nearestEntity.position.x, nearestEntity.position.y, source.metadata.id)
+    --             end
+    --         end
+    --     },
+    --     active = {},
+    -- },
     boxing_gloves = {
         name = 'boxing gloves',
         type = 'weapon',
@@ -516,6 +527,7 @@ local items = {
         stats = {{'increase', 'critDamage', 0.25}},
         pattern = {},
         passive = {
+            description = "Critical strikes taunt. Taunted enemy attacks for a small percent of it's ATK.",
             onCrit = function(matchState, attacker, target)
                 matchState.combatSystem:taunt(attacker, target, 0.1)
             end
@@ -529,57 +541,258 @@ local items = {
         stats = {},
         pattern = {},
         passive = {
+            description = "When attacked, deal 1 dmg back.",
             onAttacked = function(matchState, target, attacker)
                 matchState.combatSystem:hit(attacker, 1)
             end
         },
         active = {},
     },
-    fan = {
-        name = 'fan',
-        type = 'misc',
-        rarity = 'epic',
+    -- fan = {
+    --     name = 'fan',
+    --     type = 'misc',
+    --     rarity = 'epic',
+    --     stats = {},
+    --     pattern = {},
+    --     data = {
+    --         buffLevel = 0,
+    --         maxLevel = 5,
+    --     },
+    --     cooldowns = {
+    --         onStandBy = 3,
+    --     },
+    --     passive = {
+    --         description = "Grants increasing attack each turn.",
+            
+    --         onStandBy = function(matchState, entity, item)
+                
+    --             local itemId = item.itemId
+                
+    --             if item.data.buffLevel < item.data.maxLevel then
+    --                 item.data.buffLevel = item.data.buffLevel + 1
+    --             end
+                
+    --             local stats = {{'increase', 'atk', item.data.buffLevel}}
+                
+    --             local effect = matchState.buffDebuffSystem:updateItemEffect(entity, itemId, stats, 3)
+    --         end
+    --     },
+    --     active = {},
+    -- },
+    cactus_pot = {
+        name = "cactus pot",
+        type = "misc",
+        rarity = "common",
         stats = {},
         pattern = {},
-        data = {
-            buffLevel = 0,
-            maxLevel = 5,
-        },
-        cooldowns = {
-            onStandBy = 3,
-        },
         passive = {
-            description = "Grants increasing attack each turn.",
-            
-            onStandBy = function(matchState, entity, item)
-                
-                local itemId = item.itemId
-                
-                if item.data.buffLevel < item.data.maxLevel then
-                    item.data.buffLevel = item.data.buffLevel + 1
+            description = "Touching enemies deals 1 damage.",
+            onTouched = function(matchState, entity, source)
+                if entity.metadata.teamID ~= source.metadata.teamID then
+                    matchState.combatSystem:hit(source, 1)
                 end
-                
-                local stats = {{'increase', 'atk', item.data.buffLevel}}
-                
-                local effect = matchState.buffDebuffSystem:updateItemEffect(entity, itemId, stats, 3)
+            end
+            
+        },
+        active = {},
+    },
+    rusty_knife = {
+        name = "rusty knife",
+        type = "weapon",
+        rarity = "common",
+        stats = {},
+        pattern = {},
+        passive = {
+            description = "Attaking has a 20% chance to poison the enemy.",
+            onAttack = function(matchState, entity, target)
+                if entity.metadata.teamID ~= target.metadata.teamID then
+                    if math.random() < 0.2 then
+                        matchState.damageOverTimeSystem:giveDotEffect(target, entity, "poison", 2)
+                    end
+                end
             end
         },
         active = {},
-    }
+    },
+    razor = {
+        name = "razor",
+        type = "weapon",
+        rarity = "common",
+        stats = {},
+        pattern = {},
+        passive = {
+            description = "Attaking has a 20% chance to bleed the enemy.",
+            onAttack = function(matchState, entity, target)
+                if entity.metadata.teamID ~= target.metadata.teamID then
+                    if math.random() < 0.2 then
+                        matchState.damageOverTimeSystem:giveDotEffect(target, entity, "bleed", 2)
+                    end
+                end
+            end
+        },
+        active = {},
+    },
+    racing_flag = {
+        name = "racing flag",
+        type = "misc",
+        rarity = "rare",
+        stats = {},
+        pattern = {
+            { 'add', 'movePattern', {
+                { 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+            }}
+        },
+        passive = {
+            description = "Move pattern for chargin deep into the enemy territory.",
+        },
+        active = {},
+    },
+    bulletproof_vest = {
+        name = "bulletproof vest",
+        type = "armor",
+        rarity = "common",
+        stats = {
+            {"increase", "def", 4}
+        },
+        pattern = {},
+        passive = {},
+        active = {},
+    },
+    gear = {
+        name = "gear",
+        type = "misc",
+        rarity = "common",
+        stats = {},
+        data = {
+            turn = 0
+        },
+        cooldowns = {
+            onStandBy = 0
+        },
+        pattern = {},
+        passive = {
+            description = "Gain +1 atk and -1 def or +1 def and - 1 atk alternating every turn.",
+            onStandBy = function(matchState, entity, item)
+                local even = {{"increase", "atk", 1}, {"decrease", "def", 1}}
+                local odd = {{"increase", "def", 1}, {"decrease", "atk", 1}}
+
+                local itemId = item.itemId
+
+                if item.data.turn % 2 == 0 then
+                    matchState.buffDebuffSystem:updateItemEffect(entity, itemId, even, 1)
+                else
+                    matchState.buffDebuffSystem:updateItemEffect(entity, itemId, odd, 1)
+                end
+
+                item.data.turn = item.data.turn + 1
+            end
+        },
+        active = {},
+    },
+    cane = {
+        name = "cane",
+        type = "weapon",
+        rarity = "common",
+        stats = {},
+        data = {
+            moved = false
+        },
+        cooldowns = {
+            onStandBy = 0
+        },
+        pattern = {},
+        passive = {
+            description = "Moving by 1 tile increases atk by 3 until the end of the turn.",
+            onStandBy = function(matchState, entity, item)
+                item.data.moved = false
+            end,
+            onStep = function(matchState, entity, item)
+                local distance = math.sqrt((entity.position.lastStepX - entity.position.x) ^ 2 + (entity.position.lastStepY - entity.position.y) ^ 2)
+            
+                if not item then
+                    return
+                end
+
+                print(distance, item)
+
+                local itemId = item.id
+
+                if distance <= 1 then
+                    matchState.buffDebuffSystem:updateItemEffect(entity, itemId, {{"increase", "atk", 3}}, 1)
+                else
+                    matchState.buffDebuffSystem:removeItemEffect(entity, itemId)
+                end
+            end
+        },
+        active = {},
+    },
+    katana = {
+        name = "katana",
+        type = "weapon",
+        rarity = "rare",
+        stats = {},
+        data = {
+            moved = false
+        },
+        cooldowns = {
+            onMove = 2,
+            onStandBy = 0
+        },
+        startCooldowns = {
+            onMove = 0
+        },
+        pattern = {},
+        passive = {
+            description = "Moving away from enemies damages them for 1. Become disarmed after that until the end of the next turn.",
+            onStandBy = function(matchState, entity, item)
+                item.data.moved = false
+            end,
+            onMove = function(matchState, entity, item)
+                if item.data.moved then
+                    return
+                end
+
+                local success = false
+                local targets = matchState.moveSystem:getTouching(entity.position.x, entity.position.y, "animal")
+
+                for index, target in ipairs(targets) do
+                    if target ~= entity then
+                        matchState.combatSystem:hit(target, 2)
+                        success = true
+                    end
+                end
+
+                if success then
+                    matchState.statusEffectSystem:giveStatusEffect(entity, entity, "disarm", 1)
+                    item.data.moved = true
+                end
+
+            end
+        },
+        active = {},
+    },
 }
 
 local crownWidth = RM.renderDistanceX + 1
 
-for j = 1, crownWidth do
-    items.queens_crown.pattern[1][3][j] = {}
-    for i = 1, crownWidth do
-        if i == j or crownWidth - i == j - 1 or i == math.ceil(crownWidth / 2) or j == math.ceil(crownWidth / 2) then
-            items.queens_crown.pattern[1][3][j][i] = 1
-        else
-            items.queens_crown.pattern[1][3][j][i] = 0
-        end
-    end
-end
+-- for j = 1, crownWidth do
+--     items.queens_crown.pattern[1][3][j] = {}
+--     for i = 1, crownWidth do
+--         if i == j or crownWidth - i == j - 1 or i == math.ceil(crownWidth / 2) or j == math.ceil(crownWidth / 2) then
+--             items.queens_crown.pattern[1][3][j][i] = 1
+--         else
+--             items.queens_crown.pattern[1][3][j][i] = 0
+--         end
+--     end
+-- end
 
 -- for j = 1, RM.renderDistanceX do
 --     items.scope.stats[1][2][j] = {}

@@ -11,6 +11,7 @@ local RM = require ('src.render.RenderManager'):getInstance()
 local data = require 'src.data'
 local pretty = require 'libs.batteries.pretty'
 local mold = require 'libs.mold'
+local SoundManager = require ('src.sound.SoundManager'):getInstance()
 
 local animalSelect = Scene:new('animalSelect')
 
@@ -130,6 +131,7 @@ function animalSelect:makeRoster()
         anim.species = animal.key
 
         anim.onMouseEnter = function(self)
+            SoundManager:playSound("softclick2")
             self:playAnimation("attack")
         end
 

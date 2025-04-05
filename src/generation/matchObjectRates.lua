@@ -10,7 +10,7 @@ local rates = {
             {name = 'crack', rate = 3, limit = 1},
             {name = 'spikes', rate = 10, limit = 0},
             {name = 'bomb', rate = 2, limit = 3},
-            {name = 'coffee', rate = 200, limit = 0}
+            {name = 'coffee', rate = 2, limit = 0}
         },
         maze = {
             {name = 'crate', rate = 5, limit = 0},
@@ -59,7 +59,7 @@ local rates = {
     glacial = {
         normal = {
             {name = 'spruce_tree', rate = 20, limit = 0},
-            --{name = 'spruce_tree_snowy', rate = 10, limit = 0},
+            -- {name = 'spruce_tree_snowy', rate = 10, limit = 0},
             {name = 'spruce_tree_snowy_partial', rate = 5, limit = 0},
             {name = 'ice_rock', rate = 10, limit = 0},
             {name = 'bear_trap', rate = 10, limit = 0},
@@ -94,7 +94,7 @@ local rates = {
             {name = 'small_pillar', rate = 2, limit = 0},
             {name = 'crack', rate = 3, limit = 1},
             {name = 'spikes', rate = 10, limit = 0},
-            {name = 'gold_apple', rate = 1, limit = 1}
+            {name = 'gold_apple', rate = 2, limit = 1}
         },
     },
     hydra = {
@@ -104,7 +104,7 @@ local rates = {
             { name = 'small_pillar', rate = 2,  limit = 0 },
             { name = 'crack',        rate = 3,  limit = 1 },
             { name = 'spikes',       rate = 10, limit = 0 },
-            {name = 'gold_apple', rate = 1, limit = 1}
+            {name = 'gold_apple', rate = 5, limit = 1}
         },
     },
     swamp = {

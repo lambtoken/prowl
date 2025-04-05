@@ -30,6 +30,12 @@ function itemSystem:newItem(name)
     if itemData[name].cooldowns then item.cooldowns = tablex.deep_copy(itemData[name].cooldowns) end
     if itemData[name].data then item.data = tablex.deep_copy(itemData[name].data) end
     
+    if itemData[name].startCooldowns then
+        for key, value in pairs(itemData[name].startCooldowns) do
+            item.cooldowns[key] = value
+        end
+    end
+
     return item
 end
 
@@ -89,10 +95,13 @@ function itemSystem:onStandBy(teamId)
         end
 
         for _, item in ipairs(animal.inventory.items) do
+            if item.cooldowns then
+                for event, value in pairs(item.cooldowns) do
+                    self:reduceCooldown(item, event)
+                end
+            end
             if item.passive and item.passive.onStandBy then
-                if item.cooldowns and item.cooldowns["onStandBy"] then print("onStandBy", item.cooldowns["onStandBy"]) end
                 if item.cooldowns and item.cooldowns["onStandBy"] > 0 then
-                    self:reduceCooldown(item, "onStandBy")
                     goto skip_item
                 end
                 item.passive.onStandBy(gs.currentMatch, animal, item)
