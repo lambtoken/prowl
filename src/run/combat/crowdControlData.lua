@@ -27,6 +27,8 @@ local data = {
             if not target.status or not target.status.current.isDisplaceable then
                 return false
             end
+            
+            local destX, destY = matchState.moveSystem:getDestination(target)
 
             local dx = target.position.x - source.position.x
             local dy = target.position.y - source.position.y
@@ -35,8 +37,10 @@ local data = {
             dy = dy ~= 0 and (dy / math.abs(dy)) or 0
     
 
-            if matchState:isSteppable(target.position.x + dx, target.position.y + dy, target) then
-                local knockbackX, knockbackY = ccFunctions.calculateKnockbackPosition(matchState, source.position.x, source.position.y, target.position.x, target.position.y, 1, matchState.terrain)
+            print(target.position.x, target.position.y, destX, destY)
+
+            if matchState:isSteppable(destX + dx, destY + dy, target) then
+                local knockbackX, knockbackY = ccFunctions.calculateKnockbackPosition(matchState, source.position.x, source.position.y, destX, destY, 1, matchState.terrain)
                 soundManager:playSound("knockback")
                 matchState.moveSystem:move(target, 'knockback', knockbackX, knockbackY)
                 
@@ -91,24 +95,26 @@ local data = {
             rdx = rdx ~= 0 and (rdx / math.abs(rdx)) or 0
             rdy = rdy ~= 0 and (rdy / math.abs(rdy)) or 0
             
-            local lSteppable = matchState:isSteppable(target.position.x + ldx, target.position.y + ldy, target)
-            local rSteppable = matchState:isSteppable(target.position.x + rdx, target.position.y + rdy, target)
+            local destX, destY = matchState.moveSystem:getDestination(target)
+
+            local lSteppable = matchState:isSteppable(destX + ldx, destY + ldy, target)
+            local rSteppable = matchState:isSteppable(destX + rdx, destY + rdy, target)
             
             if lSteppable and rSteppable then
                 local side = math.random() > 0.5 and "left" or "right"
-                local displaceX, displaceY = ccFunctions.calculatePerpendicularPosition(matchState, source.position.lastStepX, source.position.lastStepY, target.position.x, target.position.y, 1, matchState.terrain, side)
+                local displaceX, displaceY = ccFunctions.calculatePerpendicularPosition(matchState, source.position.lastStepX, source.position.lastStepY, destX, destY, 1, matchState.terrain, side)
                 soundManager:playSound("displace")
                 matchState.moveSystem:move(target, 'displace', displaceX, displaceY)
 
                 return true
             elseif lSteppable and not rSteppable then
-                local displaceX, displaceY = ccFunctions.calculatePerpendicularPosition(matchState, source.position.lastStepX, source.position.lastStepY, target.position.x, target.position.y, 1, matchState.terrain, 'left')
+                local displaceX, displaceY = ccFunctions.calculatePerpendicularPosition(matchState, source.position.lastStepX, source.position.lastStepY, destX, destY, 1, matchState.terrain, 'left')
                 soundManager:playSound("displace")
                 matchState.moveSystem:move(target, 'displace', displaceX, displaceY)
 
                 return true
             elseif not lSteppable and rSteppable then
-                local displaceX, displaceY = ccFunctions.calculatePerpendicularPosition(matchState, source.position.lastStepX, source.position.lastStepY, target.position.x, target.position.y, 1, matchState.terrain, 'right')
+                local displaceX, displaceY = ccFunctions.calculatePerpendicularPosition(matchState, source.position.lastStepX, source.position.lastStepY, destX, destY, 1, matchState.terrain, 'right')
                 soundManager:playSound("displace")
                 matchState.moveSystem:move(target, 'displace', displaceX, displaceY)
 

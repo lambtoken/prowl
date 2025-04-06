@@ -10,7 +10,7 @@ local function on(callback, matchState, entity, ...)
         local animal = mobData[entity.metadata.species]
         if animal.passive and animal.passive[callback] then
             -- Pass all arguments as they are
-            return animal.passive[callback](matchState, entity, ...)
+            animal.passive[callback](matchState, entity, ...)
         end
         if entity.inventory and entity.inventory.items then
             for _, item in ipairs(entity.inventory.items) do
@@ -27,7 +27,7 @@ local function on(callback, matchState, entity, ...)
                     end
                     table.insert(newArgs, item)
                     
-                    return itemDef.passive[callback](unpack(newArgs))
+                    itemDef.passive[callback](unpack(newArgs))
                 end
                 ::continue::
             end
@@ -37,7 +37,7 @@ local function on(callback, matchState, entity, ...)
     if entity.metadata.type == 'object' then
         local object = objectData[entity.metadata.objectName]
         if object.passive and object.passive[callback] then
-            return object.passive[callback](matchState, entity, ...)
+            object.passive[callback](matchState, entity, ...)
         end
     end
 end

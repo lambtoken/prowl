@@ -61,7 +61,7 @@ local MOVES = {
     },
     displace = {
         func = 'outQuad',
-        duration = 1
+        duration = 1.2
     },
     tp = {
         func = 'linear',
@@ -125,9 +125,11 @@ function moveSystem:move(entity, type, targetX, targetY, attack, cancelPrev)
     local position = entity.position
 
     if cancelPrev then moveSystem:snap(entity) end
+
+    local destX, destY = self:getDestination(entity)
     
-    local relX = targetX - position.x
-    local relY = targetY - position.y
+    local relX = targetX - destX
+    local relY = targetY - destY
 
     local newTween = {                           
         type = type,
@@ -486,6 +488,17 @@ function moveSystem:getNearestEntity(entity, type, teamID)
 
     print("nearest", nearestEntity.metadata.species)
     return nearestEntity
+end
+
+function moveSystem:getDestination(entity)
+    local sumX = 0
+    local sumY = 0
+    for index, tween in ipairs(entity.position.moveTweens) do
+        sumX = sumX + tween.lengthX
+        sumY = sumY + tween.lengthY
+    end
+
+    return sumX + entity.position.lastStepX, sumY + entity.position.lastStepY
 end
 
 function moveSystem:removeAll(entity)
