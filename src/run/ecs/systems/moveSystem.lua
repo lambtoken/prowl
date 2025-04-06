@@ -485,8 +485,6 @@ function moveSystem:getNearestEntity(entity, type, teamID)
         ::continue::
     end
 
-
-    print("nearest", nearestEntity.metadata.species)
     return nearestEntity
 end
 

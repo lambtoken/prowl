@@ -30,7 +30,7 @@ end
 function itemSelect:enter()
     self.items = {} 
     
-    local randomItems = getRandomItems(gs.run.currentStage, nItems)
+    local randomItems = getRandomItems(math.random(1, 3), nItems)
 
     randomItems[1] = 'baseball_bat'
     randomItems[2] = 'mace'

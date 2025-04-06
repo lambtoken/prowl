@@ -454,7 +454,6 @@ local items = {
         passive = {
             description = "Attacks knockback enemies.",
             onAttack = function(matchState, source, target) 
-                print("DOOOOOOOOOOOOOOO ITTTTTTTTTTTTTTTTT")
                 matchState.crowdControlSystem:applyCC(target, "knockback", source)
             end
         },
@@ -469,7 +468,7 @@ local items = {
         passive = {
             description = "Careful, recoil..",
             onAttack = function(matchState, source, target)
-                if target.metadata.type == 'animal' then
+                if source.metadata.type == 'animal' then
                     matchState.crowdControlSystem:applyCC(source, "knockback", target)
                 end
             end
@@ -505,22 +504,22 @@ local items = {
     --         end,
     --     }
     -- },
-    -- crossbow = {
-    --     name = 'crossbow',
-    --     type = 'weapon',
-    --     rarity = 'common',
-    --     stats = {{'increase', 'atk', 1}},
-    --     pattern = {},
-    --     passive = {
-    --         onStep = function(matchState, source)
-    --             local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.metadata.teamID)
-    --             if nearestEntity then
-    --                 matchState:newProjectile('arrow', source.position.x, source.position.y, nearestEntity.position.x, nearestEntity.position.y, source.metadata.id)
-    --             end
-    --         end
-    --     },
-    --     active = {},
-    -- },
+    crossbow = {
+        name = 'crossbow',
+        type = 'weapon',
+        rarity = 'common',
+        stats = {{'increase', 'atk', 1}},
+        pattern = {},
+        passive = {
+            onStep = function(matchState, source)
+                local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.metadata.teamID)
+                if nearestEntity then
+                    matchState:newProjectile('arrow', source.position.x, source.position.y, nearestEntity.position.x, nearestEntity.position.y, source.metadata.id)
+                end
+            end
+        },
+        active = {},
+    },
     boxing_gloves = {
         name = 'boxing gloves',
         type = 'weapon',
@@ -778,6 +777,34 @@ local items = {
 
             end
         },
+        active = {},
+    },
+    tire = {
+        name = "tire",
+        type = "health",
+        rarity = "common",
+        stats = {{"increase", "maxHp", 3}},
+        data = {},
+        pattern = {},
+        passive = {},
+        active = {},
+    },
+    box = {
+        name = "box",
+        type = "health",
+        rarity = "common",
+        stats = {{"increase", "maxHp", 5}},
+        data = {},
+        pattern = {
+            {'remove', 'atkPattern', {
+                {1, 1, 1, 1, 1},
+                {1, 0, 0, 0, 1},
+                {1, 0, 0, 0, 1},
+                {1, 0, 0, 0, 1},
+                {1, 1, 1, 1, 1},
+            }}
+        },
+        passive = {},
         active = {},
     },
 }

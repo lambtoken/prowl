@@ -24,6 +24,7 @@ function teamManager:new(currentMatch)
             instance = o,
 
             enter = function(s) 
+                s.instance.currentMatch.statsSystem:initializeStats()
                 s.instance.states:set_state('stand_by_phase')
             end,
             
