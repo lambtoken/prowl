@@ -351,7 +351,7 @@ local objects = {
                 return false
             end,
             onTouched = function(matchState, object, entity)
-                if entity.state.current == "alive" then
+                if entity.state.alive then
                     matchState.combatSystem:hit(entity, 1)
                 end
             end
@@ -372,7 +372,7 @@ local objects = {
         steppable = false,
         passive = {
             onTouched = function(matchState, object, entity)
-                if entity.state.current == "alive" then
+                if entity.state.alive then
                     matchState.combatSystem:hit(entity, 1)
                 end
             end
@@ -539,7 +539,7 @@ local objects = {
                 return false
             end,
             onStep = function(matchState, object)
-                if object.state.current == "alive" then
+                if object.state.alive then
                     local targets = matchState.moveSystem:getTouching(object.position.x, object.position.y, "animal")
                     for index, target in ipairs(targets) do
                         matchState.combatSystem:hit(target, 1)

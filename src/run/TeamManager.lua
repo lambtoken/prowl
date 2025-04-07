@@ -195,7 +195,7 @@ function teamManager:load()
     EventManager = require('src.state.events'):getInstance()
     EventManager:on("checkTeamStatus", function(teamID)
         for index, member in ipairs(self.teams[teamID].members) do
-            if member.state.current == "alive" then
+            if member.state.alive then
                 return
             end
         end

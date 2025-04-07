@@ -48,12 +48,12 @@ end
 
 function stateSystem:onStateEnter(entity, state)
     if state == "idle" then
-        if entity.animation then
-            EventManager:emit('enterIdle', entity)
-            EventManager:emit('playAnimation', entity, "idle")
-        end
+        entity.state.alive = true
+        entity.state.interactable = true
+        EventManager:emit('playAnimation', entity, "idle")        
     elseif state == "dying" then
-        -- play death sound
+        entity.state.alive = false
+        entity.state.interactable = false
         if entity.metadata.type == 'animal' then
             soundManager:playSound('death')
             SceneManager.currentScene.TextBubbleManager:killEntityBubbles(entity)
@@ -63,6 +63,8 @@ function stateSystem:onStateEnter(entity, state)
         end
         
     elseif state == "dead" then
+        entity.state.alive = false
+        entity.state.interactable = false
         if entity.metadata.type == 'animal' then
             EventManager:emit("checkTeamStatus", entity.metadata.teamID)
             EventManager:emit("onDeath", entity)
@@ -100,3 +102,8 @@ function stateSystem:hasMovesLeft(entity)
 end
 
 return stateSystem
+
+-- spawning -- alive
+-- idle  -- alive
+-- dying -- alive
+-- dead -- dead

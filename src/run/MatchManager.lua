@@ -298,8 +298,6 @@ function MatchManager:addToTeam(teamId, animal)
         animal:getWorld():removeEntity(animal)
     end
 
-    self.animationSystem:playAnimation(animal, "idle")
-
     self.teamManager:addToTeam(teamId, animal)
     self.ecs:addEntity(animal)
     -- do this somewhere else
@@ -344,7 +342,6 @@ function MatchManager:isSteppable(x, y, entity)
     end
 
     return false
-
 end
 
 
@@ -636,10 +633,10 @@ end
 function MatchManager:preparePlayer()
     for index, animal in ipairs(self.teamManager.teams[1].members) do
         animal.stats.current.hp = animal.stats.current.maxHp
-        animal.state.current = "alive"
         animal.state.currentTurnMoves = 0
         self.animationSystem:removeAll(animal)
         self.moveSystem:removeAll(animal)
+        self.stateSystem:changeState(animal, "idle")
     end
 end
 

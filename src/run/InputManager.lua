@@ -75,7 +75,7 @@ function InputManager:mousepressed(x, y, btn)
         and tileAnimal.state.currentTurnMoves < tileAnimal.stats.current.moves
         and tileAnimal.metadata.teamID == self.currentMatch.teamManager.turnTeamId
         and not self.currentMatch.moveSystem:isMoving(tileAnimal)
-        and tileAnimal.state.current == "alive" 
+        and tileAnimal.state.alive 
         and currentTeam.agentType == 'player' then        
             self.selectedAnimal = self.currentMatch.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY, 'animal')[1]
             self.selectedAnimal.state.pickedUp = true

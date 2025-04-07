@@ -156,7 +156,7 @@ function moveSystem:findByCoordinates(x, y, type)
     
     for _, entity in ipairs(self.pool) do
         local typeCondition = not type or entity.metadata.type == type
-        if entity.position.x == x and entity.position.y == y and entity.state and entity.state.current == "alive" and typeCondition then
+        if entity.position.x == x and entity.position.y == y and entity.state and entity.state.alive and typeCondition then
             table.insert(entities, entity)
         end
     end
@@ -257,6 +257,10 @@ end
 
 function moveSystem:handleMoved(entity)
 
+    if not entity.state.alive then
+        return
+    end
+
     if entity.metadata.type == 'animal' then
         if mobData[entity.metadata.species].passive and mobData[entity.metadata.species].passive.onTouched then
             local nearbyEntities = self:getNearbyEntities(entity)
@@ -283,6 +287,10 @@ function moveSystem:handleMoved(entity)
 end
 
 function moveSystem:handleOnStepped(entity)
+
+    if not entity.state.alive then
+        return
+    end
 
     local tileObjects = self:findByCoordinates(entity.position.x, entity.position.y, 'object')
     local tileMarks = self:findByCoordinates(entity.position.x, entity.position.y, 'mark')
@@ -320,21 +328,18 @@ function moveSystem:update(dt)
             goto continue
         end
 
-        local forDeletion = {}
-
         local sumX = 0
         local sumY = 0
 
-        for _, tween in ipairs(position.moveTweens) do
+        for i = #position.moveTweens, 1, -1 do
+            local tween = position.moveTweens[i]
+
             tween.tween:update(dt)
             
             if not tween.tween:isComplete() then
                 sumX = sumX + tween.x
                 sumY = sumY + tween.y
-            else
-                -- position.prevX = position.lastStepX
-                -- position.prevY = position.lastStepY
-    
+            else    
                 position.lastStepX = position.lastStepX + tween.x
                 position.lastStepY = position.lastStepY + tween.y
     
@@ -342,25 +347,17 @@ function moveSystem:update(dt)
             
                 self:handleOnStepped(entity)
     
-                -- search for possible sources
-                -- callback(matchState, target(entity), source)
-    
-                -- should change this later to go of when entity just enters the tile (last hover)
-                events:emit("onStep", entity, tween.attack)
-
-                table.insert(forDeletion, _)
-            end
-        end
-
-        if #forDeletion > 0 then
-            for i = #forDeletion, 1, -1 do
-                local tweenIndex = forDeletion[i]
-                if position.moveTweens[tweenIndex].type == 'walk' then
+                if position.moveTweens[i].type == 'walk' then
                     entity.state.currentTurnMoves = entity.state.currentTurnMoves + 1
                 end
-                table.remove(position.moveTweens, tweenIndex)
+
+                table.remove(position.moveTweens, i)
+
+                if entity.state.alive then
+                    events:emit("onStep", entity, tween.attack)
+                end
             end
-        end        
+        end
 
         if #position.moveTweens > 0 then
             position.dirX, position.dirY = calculateDirectionFromTweens(position)
@@ -407,6 +404,10 @@ function moveSystem:update(dt)
 
         position.x = newPosX
         position.y = newPosY
+
+        if #entity.position.moveTweens == 0 and entity.position.step then
+            
+        end
         
         -- if position.snapTween ~= nil then
         --     print(dt)
@@ -443,7 +444,7 @@ function moveSystem:getAveragePosition(...)
     local sumY = 0
     local n = 0
     for _, entity in ipairs(self.pool) do
-        if entity.metadata and entity.metadata.type == "animal" and entity.state.current == "alive" then
+        if entity.metadata and entity.metadata.type == "animal" and entity.state.alive then
             for i = 1, select("#", ...) do
                 local id = select(i, ...)
                 if entity.metadata.teamID ~= id then
@@ -464,7 +465,7 @@ function moveSystem:getNearestEntity(entity, type, teamID)
 
     for _, otherEntity in ipairs(self.pool) do
 
-        if otherEntity.state and otherEntity.state.current ~= "alive" then
+        if otherEntity.state and not otherEntity.state.alive then
             goto continue
         end
 
@@ -497,6 +498,9 @@ function moveSystem:getDestination(entity)
         sumX = sumX + tween.lengthX
         sumY = sumY + tween.lengthY
     end
+
+    print("sum", sumX, sumY)
+    print("lsx, lsy", entity.position.lastStepX, sumY + entity.position.lastStepY)
 
     return sumX + entity.position.lastStepX, sumY + entity.position.lastStepY
 end

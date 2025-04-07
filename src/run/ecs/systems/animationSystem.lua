@@ -10,9 +10,6 @@ local animationSystem = Concord.system({pool = {"position", "renderable"}})
 
 
 function animationSystem:init()
-    EventManager:on("enterIdle", function(entity)
-        animationSystem:playAnimation(entity, 'idle')
-    end)
     
     EventManager:on("playAnimation", function(entity, animation)
         animationSystem:playAnimation(entity, animation)

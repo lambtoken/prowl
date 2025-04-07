@@ -41,8 +41,8 @@ function aiManager:ratingFormula(attacker, attackerX, attackerY, target)
     local targetY = target and target.position.y or averagePosY
 
     local distanceToTarget = math.sqrt((targetX - attackerX) ^ 2 + (targetY - attackerY) ^ 2)
-    print(distanceToTarget, attacker.metadata.species)
-    print("avg: ", averagePosX, averagePosY)
+    --print(distanceToTarget, attacker.metadata.species)
+    --print("avg: ", averagePosX, averagePosY)
     local distanceModifier = 1 / distanceToTarget
     
     local score = target and atk or 1 * (1 + crit) * lsWeight * (1 + ls) * (1 + distanceModifier) + lethalBonus - def / 20
@@ -138,13 +138,13 @@ function aiManager:pickMove(moves, difficulty)
 
         local leftIndex = #moves - math.max(1, math.floor(#moves * 0.1))
         local portion = splitTableByRange(moves, leftIndex, #moves)
-        print("moves size: ".. #moves)
-        print("portion size: " .. #portion)
-        print("left index: ", leftIndex)
+        -- print("moves size: ".. #moves)
+        -- print("portion size: " .. #portion)
+        -- print("left index: ", leftIndex)
 
-        for index, value in ipairs(portion) do
-            print(value.score, value.x, value.y, value.entity.metadata.species)
-        end
+        -- for index, value in ipairs(portion) do
+        --     print(value.score, value.x, value.y, value.entity.metadata.species)
+        -- end
 
         return portion[math.random(#portion)]
         -- return portion[#portion]
@@ -155,7 +155,7 @@ function aiManager:getMove(teamID)
     local allMoves = {}
     
     for _, e in ipairs(self.currentMatch.teamManager.teams[teamID].members) do
-        if e.state.current == "alive" and self.currentMatch.stateSystem:hasActions(e) then
+        if e.state.alive and self.currentMatch.stateSystem:hasActions(e) then
             for _, move in ipairs(self:rateMoves(e)) do
                 table.insert(allMoves, move)
             end

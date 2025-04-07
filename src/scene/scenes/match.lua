@@ -36,8 +36,7 @@ function match:enter()
         --self.currentMatch:addToTeam(1, self.currentMatch:newAnimal("bear", 4, 4, 1))
     end
 
-    self.currentMatch.itemSystem:giveItem(gs.run.team[1], "gear")
-
+    -- self.currentMatch.itemSystem:giveItem(gs.run.team[1], "gear")
 
     self.currentMatch:preparePlayer()
     self.currentMatch:positionPlayer()

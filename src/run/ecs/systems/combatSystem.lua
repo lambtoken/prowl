@@ -39,34 +39,8 @@ function combatSystem:init()
 
         print(entity.metadata.species)
 
-        local callback = "onStep"
-
         on("onStep", matchState, entity)
         
-        -- if entity.metadata.type == 'animal' then
-        --     local animal = mobData[entity.metadata.species]
-        --     if animal.passive and animal.passive[callback] then
-        --         return animal.passive[callback](matchState, entity)
-        --     end
-        --     if entity.inventory and entity.inventory.items then
-        --         for _, item in ipairs(entity.inventory.items) do
-        --             local item = entity.inventory.items[_]
-        --             local itemDef = itemData[item.name]
-        --             if itemDef.passive and itemDef.passive[callback] then
-        --                 if item.cooldowns and item.cooldowns[callback] and item.cooldowns[callback] > 0 then
-        --                     goto continue
-        --                 end
-        --                 itemDef.passive[callback](matchState, entity, item)
-        --                 return matchState.itemSystem:reduceCooldown(item, callback)
-        --             end
-        --             ::continue::
-        --         end
-        --     end
-        -- end
-
-
-        --on("onStep", matchState, entity)
-
         if not attack then
             return
         end
@@ -85,7 +59,7 @@ function combatSystem:init()
             
                 local isEnemy = entity.metadata.teamID ~= target.metadata.teamID
                 local isTargetable = target.status and target.status.current.isTargetable
-                local isAlive = not (target.state and target.state.current ~= "alive")
+                local isAlive = not (target.state and not target.state.alive)
             
                 if isEnemy and isTargetable and isAlive then
                     if target.stats then
@@ -153,7 +127,7 @@ function combatSystem:init()
         
         if entity.metadata.type == 'animal' then
             for _, target in ipairs(targets) do
-                if target == entity or target.state.current ~= "alive" then 
+                if target == entity or not target.state.alive then 
                     goto continue  -- Skip this target instead of returning
                 end
                     
@@ -191,7 +165,7 @@ function combatSystem:init()
             EventManager:emit("onHoveredAny", target)
 
             if target.metadata.type == 'object' then
-                if target == entity or target.state.current ~= "alive" then
+                if target == entity or not target.state.alive then
                     goto continue
                 end
                 local object = objectData[target.metadata.objectName]
@@ -201,7 +175,7 @@ function combatSystem:init()
             end
 
             if target.metadata.type == 'animal' then
-                if target == entity and target.state.current ~= "alive" then
+                if target == entity and not target.state.alive then
                     goto continue
                 end
                 
@@ -376,7 +350,7 @@ function combatSystem:insideAttackPattern(attacker)
     
     local entities = {}
     for _, entity in ipairs(self.pool) do
-        if entity.state.current == "alive" then
+        if entity.state.alive then
             local position = entity.position
             local pattern = attacker.stats.currentPatterns.atkPattern
             
