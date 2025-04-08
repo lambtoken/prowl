@@ -119,6 +119,9 @@ function moveSystem:move(entity, type, targetX, targetY, attack, cancelPrev)
     if type == "walk" then
         on("onMove", gs.currentMatch, entity)
     end
+    
+    entity.position.attack = attack or entity.position.attack
+    entity.position.step = true
 
     attack = attack or false
 
@@ -342,20 +345,12 @@ function moveSystem:update(dt)
             else    
                 position.lastStepX = position.lastStepX + tween.x
                 position.lastStepY = position.lastStepY + tween.y
-    
-                self:handleMoved(entity)                
-            
-                self:handleOnStepped(entity)
-    
+
                 if position.moveTweens[i].type == 'walk' then
                     entity.state.currentTurnMoves = entity.state.currentTurnMoves + 1
                 end
 
                 table.remove(position.moveTweens, i)
-
-                if entity.state.alive then
-                    events:emit("onStep", entity, tween.attack)
-                end
             end
         end
 
@@ -406,7 +401,16 @@ function moveSystem:update(dt)
         position.y = newPosY
 
         if #entity.position.moveTweens == 0 and entity.position.step then
+            self:handleMoved(entity)                
             
+            self:handleOnStepped(entity)
+
+            if entity.state.alive then
+                events:emit("onStep", entity, entity.position.attack)
+            end
+
+            entity.position.step = false
+            entity.position.attack = false
         end
         
         -- if position.snapTween ~= nil then
@@ -486,8 +490,6 @@ function moveSystem:getNearestEntity(entity, type, teamID)
         ::continue::
     end
 
-
-    print("nearest", nearestEntity.metadata.species)
     return nearestEntity
 end
 
@@ -498,9 +500,6 @@ function moveSystem:getDestination(entity)
         sumX = sumX + tween.lengthX
         sumY = sumY + tween.lengthY
     end
-
-    print("sum", sumX, sumY)
-    print("lsx, lsy", entity.position.lastStepX, sumY + entity.position.lastStepY)
 
     return sumX + entity.position.lastStepX, sumY + entity.position.lastStepY
 end

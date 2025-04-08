@@ -1,4 +1,5 @@
 local Concord = require("libs.concord")
+local RM = require ('src.render.RenderManager'):getInstance()
 local isInTable = require("src.utility.isInTable")
 
 local collisionSystem = Concord.system({pool = {"collider", "position"}})
@@ -26,6 +27,11 @@ function collisionSystem:update()
             or isInTable(colB.ignoreIds, entityA.metadata.id) then
                 goto continue2
             end
+
+            if not isInTable(colA.collisionGroups, entityB.metadata.type)
+            or not isInTable(colB.collisionGroups, entityA.metadata.type) then
+                goto continue2
+            end
             
             if colB.disabled or colA.disabled then
                 goto continue2
@@ -39,9 +45,26 @@ function collisionSystem:update()
                     table.insert(colB.collidedWith, entityA.metadata.id)
 
                     if colA.onCollision then
+                        for index, value in ipairs(colA.ignoreIds) do
+                            print("colA ids: ", value)
+                        end
+                        for index, value in ipairs(colB.ignoreIds) do
+                            print("colB ids: ", value)
+                        end
+                        print(entityA.metadata.id, entityB.metadata.id)
+                        print("collision1")
                         colA.onCollision(entityA, entityB)
                     end
+
                     if colB.onCollision then
+                        for index, value in ipairs(colA.ignoreIds) do
+                            print("colA ids: ", value)
+                        end
+                        for index, value in ipairs(colB.ignoreIds) do
+                            print("colB ids: ", value)
+                        end
+                        print(entityA.metadata.id, entityB.metadata.id)
+                        print("collision2")
                         colB.onCollision(entityB, entityA)
                     end
 
@@ -70,10 +93,22 @@ function collisionSystem:update()
 end
 
 function collisionSystem:checkAABB(posA, colA, posB, colB)
-    return posA.screenX < posB.screenX + colB.width and
-           posA.screenX + colA.width > posB.screenX and
-           posA.screenY < posB.screenY + colB.height and
-           posA.screenY + colA.height > posB.screenY
+    local tileSize = RM.tileSize
+
+    local ax = posA.screenX + (colA.x or 0) * tileSize
+    local ay = posA.screenY + (colA.y or 0) * tileSize
+    local aw = (colA.width or 1) * tileSize
+    local ah = (colA.height or 1) * tileSize
+
+    local bx = posB.screenX + (colB.x or 0) * tileSize
+    local by = posB.screenY + (colB.y or 0) * tileSize
+    local bw = (colB.width or 1) * tileSize
+    local bh = (colB.height or 1) * tileSize
+
+    return ax < bx + bw and
+           ax + aw > bx and
+           ay < by + bh and
+           ay + ah > by
 end
 
 return collisionSystem

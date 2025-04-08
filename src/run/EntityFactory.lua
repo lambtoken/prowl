@@ -6,6 +6,7 @@ local tablex     = require "libs.batteries.tablex"
 local pretty     = require "libs.batteries.pretty"
 local statusDefaults = require "src.run.ecs.defaults.statusDefaults"
 local gs = require('src.state.GameState'):getInstance()
+local RM = require('src.render.RenderManager'):getInstance()
 
 local EntityFactory = {
     idCounter = 1
@@ -46,7 +47,16 @@ function EntityFactory:applyDefault(entity, comp)
             if entity.stats.level == -1 then
                 for key, value in pairs(entity.stats.base) do
                     if key == "atk" or key == "def" or key == "maxHp" then
-                        entity.stats.base[key] = math.floor(value / 2 ) 
+                        
+                        local value = math.floor(value / 2 )
+                        
+                        if key == "def" then
+                            value = math.max(0, value)
+                        else
+                            value = math.max(1, value)  
+                        end
+
+                        entity.stats.base[key] = value
                     end
                 end
             end
@@ -120,14 +130,22 @@ function EntityFactory:applyDefault(entity, comp)
             end
         end
     elseif comp == "collider" then
-        entity.collider.onCollision = function(source, target)
-            local matchState = gs.currentMatch
-            if target.state and target.state.current == "dead" then
-                return
+        if entity.metadata.type == "animal" then
+            entity.collider.collisionGroups = {"projectile"}
+        elseif entity.metadata.type == "projectile" then
+            entity.collider.onCollision = function(source, target)
+                local matchState = gs.currentMatch
+                if target.state and target.state.current == "dead" then
+                    return
+                end
+                projectileData[entity.metadata.projectileType].onHit(matchState, source, target)
+                source.position.customMove = nil
             end
-            projectileData[entity.metadata.projectileType].onHit(matchState, source, target)
-            source.position.customMove = nil
+            entity.collider.collisionGroups = {"animal"}
         end
+
+        entity.collider.x = (1 - entity.collider.width) / 2
+        entity.collider.y = (1 - entity.collider.height) / 2
     end
 end
 
@@ -162,6 +180,7 @@ function EntityFactory:createAnimal(species, x, y, level)
     self:applyDefault(entity, 'status')
     self:applyDefault(entity, 'position')
     self:applyDefault(entity, 'metadata')
+    self:applyDefault(entity, 'collider')
 
     return entity
 end
@@ -185,6 +204,7 @@ function EntityFactory:createObject(name, x, y)
     entity.metadata.objectName = name
     self:applyDefault(entity, 'status')
     self:applyDefault(entity, 'position')
+    self:applyDefault(entity, 'collider')
 
     return entity
 end
@@ -236,6 +256,8 @@ end
 function EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId)
     self:loadComponents()
     
+    print("owner id:", ownerId)
+
     local entity = Concord.entity()
         :give('metadata')
         :give('position', x, y)
@@ -244,6 +266,7 @@ function EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId)
         :give('collider')
         :give('state')
         :give('shader')
+
     entity.metadata.type = 'projectile'
     entity.metadata.projectileType = type
 
@@ -253,8 +276,9 @@ function EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId)
     entity.projectile.angle = math.atan2(targetY - y, targetX - x)
    
     self:applyDefault(entity, 'position')
+    self:applyDefault(entity, 'metadata')
     self:applyDefault(entity, 'collider')
-    entity.collider.ignoreIds = {ownerId}
+    entity.collider.ignoreIds = ownerId and {ownerId} or {}
     return entity
 end
 

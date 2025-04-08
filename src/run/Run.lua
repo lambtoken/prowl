@@ -2,6 +2,9 @@ local class = require 'libs.middleclass'
 local Stage = require 'src.run.Stage'
 local rng = require 'src.utility.rng'
 local EntityFactory = require "src.run.EntityFactory"
+local gs = require("src.state.GameState"):getInstance()
+local sceneManager = require("src.scene.SceneManager"):getInstance()
+local stageConfig = require "src.run.stageConfig"
 
 local Run = class("Run")
 
@@ -53,6 +56,19 @@ end
 
 function Run:decreaseHealth()
     self.runHealth = math.max(0, self.runHealth - 1)
+end
+
+function Run:giveItemAndProgress(itemName)
+    gs.currentMatch.itemSystem:giveItem(gs.run.team[1], itemName)
+    gs.currentMatchNode.passed = true
+    
+    if self.currentNodeCoords[1] == #stageConfig.format - 1 then
+        self:nextStage()
+    else
+        self.currentNodeCoords = {gs.currentMatchNode.x, gs.currentMatchNode.y}
+    end
+
+    sceneManager:switchScene( "runMap")
 end
 
 function Run:setOutcome()

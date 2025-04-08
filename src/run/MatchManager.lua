@@ -123,7 +123,7 @@ function MatchManager:initialize(node)
                     -- change scene to pick Item Scene
                     
                     if s.instance.winnerId == 1 then
-                        SceneManager:switchScene("itemSelect")
+                        SceneManager:switchScene("itemSelectNew")
                     else
                         gs.run:decreaseHealth()
                         if gs.run.runHealth > 0 then

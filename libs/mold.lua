@@ -395,6 +395,7 @@ function Box:playAnimation(name, loop)
     loop = loop or false
     
     table.insert(self.animations, self:createAnimation(name, loop))
+    return self
 end
 
 
@@ -2127,6 +2128,27 @@ end
 function QuadBox:resize()
     Box.resize(self)
     self:setScale()
+end
+
+function QuadBox:_handleAspectRatio(w, h)
+
+    if self.scaleBy == SCALE_BY.HEIGHT then
+        local ratio = self.origHeight / self.origWidth
+        return h * ratio, h
+
+    elseif self.scaleBy == SCALE_BY.WIDTH then
+        local ratio = self.origHeight / self.origWidth
+        return w, w * ratio
+    end
+
+    return w, h
+end
+
+function QuadBox:setScaleBy(str)
+    assert(type(str) == "string", "Argument must be a string!")
+    -- add a check for SCALE_BY values
+    self.scaleBy = str
+    return self
 end
 
 function QuadBox:draw()

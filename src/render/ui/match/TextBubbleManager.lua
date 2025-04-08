@@ -124,9 +124,9 @@ function TextBubble:newStatusEffect(entity, text, duration)
         id = tostring(os.time()) .. tostring(math.random(1000, 9999)) -- Unique ID for each bubble
     }
 
-    print(entity.metadata.id)
-    print(entity.metadata.species)
-    print(o.entityId)
+    -- print(entity.metadata.id)
+    -- print(entity.metadata.species)
+    -- print(o.entityId)
 
     o.tweenX = tween.new(o.floatDurationX, o, {x = o.bubbleRangeX}, "inOutQuart")
     o.tweenY = tween.new(o.floatDurationY, o, {y = o.bubbleRangeY}, "inOutQuart")

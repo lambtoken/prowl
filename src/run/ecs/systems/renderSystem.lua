@@ -193,7 +193,7 @@ function renderSystem:draw()
         end
         if drawColliders and entity.collider then
             love.graphics.setColor(1, 0, 0, 1)
-            love.graphics.rectangle("line", entity.position.screenX, entity.position.screenY, entity.collider.width, entity.collider.height)
+            love.graphics.rectangle("line", entity.position.screenX + entity.collider.x * RM.tileSize, entity.position.screenY + entity.collider.y * RM.tileSize, entity.collider.width * RM.tileSize, entity.collider.height * RM.tileSize)
             love.graphics.setColor(1, 1, 1, 1)
         end
     end

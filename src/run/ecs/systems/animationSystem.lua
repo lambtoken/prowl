@@ -209,6 +209,8 @@ function animationSystem:removeAll(entity)
         layer.animations = {}
     end
 
+    entity.renderable.animations = {}
+
 end
 
 return animationSystem

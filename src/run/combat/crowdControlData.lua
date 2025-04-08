@@ -24,25 +24,18 @@ local data = {
             local dx = target.position.x - source.position.x
             local dy = target.position.y - source.position.y
                         
-            print("dx, dy", dx, dy)
-
             dx = dx ~= 0 and (dx / math.abs(dx)) or 0
             dy = dy ~= 0 and (dy / math.abs(dy)) or 0
-    
-            print("dest", destX, destY)
 
             local knockbackX, knockbackY = ccFunctions.checkPath(matchState, destX, destY, dx, dy, 1)
 
-            print("knockback", knockbackX, knockbackY)
-
-            if not(dx == 0 and dy == 0) then
+            if target.position.x == knockbackX and target.position.y == knockbackY then
+                return false
+            else
                 soundManager:playSound("knockback")
                 matchState.moveSystem:move(target, 'knockback', knockbackX, knockbackY)
-            else
-                return false
+                return true
             end
- 
-            return true
         end,
         animation = {},
         adjective = "knocked"
@@ -110,10 +103,14 @@ local data = {
             end
             
             local displaceX, displaceY = ccFunctions.checkPath(matchState, destX, destY, dx, dy, 1)
-        
-            soundManager:playSound("displace")
-            matchState.moveSystem:move(target, 'displace', displaceX, displaceY)
-            return true
+            
+            if target.position.x == displaceX and target.position.y == displaceY then
+                return false
+            else
+                soundManager:playSound("displace")
+                matchState.moveSystem:move(target, 'displace', displaceX, displaceY)
+                return true
+            end
         end,
         animation = {},
         adjective = "displaced"

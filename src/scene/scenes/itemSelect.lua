@@ -30,11 +30,11 @@ end
 function itemSelect:enter()
     self.items = {} 
     
-    local randomItems = getRandomItems(gs.run.currentStage, nItems)
+    local randomItems = getRandomItems(math.random(1, 3), nItems)
 
-    randomItems[1] = 'baseball_bat'
-    randomItems[2] = 'revolver'
-    randomItems[3] = 'mace'
+    randomItems[1] = 'crossbow'
+    -- randomItems[2] = 'racing_flag'
+    -- randomItems[3] = 'mace'
 
     for i = 1, nItems do
         local item = Item:new(randomItems[i])
@@ -44,7 +44,7 @@ function itemSelect:enter()
 
     self:resize()
 
-    SoundManager:playSound('arrow')
+    SoundManager:playSound('clickyclicky')
 end
 
 function itemSelect:update(dt)

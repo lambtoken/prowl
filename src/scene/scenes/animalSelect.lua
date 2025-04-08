@@ -50,8 +50,6 @@ function animalSelect:enter()
         
         local lastRow = container.children[#container.children]
 
-        print(#container.children, #lastRow, cols)
-
         if #lastRow.children > cols then
             container:addChild(newRow())
         end

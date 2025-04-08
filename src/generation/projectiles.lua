@@ -21,6 +21,8 @@ local defaultMove = function(entity, dt)
             local normalizedY = dy / normalIzed
             pos.x = pos.x + normalizedX * speed * dt
             pos.y = pos.y + normalizedY * speed * dt
+            pos.lastStepX = pos.x
+            pos.lastStepY = pos.y
             speed = speed * damping
         end
     end

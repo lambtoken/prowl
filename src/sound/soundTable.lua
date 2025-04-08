@@ -9,6 +9,7 @@ local soundTable = {
     bear_trap = {type = 'effect', file = 'bear_trap.wav'},
     mouse_trap = {type = 'effect', file = 'mouse_trap.wav'},
     explosion = {type = 'effect', file = 'explosion.wav', volume = 0.5},
+    arrow = {type = 'effect', file = 'arrow.wav', volume = 0.5},
     hiss = {type = 'effect', file = 'hiss.wav', volume = 1},
     bite = {type = 'effect', file = 'bite3.wav'},
     heal = {type = 'heal', file = 'heal.wav'},
@@ -25,6 +26,7 @@ local soundTable = {
     click10 = {type = 'click', file = 'click10.wav', volume = 0.5},
     click11 = {type = 'click', file = 'click11.wav', volume = 0.8},
     click12 = {type = 'click', file = 'click12.wav'},
+    clickyclicky = {type = 'click', file = 'clickyclicky.wav'},
 
     softclick = {type = 'click', file = 'softclick.wav', volume = 0.7},
     softclick2 = {type = 'click', file = 'softclick2.wav', volume = 0.7},
@@ -34,7 +36,7 @@ local soundTable = {
     displace = {type = 'displace', file = 'displace.wav', volume = 1},
     victory = {type = 'ui', file = 'victory.wav', volume = 1},
     loss = {type = 'ui', file = 'slowmo.wav', volume = 0.6},
-    arrow = {type = 'effect', file = 'oawn.wav', volume = 1},
+    --arrow = {type = 'effect', file = 'oawn.wav', volume = 1},
     miss = {type = 'effect', file = 'miss.wav', volume = 0.6},
 }
 

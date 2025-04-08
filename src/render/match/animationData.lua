@@ -2,6 +2,8 @@ local EventManager = require("src.state.events"):getInstance()
 local RM = require('src.render.RenderManager'):getInstance()
 
 local SWAY_DURATION = 0.7
+local SINE_DURATION = 1.7
+local SINE_RANGE = 0.2
 
 local animations = {
 
@@ -248,8 +250,6 @@ local animations = {
                 to = 2 * math.pi,
                 func = "outQuart"
             },
-
-
         }
     },
 
@@ -286,6 +286,41 @@ local animations = {
                 func = "inBounce"
             }
         }
+    },
+
+    sine_wave = { 
+
+        cancelCategory = "none",
+        loop = false,
+        stackable = true,
+        onFinish = function() end,
+        tweens = {
+            {
+                delay = 0,
+                duration = SINE_DURATION,
+                target = 'rotation',
+                from = 0,
+                to = SINE_RANGE,
+                func = "outSine"
+            },
+            {
+                delay = SINE_DURATION,
+                duration = SINE_DURATION * 2,
+                target = 'rotation',
+                from = SINE_RANGE,
+                to = -SINE_RANGE,
+                func = "inOutSine"
+            },
+            {
+                delay = SINE_DURATION + SINE_DURATION * 2,
+                duration = SINE_DURATION,
+                target = 'rotation',
+                from = -SINE_RANGE,
+                to = 0,
+                func = "inSine"
+            }
+        }
+
     },
 }
 

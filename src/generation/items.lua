@@ -1,4 +1,6 @@
 local RM = require ('src.render.RenderManager'):getInstance()
+local SoundManager = require('src.sound.SoundManager'):getInstance()
+
 -- rarities: common, uncommon, rare, epic, legendary
 
 --                     ▓▓▓▓▓▓      
@@ -505,22 +507,23 @@ local items = {
     --         end,
     --     }
     -- },
-    -- crossbow = {
-    --     name = 'crossbow',
-    --     type = 'weapon',
-    --     rarity = 'common',
-    --     stats = {{'increase', 'atk', 1}},
-    --     pattern = {},
-    --     passive = {
-    --         onStep = function(matchState, source)
-    --             local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.metadata.teamID)
-    --             if nearestEntity then
-    --                 matchState:newProjectile('arrow', source.position.x, source.position.y, nearestEntity.position.x, nearestEntity.position.y, source.metadata.id)
-    --             end
-    --         end
-    --     },
-    --     active = {},
-    -- },
+    crossbow = {
+        name = 'crossbow',
+        type = 'weapon',
+        rarity = 'common',
+        stats = {{'increase', 'atk', 1}},
+        pattern = {},
+        passive = {
+            onStep = function(matchState, source)
+                local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.metadata.teamID)
+                if nearestEntity then
+                    SoundManager:playSound("arrow")
+                    matchState:newProjectile('arrow', source.position.x, source.position.y, nearestEntity.position.x, nearestEntity.position.y, source.metadata.id)
+                end
+            end
+        },
+        active = {},
+    },
     boxing_gloves = {
         name = 'boxing gloves',
         type = 'weapon',

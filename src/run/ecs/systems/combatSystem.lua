@@ -101,16 +101,6 @@ function combatSystem:init()
             end
 
         end
-
-        -- on step items
-        for _, item in ipairs(entity.inventory.items) do
-            if item.passive and item.passive.onStep then
-                if itemData[item.name].passive and itemData[item.name].passive.onStep then
-                    itemData[item.name].passive.onStep(matchState, entity)
-                end
-            end
-        end
-        
     end)
 
     EventManager:on("onStepAny", function(entity)

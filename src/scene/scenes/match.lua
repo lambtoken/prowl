@@ -38,9 +38,6 @@ function match:enter()
 
     -- self.currentMatch.itemSystem:giveItem(gs.run.team[1], "gear")
 
-    self.currentMatch:preparePlayer()
-    self.currentMatch:positionPlayer()
-
     self.turnTracker = turnTracker:new()
     self.turnTracker:load(self.currentMatch.teamManager)
 
@@ -99,6 +96,9 @@ function match:enter()
     self.currentMatch:generateEnemies()
     self.currentMatch:generateFlowers()
     --self.currentMatch:generateMarks()
+
+    self.currentMatch:preparePlayer()
+    self.currentMatch:positionPlayer()
 
     self.hearts = Hearts:new(gs.run.team[1])
 
