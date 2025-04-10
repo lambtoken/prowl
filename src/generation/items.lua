@@ -783,6 +783,20 @@ local items = {
         },
         active = {},
     },
+    swiss_knife = {
+        name = 'swiss knife',
+        type = 'protection',
+        rarity = 'rare',
+        stats = {
+            {'increase', 'atk', 1},
+            {'increase', 'def', 1},
+            {'increase', 'crit', 0.05},
+            {'increase', 'maxHp', 1}
+        },
+        pattern = {},
+        passive = {},
+        active = {},
+    },
 }
 
 local crownWidth = RM.renderDistanceX + 1

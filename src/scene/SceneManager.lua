@@ -33,7 +33,7 @@ function SceneManager:initialize()
     self.transitionTimer = 0
     self.transitionType = 'fade'
     self.duration = 0.5
-    self.mouseX = 0
+    self.mouseX = 0 -- unused?
     self.mouseY = 0
     self.globalKeyBindings = {}
 
@@ -87,8 +87,6 @@ end
 
 function SceneManager:update(dt)
     
-    self.mouseX, self.mouseY = love.mouse.getPosition()
-
     if self.currentScene then
         self.currentScene:update(dt)
         for i, v in ipairs(self.subScenes) do
@@ -118,7 +116,6 @@ function SceneManager:update(dt)
         end
     end
     
-    mouse.update(dt)
     self.cursor:update(dt)
 end
 
@@ -145,6 +142,11 @@ function SceneManager:changeScene()
 end
 
 function SceneManager:mousemoved(x, y, dx, dy)
+    mouse.x = x
+    mouse.y = y
+
+    self.mouseX, self.mouseY = x, y
+
     if self.currentScene and self.currentScene.mousemoved then
         self.currentScene:mousemoved(x, y, dx, dy)
     end

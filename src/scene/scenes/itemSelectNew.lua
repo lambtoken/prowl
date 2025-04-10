@@ -36,7 +36,7 @@ function itemSelect:enter()
     
     local generated_items = getRandomItems(math.random(1, 3), nItems)
 
-    -- randomItems[1] = 'crossbow'
+    generated_items[1] = 'swiss_knife'
     -- randomItems[2] = 'racing_flag'
     -- randomItems[3] = 'mace'
 
