@@ -3,7 +3,6 @@ local RM = require ('src.render.RenderManager'):getInstance()
 local animalData = require 'src.generation.mobs'
 local Concord = require "libs.concord"
 local fsm = require "libs.batteries.state_machine"
-local music = require 'src.sound.music'
 local TeamManager = require 'src.run.TeamManager'
 local EventManager = require "src.state.events"
 local EntityFactory = require "src.run.EntityFactory"
@@ -22,7 +21,6 @@ local shimmerShader = love.graphics.newShader(require('src.render.shaders.shimme
 local noiseShader = love.graphics.newShader(require('src.render.shaders.noise_shader'))
 local getRandomItems= require('src.generation.functions.getRandomItems')
 local stageMobItems = require('src.generation.stageMobItems')
-local items = require('src.generation.items')
 local stageMobLevels = require('src.generation.stageMobLevels')
 local stageMarkAmount = require('src.generation.stageMarkAmount')
 local matchMarkRates = require('src.generation.matchMarkRates')
@@ -213,13 +211,7 @@ function MatchManager:initialize(node)
     self.teamManager:load()
     self.aiManager = aiManager:new(self)
 
-    print("all entities before")
-    for _, entity in ipairs(self.ecs:getEntities()) do
-        print(entity.metadata.species)
-    end
-
     noiseShader:send("resolution", {love.graphics.getWidth(), love.graphics.getHeight()})
-
 end
 
 
@@ -322,7 +314,6 @@ function MatchManager:isSteppable(x, y, entity)
     
             if not terrainCheck then return false end
         end
-
 
         local entities = self.moveSystem:findByCoordinates(x, y)
 

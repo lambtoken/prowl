@@ -12,12 +12,6 @@ function EventManager:new()
     return instance
 end
 
--- function EventManager:newInstance()
---     instance = nil
---     instance = self:new()
---     return instance
--- end
-
 function EventManager:getInstance()
     if not instance then
         instance = self:new()

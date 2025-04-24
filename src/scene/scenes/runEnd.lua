@@ -16,7 +16,7 @@ function runEnd:enter()
 end
 
 function runEnd:draw()
-    love.graphics.setFont(getFont('basis33', 60))
+    love.graphics.setfont(getfont('basis33', 60))
     love.graphics.setColor(unpack(self.titleColor))
     love.graphics.print(self.titleText, self.outcomeX, self.outcomeY)
 end
