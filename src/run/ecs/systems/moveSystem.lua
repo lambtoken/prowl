@@ -401,7 +401,7 @@ function moveSystem:update(dt)
         position.y = newPosY
 
         if #entity.position.moveTweens == 0 and entity.position.step then
-            self:handleMoved(entity)                
+            self:handleMoved(entity)
             
             self:handleOnStepped(entity)
 

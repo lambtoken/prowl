@@ -37,7 +37,15 @@ local sceneM = nil
 local shaderM = nil
 local renderM
 
-function love.load()
+function love.load(args)
+
+    for index, value in ipairs(args) do
+        if value == "test" then
+            print("TESTING")
+            love.event.quit(0)
+        end
+    end
+
     gs = GameState:getInstance()
     gs:setSeed(os.time())
     
