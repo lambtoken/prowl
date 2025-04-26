@@ -1,9 +1,10 @@
 local class = require 'libs.middleclass'
-local RM = require ('src.render.RenderManager'):getInstance()
-local animalData = require 'src.generation.mobs'
 local Concord = require "libs.concord"
 local fsm = require "libs.batteries.state_machine"
+
+local RM = require ('src.render.RenderManager'):getInstance()
 local TeamManager = require 'src.run.TeamManager'
+local animalData = require 'src.generation.mobs'
 local EventManager = require "src.state.events"
 local EntityFactory = require "src.run.EntityFactory"
 local matchTerrain = require "src.generation.matchTerrain"
@@ -24,6 +25,7 @@ local stageMobItems = require('src.generation.stageMobItems')
 local stageMobLevels = require('src.generation.stageMobLevels')
 local stageMarkAmount = require('src.generation.stageMarkAmount')
 local matchMarkRates = require('src.generation.matchMarkRates')
+local rng = require "src.utility.rng"
 
 local MatchManager = class("MatchManager")
 
@@ -46,6 +48,12 @@ function MatchManager:initialize(node)
     EntityFactory:loadComponents()
 
     self.__systems = EntityFactory:loadSystems()
+
+    self.rng = rng:new(self.seed)
+    self.rng:addGenerator("combat")
+    self.rng:addGenerator("terrainGen")
+    self.rng:addGenerator("mobGen")
+    self.rng:addGenerator("objGen")
 
     self.ecs:addSystems(
         self.__systems.animationSystem,
@@ -212,6 +220,8 @@ function MatchManager:initialize(node)
     self.aiManager = aiManager:new(self)
 
     noiseShader:send("resolution", {love.graphics.getWidth(), love.graphics.getHeight()})
+
+    
 end
 
 

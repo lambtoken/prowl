@@ -17,6 +17,7 @@ local gray_shader = require "src.render.shaders.gray_shader"
 local gs = require("src.state.GameState"):getInstance()
 local Hearts = require "src.render.matchHearts"
 local animalStats = require "src.render.animalStats"
+local pretty = require "libs.batteries.pretty"
 
 local match = Scene:new('match')
 
@@ -103,6 +104,11 @@ function match:enter()
     self.hearts = Hearts:new(gs.run.team[1])
 
     self.currentMatch.teamManager.states:set_state("start_phase")
+
+    self.ddd = self.currentMatch.ecs:serialize()
+    print("serialization")
+    pretty.print(self.ddd)
+
 end
 
 function match:update(dt) 

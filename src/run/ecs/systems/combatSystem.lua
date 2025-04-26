@@ -63,7 +63,7 @@ function combatSystem:init()
             
                 if isEnemy and isTargetable and isAlive then
                     if target.stats then
-                        local missChance = gs.run.rng:get('combat')
+                        local missChance = gs.currentMatch.rng:get('combat')
                         local luckDiff = target.stats.current.luck - entity.stats.current.luck
             
                         if luckDiff > missChance then
@@ -235,7 +235,7 @@ function combatSystem:attack(entity1, entity2)
     local crit = false
 
     --crit
-    if entity1.stats.current.crit >= gs.run.rng:get('combat') then
+    if entity1.stats.current.crit >= gs.currentMatch.rng:get('combat') then
         damage = damage * entity1.stats.current.critDamage
         EventManager:emit("screenShake")
         EventManager:emit("onCrit", entity1, entity2)

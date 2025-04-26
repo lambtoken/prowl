@@ -39,8 +39,7 @@ function GameState:initialize()
         screenShake = true,
     }
     self.achievements = {}
-    self.seed = os.time()
-    self:setSeed(self.seed)
+    self:setSeed(os.time())
 end
 
 function GameState:setSeed(seed)
@@ -49,12 +48,14 @@ function GameState:setSeed(seed)
     self.rng:addGenerator('general')
 end
 
-function GameState:loadUserData()
+function GameState:loadData()
 
 end
 
-function GameState:saveUserData()
-    
+function GameState:saveData()
+    -- path??    
+
+
 end
 
 function GameState:setRun(run)

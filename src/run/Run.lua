@@ -43,10 +43,6 @@ function Run:setSeed(seed)
     self.seed = seed
     self.rng = rng:new(self.seed)
     self.rng:addGenerator('stageGen')
-    self.rng:addGenerator('terrainGen')
-    self.rng:addGenerator('objGen')
-    self.rng:addGenerator('combat')
-    self.rng:addGenerator('mobGen')
     self.rng:addGenerator('general')
 end
 
