@@ -105,10 +105,7 @@ function match:enter()
 
     self.currentMatch.teamManager.states:set_state("start_phase")
 
-    self.ddd = self.currentMatch.ecs:serialize()
-    print("serialization")
-    pretty.print(self.ddd)
-
+    -- self.ddd = self.currentMatch.ecs:serialize()
 end
 
 function match:update(dt) 

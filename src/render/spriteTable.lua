@@ -122,6 +122,13 @@ local spriteTable = {
     sand_checkers = {16, 17},
     sand_waves = {17, 17},
     snow = {6, 16},
+    scale_tile_1 = {15, 35},
+    scale_tile_2 = {16, 35},
+    scale_tile_3 = {17, 35},
+    scale_tile_4 = {15, 36},
+    scale_tile_5 = {16, 36},
+    scale_tile_6 = {17, 36},
+
 
     --marks
     bloodletter_mark = {22, 21},

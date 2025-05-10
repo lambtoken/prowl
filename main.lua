@@ -110,4 +110,3 @@ end
 function love.keypressed(key, scancode, isrepeat)
     sceneM:keypressed(key, scancode, isrepeat)
 end
-

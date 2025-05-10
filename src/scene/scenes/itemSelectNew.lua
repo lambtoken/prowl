@@ -9,6 +9,7 @@ local SoundManager  = require('src.sound.SoundManager'):getInstance()
 local mold = require "libs.mold"
 local item_box = require "src.render.components.item_select.item_box"
 local portrait = require "src.render.components.portrait"
+local move_atk_pattern = require "src.render.components.move_atk_pattern"
 
 local gs = require("src.state.GameState"):getInstance()
 
@@ -36,7 +37,7 @@ function itemSelect:enter()
     
     local generated_items = getRandomItems(math.random(1, 3), nItems)
 
-    generated_items[1] = 'swiss_knife'
+    generated_items[1] = 'crossbow'
     -- randomItems[2] = 'racing_flag'
     -- randomItems[3] = 'mace'
 
@@ -52,6 +53,9 @@ function itemSelect:enter()
         :setWidth("70%")
         :setHeight("30%")
         :setJustifyContent("space-evenly")
+        :setAlignContent("center")
+        :setDirection("row")
+        :debug()
 
     self.root:addChild(self.animal_container)
 
@@ -61,13 +65,18 @@ function itemSelect:enter()
         :setWidth("20%")
         :setScaleBy("width")
         :playAnimation("sine_wave", true)
+        :debug()
 
         
     -- self.animal_stats = stats(animal)
-        
+
+    self.animal_move_pattern = move_atk_pattern(self.current_animal.stats.currentPatterns.movePattern, "move")
+    self.animal_atk_pattern = move_atk_pattern(self.current_animal.stats.currentPatterns.atkPattern, "atk")
+    self.animal_move_pattern:playAnimation("sine_wave", true)
     self.animal_container:addChild(self.animal_portrait)
     -- self.animal_container:addChild(self.animal_stats)
-    -- self.animal_container:addChild(self.animal_pattern)
+    self.animal_container:addChild(self.animal_move_pattern)
+    self.animal_container:addChild(self.animal_atk_pattern)
     
     -- self:load_animal(self.current_animal)
 
