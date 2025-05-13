@@ -1,6 +1,6 @@
 local Scene = require 'src.scene.scene'
 local RM = require ('src.render.RenderManager'):getInstance()
-local tween = require 'libs.tween'
+local GS = require ('src.state.GameState'):getInstance()
 local Item = require 'src.render.ui.ItemSelectItem'
 local getRandomItems = require 'src.generation.functions.getRandomItems'
 local pretty         = require 'libs.batteries.pretty'
@@ -58,6 +58,23 @@ function itemSelect:enter()
 
     self.current_animal = gs.run.team[1]
 
+    -- team 1 (player), animal 1 (usually starter animal)
+    self:change_animal(1, 1)
+    self:load_animal()
+
+    self.root:resize()
+    SoundManager:playSound('clickyclicky')
+end
+
+function itemSelect:buildUI(change_portrait)
+    self.animal_atk_pattern = nil
+    self.animal_move_pattern = nil
+    self.animal_stats = nil
+    
+    if not self.current_animal then
+        return
+    end
+
     self.animal_container = mold.Container:new()
         :setWidth("70%")
         :setHeight("30%")
@@ -66,34 +83,44 @@ function itemSelect:enter()
         :setDirection("row")
         :debug()
         
-    self.animal_stats = stats(self.current_animal)
-    self.root:addChild(self.animal_stats)
-    
     self.root:addChild(self.animal_container)
-
-    self.animal_portrait = portrait(self.current_animal.metadata.species)
-        :setWidth("20%")
-        :setScaleBy("width")
-        :playAnimation("sine_wave", true)
-        :debug()
-
+        
+    self.animal_stats = stats(self.current_animal)
     self.animal_move_pattern = move_atk_pattern(self.current_animal.stats.currentPatterns.movePattern, "move")
+    -- self.animal_move_pattern:playAnimation("sine_wave", true)
     self.animal_atk_pattern = move_atk_pattern(self.current_animal.stats.currentPatterns.atkPattern, "atk")
-    self.animal_move_pattern:playAnimation("sine_wave", true)
-    self.animal_container:addChild(self.animal_portrait)
+    self.root:addChild(self.animal_stats)
     self.animal_container:addChild(self.animal_move_pattern)
     self.animal_container:addChild(self.animal_atk_pattern)
     
-    -- self:load_animal(self.current_animal)
+    if change_portrait then
+        self.animal_portrait = portrait(self.current_animal.metadata.species)
+            :setWidth("20%")
+            :setScaleBy("width")
+            :playAnimation("sine_wave", true)
+            :debug()
+        self.animal_container:addChild(self.animal_portrait)
+    end
 
     self.root:resize()
-    self.root:resize()
-
-    SoundManager:playSound('clickyclicky')
 end
 
 function itemSelect:load_animal(animal)
+    self:buildUI(true)
+end
 
+-- todo: member picker on the side
+
+function itemSelect:change_animal(id)
+    self.current_animal = gs.run.team[id]
+end
+
+function itemSelect:previewItem(item)
+    -- equip item
+
+    -- recalc
+    
+    -- rerender
 end
 
 function itemSelect:update(dt)

@@ -21,7 +21,7 @@ local mergePatterns = function(a, b)
 
         for i = 1, #smaller do
             for j = 1, #smaller[1] do
-                local diff = #larger - #smaller
+                -- local diff = #larger - #smaller
                 local offsetX = math.ceil(#larger[1] / 2) - math.ceil(#smaller[1] / 2)
                 local offsetY = math.ceil(#larger / 2) - math.ceil(#smaller / 2)
 
