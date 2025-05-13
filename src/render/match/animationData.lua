@@ -322,6 +322,41 @@ local animations = {
         }
 
     },
+
+    bubble_up = { 
+
+        cancelCategory = "none",
+        loop = false,
+        stackable = true,
+        onFinish = function() end,
+        tweens = {
+            {
+                delay = 0,
+                duration = SINE_DURATION,
+                target = 'scaleX',
+                from = 0,
+                to = SINE_RANGE,
+                func = "outSine"
+            },
+            {
+                delay = SINE_DURATION,
+                duration = SINE_DURATION * 2,
+                target = 'scaleX',
+                from = SINE_RANGE,
+                to = -SINE_RANGE,
+                func = "inOutSine"
+            },
+            {
+                delay = SINE_DURATION + SINE_DURATION * 2,
+                duration = SINE_DURATION,
+                target = 'scaleX',
+                from = -SINE_RANGE,
+                to = 0,
+                func = "inSine"
+            }
+        }
+
+    },
 }
 
 

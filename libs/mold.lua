@@ -1663,6 +1663,11 @@ function TextBox:setFont(font)
     self.font = font
 end
 
+function TextBox:setColor(r, g, b, a)
+    self.color = {r, g, b, a}
+    return self
+end
+
 function TextBox:_processText()
 
     self.children = {}
@@ -1680,6 +1685,7 @@ end
 function TextBox:setSize(size)
     self.fontSize = size
     self:_processText()
+    return self
 end
 
 TextBox.__instanceDict.setAlignContent = nil

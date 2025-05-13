@@ -45,26 +45,26 @@ function collisionSystem:update()
                     table.insert(colB.collidedWith, entityA.metadata.id)
 
                     if colA.onCollision then
-                        for index, value in ipairs(colA.ignoreIds) do
-                            print("colA ids: ", value)
-                        end
-                        for index, value in ipairs(colB.ignoreIds) do
-                            print("colB ids: ", value)
-                        end
-                        print(entityA.metadata.id, entityB.metadata.id)
-                        print("collision1")
+                        -- for index, value in ipairs(colA.ignoreIds) do
+                        --     print("colA ids: ", value)
+                        -- end
+                        -- for index, value in ipairs(colB.ignoreIds) do
+                        --     print("colB ids: ", value)
+                        -- end
+                        -- print(entityA.metadata.id, entityB.metadata.id)
+                        -- print("collision1")
                         colA.onCollision(entityA, entityB)
                     end
 
                     if colB.onCollision then
-                        for index, value in ipairs(colA.ignoreIds) do
-                            print("colA ids: ", value)
-                        end
-                        for index, value in ipairs(colB.ignoreIds) do
-                            print("colB ids: ", value)
-                        end
-                        print(entityA.metadata.id, entityB.metadata.id)
-                        print("collision2")
+                        -- for index, value in ipairs(colA.ignoreIds) do
+                        --     print("colA ids: ", value)
+                        -- end
+                        -- for index, value in ipairs(colB.ignoreIds) do
+                        --     print("colB ids: ", value)
+                        -- end
+                        -- print(entityA.metadata.id, entityB.metadata.id)
+                        -- print("collision2")
                         colB.onCollision(entityB, entityA)
                     end
 

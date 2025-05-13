@@ -321,7 +321,7 @@ function TextBubbleManager:killEntityBubbles(entity)
     end
     
     local entityId = entity.metadata.id
-    print("killing entity bubbles", entityId)
+    -- print("killing entity bubbles", entityId)
     local removedBubbleIds = {}
 
     -- Kill damage bubbles

@@ -9,6 +9,7 @@ local SoundManager  = require('src.sound.SoundManager'):getInstance()
 local mold = require "libs.mold"
 local item_box = require "src.render.components.item_select.item_box"
 local portrait = require "src.render.components.portrait"
+local stats = require "src.render.components.stats"
 local move_atk_pattern = require "src.render.components.move_atk_pattern"
 
 local gs = require("src.state.GameState"):getInstance()
@@ -24,10 +25,16 @@ function itemSelect:enter()
         :setAlignContent("center")
         :setJustifyContent("center")
 
+    self.title = self.root:addChild(mold.TextBox:new("Choose an item!"))
+    self.title:setSize(70)
+        :setColor({1,1,1,1})
+        :playAnimation("bubble_up", true)
+
     self.item_container = mold.Container:new()
         :setWidth("70%")
-        :setHeight("30%")
+        :setHeight("auto")
         :setJustifyContent("space-evenly")
+        :debug()
 
     self.item_container.flexDirection = "row"
 
@@ -49,6 +56,8 @@ function itemSelect:enter()
         self.item_container:addChild(item)
     end
 
+    self.current_animal = gs.run.team[1]
+
     self.animal_container = mold.Container:new()
         :setWidth("70%")
         :setHeight("30%")
@@ -56,10 +65,11 @@ function itemSelect:enter()
         :setAlignContent("center")
         :setDirection("row")
         :debug()
-
+        
+    self.animal_stats = stats(self.current_animal)
+    self.root:addChild(self.animal_stats)
+    
     self.root:addChild(self.animal_container)
-
-    self.current_animal = gs.run.team[1]
 
     self.animal_portrait = portrait(self.current_animal.metadata.species)
         :setWidth("20%")
@@ -67,19 +77,16 @@ function itemSelect:enter()
         :playAnimation("sine_wave", true)
         :debug()
 
-        
-    -- self.animal_stats = stats(animal)
-
     self.animal_move_pattern = move_atk_pattern(self.current_animal.stats.currentPatterns.movePattern, "move")
     self.animal_atk_pattern = move_atk_pattern(self.current_animal.stats.currentPatterns.atkPattern, "atk")
     self.animal_move_pattern:playAnimation("sine_wave", true)
     self.animal_container:addChild(self.animal_portrait)
-    -- self.animal_container:addChild(self.animal_stats)
     self.animal_container:addChild(self.animal_move_pattern)
     self.animal_container:addChild(self.animal_atk_pattern)
     
     -- self:load_animal(self.current_animal)
 
+    self.root:resize()
     self.root:resize()
 
     SoundManager:playSound('clickyclicky')

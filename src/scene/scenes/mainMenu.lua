@@ -135,11 +135,11 @@ function mainMenu:enter()
         :setTextMargin("20px")
         :setMargin("15px", "bottom")
     options_btn.disabled = true
+
     local exit_btn = buttons:addChild(mold.Button("Exit"))
         :setTextMargin("20px")
 
     for index, child in ipairs(buttons.children) do
-    
         -- child.bgColor = {0.2, 0.2, 0.2, 0.8}
         child.bgColor = {0.7, 0.7, 0.7, 0.9}
         -- child.textBox.color = {1, 1, 1, 1}
