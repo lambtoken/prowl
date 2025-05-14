@@ -55,7 +55,7 @@ function Run:decreaseHealth()
 end
 
 function Run:giveItemAndProgress(itemName)
-    gs.currentMatch.itemSystem:giveItem(gs.run.team[1], itemName)
+    gs.match.itemSystem:giveItem(gs.run.team[1], itemName)
     gs.currentMatchNode.passed = true
     
     if self.currentNodeCoords[1] == #stageConfig.format - 1 then

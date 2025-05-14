@@ -30,7 +30,7 @@ end
 function EntityFactory:applyDefault(entity, comp)
     if comp == "metadata" then
         entity.metadata.id = self.idCounter
-        print("setting id", entity.metadata.id, entity.metadata.species)
+        -- print("setting id", entity.metadata.id, entity.metadata.species)
         self.idCounter = self.idCounter + 1
     elseif comp == "stats" then
         if entity.metadata.type == "animal" and animalData[entity.metadata.species].stats then
@@ -134,7 +134,7 @@ function EntityFactory:applyDefault(entity, comp)
             entity.collider.collisionGroups = {"projectile"}
         elseif entity.metadata.type == "projectile" then
             entity.collider.onCollision = function(source, target)
-                local matchState = gs.currentMatch
+                local matchState = gs.match
                 if target.state and target.state.current == "dead" then
                     return
                 end
@@ -256,7 +256,7 @@ end
 function EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId)
     self:loadComponents()
     
-    print("owner id:", ownerId)
+    -- print("owner id:", ownerId)
 
     local entity = Concord.entity()
         :give('metadata')

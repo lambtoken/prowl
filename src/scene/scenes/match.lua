@@ -22,44 +22,45 @@ local pretty = require "libs.batteries.pretty"
 local match = Scene:new('match')
 
 function match:enter()
-    gs.currentMatch = MatchManager:new(gs.currentMatchNode)
-    self.currentMatch = gs.currentMatch
-    self.currentMatch:generateTerrain()
-    self.camera = Camera((self.currentMatch.width * RM.tileSize) / 2, (self.currentMatch.height * RM.tileSize) / 2)
-    self.matchEvents = self.currentMatch.eventManager
+    gs.match = MatchManager:new(gs.currentMatchNode)
+    -- clear state
+    self.match = gs.match
+    self.match:generateTerrain()
+    self.camera = Camera((self.match.width * RM.tileSize) / 2, (self.match.height * RM.tileSize) / 2)
+    self.matchEvents = self.match.eventManager
 
-    self.currentMatch.teamManager:newTeam("player")
-    self.currentMatch.teamManager:newTeam("bot")
+    self.match.teamManager:newTeam("player")
+    self.match.teamManager:newTeam("bot")
 
     -- ugly check for now. will refactor.
-    if(self.currentMatch.teamManager.teams[1].members[1] == nil) then
-        self.currentMatch:addToTeam(1, gs.run.team[1])
-        --self.currentMatch:addToTeam(1, self.currentMatch:newAnimal("bear", 4, 4, 1))
+    if(self.match.teamManager.teams[1].members[1] == nil) then
+        self.match:addToTeam(1, gs.run.team[1])
+        --self.match:addToTeam(1, self.match:newAnimal("bear", 4, 4, 1))
     end
 
-    -- self.currentMatch.itemSystem:giveItem(gs.run.team[1], "gear")
+    -- self.match.itemSystem:giveItem(gs.run.team[1], "gear")
 
     self.turnTracker = turnTracker:new()
-    self.turnTracker:load(self.currentMatch.teamManager)
+    self.turnTracker:load(self.match.teamManager)
 
     self.hangingPiece = HangingPiece:new()
     self.hangingPiece:load()
 
     self.animalStats = animalStats:new()
 
-    self.inputManager = InputManager:new(self.camera, self.currentMatch)
+    self.inputManager = InputManager:new(self.camera, self.match)
     self.inputManager:setHangingPiece(self.hangingPiece)
 
     self.pattern = Pattern:new(self.inputManager)
     self.inputManager:setPatternDisplay(self.pattern)
     
-    -- self.inputManager.currentMatch.animalStats = self.animalStats
+    -- self.inputManager.match.animalStats = self.animalStats
 
     self.endTurnButton = button(
         "rest", 
         function() 
-            self.currentMatch.teamManager.teams[self.currentMatch.teamManager.turnTeamId].rest = false
-            self.currentMatch.teamManager.states:set_state("end_phase")
+            self.match.teamManager.teams[self.match.teamManager.turnTeamId].rest = false
+            self.match.teamManager.states:set_state("end_phase")
         end
     )
 
@@ -93,25 +94,25 @@ function match:enter()
     self.paused = false
     self.grayShader = love.graphics.newShader(gray_shader)
 
-    self.currentMatch:generateObjects()
-    self.currentMatch:generateEnemies()
-    self.currentMatch:generateFlowers()
-    --self.currentMatch:generateMarks()
+    self.match:generateObjects()
+    self.match:generateEnemies()
+    self.match:generateFlowers()
+    --self.match:generateMarks()
 
-    self.currentMatch:preparePlayer()
-    self.currentMatch:positionPlayer()
+    self.match:preparePlayer()
+    self.match:positionPlayer()
 
     self.hearts = Hearts:new(gs.run.team[1])
 
-    self.currentMatch.teamManager.states:set_state("start_phase")
+    self.match.teamManager.states:set_state("start_phase")
 
-    -- self.ddd = self.currentMatch.ecs:serialize()
+    -- self.ddd = self.match.ecs:serialize()
 end
 
 function match:update(dt) 
     if not self.paused then
-        if self.currentMatch.teamManager.turnTeamId == 1 then
-            if self.currentMatch.teamManager:canCurrentTeamRest() and self.currentMatch:areAllMobsIdle() and self.currentMatch.stateSystem:hasMovesLeft(self.currentMatch.teamManager.teams[1].members[1]) then
+        if self.match.teamManager.turnTeamId == 1 then
+            if self.match.teamManager:canCurrentTeamRest() and self.match:areAllMobsIdle() and self.match.stateSystem:hasMovesLeft(self.match.teamManager.teams[1].members[1]) then
                 self.endTurnButton.disabled = false
             else
                 self.endTurnButton.disabled = true
@@ -119,7 +120,7 @@ function match:update(dt)
             self.endTurnButton:update(dt)
         end
 
-        self.currentMatch:update(dt)
+        self.match:update(dt)
         self.hangingPiece:update(dt)
         self.turnTracker:update(dt)
         self.TextBubbleManager:update(dt)
@@ -158,7 +159,7 @@ end
 function match:mousepressed(x, y, btn) 
     if not self.paused then
         
-        if self.currentMatch.teamManager.turnTeamId == 1 and self.endTurnButton:mousepressed(x, y, btn)then
+        if self.match.teamManager.turnTeamId == 1 and self.endTurnButton:mousepressed(x, y, btn)then
             return
         end
 
@@ -171,7 +172,7 @@ end
 
 function match:mousereleased(x, y, btn)
     if not self.paused then
-        if self.currentMatch.teamManager.turnTeamId == 1 then
+        if self.match.teamManager.turnTeamId == 1 then
             if self.endTurnButton:mousereleased(x, y, btn) then
             end
         end
@@ -196,7 +197,7 @@ function match:draw()
     end
 
     self.camera:attach()
-    self.currentMatch:draw()
+    self.match:draw()
     self.particleSystem:draw()
     self.TextBubbleManager:draw()
     
@@ -244,7 +245,7 @@ function match:draw()
     
     self.turnTracker:draw()
 
-    if self.currentMatch.teamManager.turnTeamId == 1 then
+    if self.match.teamManager.turnTeamId == 1 then
         self.endTurnButton:draw()
     end
 
@@ -263,8 +264,8 @@ function match:draw()
 end
 
 function match:exit() 
-    self.currentMatch:onExit()
-    self.currentMatch = nil
+    self.match:onExit()
+    self.match = nil
 end
 
 function match:keypressed(key)
@@ -274,13 +275,13 @@ function match:keypressed(key)
     end
 
     if key == 'a' then
-        self.currentMatch.winnerId = 1
-        self.currentMatch.states:set_state("result")
+        self.match.winnerId = 1
+        self.match.states:set_state("result")
     end
 
     if key == 's' then
-        self.currentMatch.winnerId = 2
-        self.currentMatch.states:set_state("result")
+        self.match.winnerId = 2
+        self.match.states:set_state("result")
     end
 end
 

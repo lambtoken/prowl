@@ -656,7 +656,7 @@ function MatchManager:onExit()
     self.eventManager:reset()
     self:removeEntitiesFromTheWorld()
     -- self.ecs = nil
-    -- gs.currentMatch = nil
+    -- gs.match = nil
 end
 
 

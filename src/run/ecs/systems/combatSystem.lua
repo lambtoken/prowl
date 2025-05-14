@@ -33,11 +33,11 @@ function combatSystem:init()
     --     on("onStep", matchState, entity)
     -- end)
     EventManager:on("onStep", function(entity, attack)
-        local matchState = gs.currentMatch
+        local matchState = gs.match
 
         EventManager:emit("onStepAny", entity)
 
-        print(entity.metadata.species)
+        -- print(entity.metadata.species)
 
         on("onStep", matchState, entity)
         
@@ -63,7 +63,7 @@ function combatSystem:init()
             
                 if isEnemy and isTargetable and isAlive then
                     if target.stats then
-                        local missChance = gs.currentMatch.rng:get('combat')
+                        local missChance = gs.match.rng:get('combat')
                         local luckDiff = target.stats.current.luck - entity.stats.current.luck
             
                         if luckDiff > missChance then
@@ -104,12 +104,12 @@ function combatSystem:init()
     end)
 
     EventManager:on("onStepAny", function(entity)
-        local matchState = sceneManager.currentScene.currentMatch
+        local matchState = sceneManager.currentScene.match
         on("onStepAny", matchState, entity )
     end)
 
     EventManager:on("onHover", function(entity) 
-        local matchState = sceneManager.currentScene.currentMatch
+        local matchState = sceneManager.currentScene.match
 
         local targets = matchState.moveSystem:findByCoordinates(entity.position.x, entity.position.y)
         
@@ -147,7 +147,7 @@ function combatSystem:init()
 
 
     EventManager:on("onHovered", function(entity, x, y) 
-        local matchState = sceneManager.currentScene.currentMatch
+        local matchState = sceneManager.currentScene.match
 
         local targets = matchState.moveSystem:findByCoordinates(x, y)
         
@@ -186,40 +186,40 @@ function combatSystem:init()
     end)
 
     EventManager:on("onHoveredAny", function(entity)
-        on("onHoveredAny", gs.currentMatch, entity)
+        on("onHoveredAny", gs.match, entity)
     end)
 
     EventManager:on("onHoverAny", function(entity)
-        on("onHoverAny", gs.currentMatch, entity)
+        on("onHoverAny", gs.match, entity)
     end)
 
     EventManager:on("onMiss", function(entity, target)
-        on("onMiss", gs.currentMatch, entity, target)
+        on("onMiss", gs.match, entity, target)
     end)
 
     EventManager:on("onDodge", function(entity, target)
-        on("onDodge", gs.currentMatch, entity, target)
+        on("onDodge", gs.match, entity, target)
     end)
 
     EventManager:on("onKill", function(entity)
-        on("onKill", gs.currentMatch, entity)
-        on("onKillAny", gs.currentMatch, entity)
+        on("onKill", gs.match, entity)
+        on("onKillAny", gs.match, entity)
     end)
 
     EventManager:on("onCrit", function(entity, target)
-        on("onCrit", gs.currentMatch, entity, target)
+        on("onCrit", gs.match, entity, target)
     end)
 
     EventManager:on("onCrited", function(entity, attacker)
-        on("onCrited", gs.currentMatch, entity, attacker)
+        on("onCrited", gs.match, entity, attacker)
     end)
 
     EventManager:on("onAttack", function(entity, target)
-        on("onAttack", gs.currentMatch, entity, target)
+        on("onAttack", gs.match, entity, target)
     end)
 
     EventManager:on("onAttacked", function(target, entity)
-        on("onAttacked", gs.currentMatch, target, entity)
+        on("onAttacked", gs.match, target, entity)
     end)
 
 
@@ -235,7 +235,7 @@ function combatSystem:attack(entity1, entity2)
     local crit = false
 
     --crit
-    if entity1.stats.current.crit >= gs.currentMatch.rng:get('combat') then
+    if entity1.stats.current.crit >= gs.match.rng:get('combat') then
         damage = damage * entity1.stats.current.critDamage
         EventManager:emit("screenShake")
         EventManager:emit("onCrit", entity1, entity2)
@@ -328,7 +328,7 @@ end
 function combatSystem:explode(entity, damage)
     EventManager:emit("playAnimation", entity, "trigger_death")
     SoundManager:playSound("explosion")
-    local targets = gs.currentMatch.moveSystem:findInSquare(entity.position.x, entity.position.y, 3)
+    local targets = gs.match.moveSystem:findInSquare(entity.position.x, entity.position.y, 3)
 
     for _, t in ipairs(targets) do
         self:hit(t, damage)

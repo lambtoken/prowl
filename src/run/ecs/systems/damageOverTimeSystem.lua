@@ -69,7 +69,7 @@ function damageOverTimeSystem:onStandBy(teamId)
             
             if effect.damage and effect.damage > 0 then
 
-                gs.currentMatch.combatSystem:dealDamage(entity, effect.damage)
+                gs.match.combatSystem:dealDamage(entity, effect.damage)
 
                 if SceneManager.currentScene.DamageNumbers then
                     SceneManager.currentScene.DamageNumbers:showNumber(

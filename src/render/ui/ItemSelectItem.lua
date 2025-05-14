@@ -64,7 +64,7 @@ function ItemSelectItem:mousepressed(x, y, btn)
     
     if x >= self.screenX and y >= self.screenY and x <= self.screenX + self.width and y <= self.screenY + self.height then
        
-        gs.currentMatch.itemSystem:giveItem(gs.run.team[1], self.itemName)
+        gs.match.itemSystem:giveItem(gs.run.team[1], self.itemName)
         gs.currentMatchNode.passed = true
         
         if gs.run.currentNodeCoords[1] == #stageConfig.format - 1 then

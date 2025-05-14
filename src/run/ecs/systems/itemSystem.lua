@@ -82,7 +82,7 @@ function itemSystem:reduceCooldown(item, event)
 end
 
 function itemSystem:restoreCooldown(item, event)
-    print("restoreCooldown", item.name, event)
+    -- print("restoreCooldown", item.name, event)
     if item.cooldowns and item.cooldowns[event] then
         item.cooldowns[event] = itemData[item.name].cooldowns[event]
     end
@@ -104,7 +104,7 @@ function itemSystem:onStandBy(teamId)
                 if item.cooldowns and item.cooldowns["onStandBy"] > 0 then
                     goto skip_item
                 end
-                item.passive.onStandBy(gs.currentMatch, animal, item)
+                item.passive.onStandBy(gs.match, animal, item)
                 self:restoreCooldown(item, "onStandBy")
             end
             ::skip_item::

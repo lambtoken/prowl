@@ -3,11 +3,11 @@ local EventManager = require("src.state.events"):getInstance()
 local gs = require("src.state.GameState"):getInstance()
 
 local callbackRegistry = {
-    lifeSteal = function(data) gs.currentMatch.combatSystem:heal(data.entity, data.amount) end,
-    explosion = function(data) gs.currentMatch.combatSystem:explode(data.entity, data.amount) end,
+    lifeSteal = function(data) gs.match.combatSystem:heal(data.entity, data.amount) end,
+    explosion = function(data) gs.match.combatSystem:explode(data.entity, data.amount) end,
     removeStatusEffect = function(data) 
-        if gs.currentMatch and gs.currentMatch.TextBubbleManager then
-            gs.currentMatch.TextBubbleManager:endStatusEffect(data.bubbleId)
+        if gs.match and gs.match.TextBubbleManager then
+            gs.match.TextBubbleManager:endStatusEffect(data.bubbleId)
         end
     end
 }

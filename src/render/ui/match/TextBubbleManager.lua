@@ -275,7 +275,7 @@ function TextBubbleManager:draw()
     local r, g, b
     for _, bubble in ipairs(self.damage) do
         if not bubble.entityRef then
-            bubble.entityRef = GameState.currentMatch:getEntityById(bubble.entityId)
+            bubble.entityRef = GameState.match:getEntityById(bubble.entityId)
         end
 
         if bubble.entityRef and bubble.alpha > 0 then
@@ -288,7 +288,7 @@ function TextBubbleManager:draw()
 
     for _, bubble in ipairs(self.ccShort) do
         if not bubble.entityRef then
-            bubble.entityRef = GameState.currentMatch:getEntityById(bubble.entityId)
+            bubble.entityRef = GameState.match:getEntityById(bubble.entityId)
         end
 
         if bubble.entityRef and bubble.alpha > 0 then
@@ -303,7 +303,7 @@ function TextBubbleManager:draw()
     for _, bubble in ipairs(self.statusEffects) do
         
         if not bubble.entityRef then
-            bubble.entityRef = GameState.currentMatch:getEntityById(bubble.entityId)
+            bubble.entityRef = GameState.match:getEntityById(bubble.entityId)
         end
 
         if bubble.entityRef and bubble.alpha > 0 then

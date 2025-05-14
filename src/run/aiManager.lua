@@ -4,7 +4,7 @@ aiManager.__index = aiManager
 
 function aiManager:new(matchState)
     local o = {
-        currentMatch = matchState
+        match = matchState
     }
     setmetatable(o, self)
     o.__index = self
@@ -36,7 +36,7 @@ function aiManager:ratingFormula(attacker, attackerX, attackerY, target)
     local lsWeight = ls > 0 and (2 - attackerHp / attackerMaxHp) or 1
     local lethalBonus = targetHp / 10
     
-    local averagePosX, averagePosY = self.currentMatch.moveSystem:getAveragePosition(attacker.metadata.teamID)
+    local averagePosX, averagePosY = self.match.moveSystem:getAveragePosition(attacker.metadata.teamID)
     local targetX = target and target.position.x or averagePosX
     local targetY = target and target.position.y or averagePosY
 
@@ -65,13 +65,13 @@ function aiManager:rateMoves(entity)
             if move == 1 then
                 local steppableX = entity.position.x + m_x - math.ceil(#movePattern[1] / 2)
                 local steppableY = entity.position.y + m_y - math.ceil(#movePattern / 2)
-                if self.currentMatch:isSteppable(steppableX, steppableY) then
+                if self.match:isSteppable(steppableX, steppableY) then
                     for a_y, a_row in ipairs(attackPattern) do
                         for a_x, atk in ipairs(a_row) do
                             if atk == 1 then
                                 local targetX = steppableX + a_x - math.ceil(#attackPattern[1] / 2)
                                 local targetY = steppableY + a_y - math.ceil(#attackPattern / 2)
-                                local targets = self.currentMatch.moveSystem:findByCoordinates(targetX, targetY)
+                                local targets = self.match.moveSystem:findByCoordinates(targetX, targetY)
                                 for _, t in ipairs(targets) do
                                     if t.metadata.type == 'animal' and entity.metadata.teamID ~= t.metadata.teamID then
                                         local score = self:ratingFormula(entity, steppableX, steppableY, t)
@@ -92,7 +92,7 @@ function aiManager:rateMoves(entity)
                 if move == 1 then
                     local steppableX = entity.position.x + m_x - math.ceil(#movePattern[1] / 2)
                     local steppableY = entity.position.y + m_y - math.ceil(#movePattern / 2)
-                    if self.currentMatch:isSteppable(steppableX, steppableY) then
+                    if self.match:isSteppable(steppableX, steppableY) then
                         local score = self:ratingFormula(entity, steppableX, steppableY, nil)
                         table.insert(allPossibleMoves, {entity = entity, target = nil, score = score, x = steppableX, y = steppableY}) end
                     end
@@ -154,8 +154,8 @@ end
 function aiManager:getMove(teamID)
     local allMoves = {}
     
-    for _, e in ipairs(self.currentMatch.teamManager.teams[teamID].members) do
-        if e.state.alive and self.currentMatch.stateSystem:hasActions(e) then
+    for _, e in ipairs(self.match.teamManager.teams[teamID].members) do
+        if e.state.alive and self.match.stateSystem:hasActions(e) then
             for _, move in ipairs(self:rateMoves(e)) do
                 table.insert(allMoves, move)
             end

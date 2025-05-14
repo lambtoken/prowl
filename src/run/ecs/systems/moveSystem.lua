@@ -117,7 +117,7 @@ end
 function moveSystem:move(entity, type, targetX, targetY, attack, cancelPrev)
     
     if type == "walk" then
-        on("onMove", gs.currentMatch, entity)
+        on("onMove", gs.match, entity)
     end
     
     entity.position.attack = attack or entity.position.attack
@@ -239,19 +239,19 @@ function moveSystem:handleTouched(entity)
     for _, src in ipairs(nearbyEntities) do
         if src.metadata.type == 'animal' then
             if mobData[src.metadata.species].passive and mobData[src.metadata.species].passive.onTouched then
-                mobData[src.metadata.species].passive.onTouched(gs.currentMatch, src, entity)
+                mobData[src.metadata.species].passive.onTouched(gs.match, src, entity)
             end
 
             for index, item in ipairs(src.inventory.items) do
                 local itemDef = itemData[item.name]
                 if itemDef.passive and itemDef.passive.onTouched then
-                    itemDef.passive.onTouched(gs.currentMatch, src, entity)
+                    itemDef.passive.onTouched(gs.match, src, entity)
                 end
             end
             
         elseif src.metadata.type == 'object' then
             if objectData[src.metadata.objectName].passive and objectData[src.metadata.objectName].passive.onTouched then
-                objectData[src.metadata.objectName].passive.onTouched(gs.currentMatch, src, entity)
+                objectData[src.metadata.objectName].passive.onTouched(gs.match, src, entity)
             end
         end
     end
@@ -269,7 +269,7 @@ function moveSystem:handleMoved(entity)
             local nearbyEntities = self:getNearbyEntities(entity)
     
             for _, target in ipairs(nearbyEntities) do
-                mobData[entity.metadata.species].passive.onTouched(gs.currentMatch, entity, target)
+                mobData[entity.metadata.species].passive.onTouched(gs.match, entity, target)
             end
         end
     
@@ -281,7 +281,7 @@ function moveSystem:handleMoved(entity)
             local nearbyEntities = self:getNearbyEntities(entity)
     
             for _, target in ipairs(nearbyEntities) do
-                objectData[entity.metadata.objectName].passive.onTouched(gs.currentMatch, entity, target)
+                objectData[entity.metadata.objectName].passive.onTouched(gs.match, entity, target)
             end
         end
     
@@ -301,13 +301,13 @@ function moveSystem:handleOnStepped(entity)
     if #tileObjects == 1 and tileObjects[1] ~= entity then
         local object = tileObjects[1]
         if objectData[object.metadata.objectName].passive and objectData[object.metadata.objectName].passive.onStepped then
-            objectData[object.metadata.objectName].passive.onStepped(gs.currentMatch, entity, object)
+            objectData[object.metadata.objectName].passive.onStepped(gs.match, entity, object)
         end
     end
 
     for _, mark in ipairs(tileMarks) do
         if markData[mark.metadata.markName].passive and markData[mark.metadata.markName].passive.onStepped then
-            markData[mark.metadata.markName].passive.onStepped(gs.currentMatch, entity, mark)
+            markData[mark.metadata.markName].passive.onStepped(gs.match, entity, mark)
         end
     end
 end

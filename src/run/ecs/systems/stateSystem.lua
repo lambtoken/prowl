@@ -12,7 +12,7 @@ local stateSystem = Concord.system({pool = {"state"}})
 
 function stateSystem:init()
     
-    local matchState = GameState.currentMatch
+    local matchState = GameState.match
 
     EventManager:on("setState", function(entity, newState)
         self:changeState(entity, newState)
@@ -87,7 +87,7 @@ function stateSystem:hasActions(entity)
     if entity.state then
         if self:hasMovesLeft(entity) and
            entity.status.canMove then
-        --    GameState.currentMatch.itemSystem:hasActives(entity) then
+        --    GameState.match.itemSystem:hasActives(entity) then
                 return true
            end
            return false

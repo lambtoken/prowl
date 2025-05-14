@@ -7,7 +7,7 @@ teamManager.__index = teamManager
 
 function teamManager:new(currentMatch) 
     local o = {
-        currentMatch = currentMatch
+        match = currentMatch
     }
     setmetatable(o, self)
     o.__index = self
@@ -40,26 +40,26 @@ function teamManager:new(currentMatch)
             instance = o,
 
             enter = function(s) 
-                s.instance.currentMatch.statusEffectSystem:onStandBy(s.instance.turnTeamId)
-                s.instance.currentMatch.statusEffectSystem:applyAllStatusEffects()
-                s.instance.currentMatch.damageOverTimeSystem:onStandBy(s.instance.turnTeamId)
-                s.instance.currentMatch.buffDebuffSystem:onStandBy(s.instance.turnTeamId)
+                s.instance.match.statusEffectSystem:onStandBy(s.instance.turnTeamId)
+                s.instance.match.statusEffectSystem:applyAllStatusEffects()
+                s.instance.match.damageOverTimeSystem:onStandBy(s.instance.turnTeamId)
+                s.instance.match.buffDebuffSystem:onStandBy(s.instance.turnTeamId)
                 
                 local team = s.instance.teams[s.instance.turnTeamId]
 
                 for _, animal in ipairs(team.members) do
                     if animal.metadata.teamID == s.instance.turnTeamId then
                         if animal.passive and animal.passive.onStandBy then
-                            animal.passive.onStandBy(s.instance.currentMatch, animal)
+                            animal.passive.onStandBy(s.instance.match, animal)
                         end
                     end
                 end
 
-                s.instance.currentMatch.itemSystem:onStandBy(s.instance.turnTeamId)
+                s.instance.match.itemSystem:onStandBy(s.instance.turnTeamId)
 
-                s.instance.currentMatch.statsSystem:calculateStats()
+                s.instance.match.statsSystem:calculateStats()
 
-                if s.instance.currentMatch:areAllMobsIdle() then
+                if s.instance.match:areAllMobsIdle() then
                     s.instance.states:set_state('main_phase')
                 else
                     s.instance.dotCheckTimer = 0
@@ -75,7 +75,7 @@ function teamManager:new(currentMatch)
                     if s.instance.dotCheckTimer >= 0.1 then
                         s.instance.dotCheckTimer = 0
                         
-                        if s.instance.currentMatch:areAllMobsIdle() then
+                        if s.instance.match:areAllMobsIdle() then
                             s.instance.dotCheckTimer = nil
                             s.instance.states:set_state('main_phase')
                         end
@@ -101,7 +101,7 @@ function teamManager:new(currentMatch)
                 -- run while systems are doing their stuff
                 if s.instance.busy then
                     -- start the timer when everything is idle
-                    if s.instance.timer == nil and s.instance.currentMatch:areAllMobsIdle() then
+                    if s.instance.timer == nil and s.instance.match:areAllMobsIdle() then
                         s.instance.timer = 0
                     end
 
@@ -119,14 +119,14 @@ function teamManager:new(currentMatch)
                     local currentTeam = s.instance.teams[s.instance.turnTeamId]
                     if #currentTeam.members == 0 or 
                     not s.instance:teamHasActions() and
-                    s.instance.lastActiveMob and not s.instance.currentMatch:hasMovesLeft(s.instance.lastActiveMob) then
+                    s.instance.lastActiveMob and not s.instance.match:hasMovesLeft(s.instance.lastActiveMob) then
                         s.instance.states:set_state("end_phase")
                     else
                         -- handling bots
                         if s.instance.teams[s.instance.turnTeamId].agentType == "bot" then
-                            local move = s.instance.currentMatch.aiManager:getMove(s.instance.turnTeamId)
+                            local move = s.instance.match.aiManager:getMove(s.instance.turnTeamId)
                             if move then
-                                s.instance.currentMatch.moveSystem:move(move.entity, "walk", move.x, move.y, true)
+                                s.instance.match.moveSystem:move(move.entity, "walk", move.x, move.y, true)
                                 s.instance:setLastActiveMob(move.entity)
                                 s.instance.busy = true
                             else
@@ -153,13 +153,13 @@ function teamManager:new(currentMatch)
                 for _, animal in ipairs(team.members) do
                     if animal.metadata.teamID == s.instance.turnTeamId then
                         if animal.passive and animal.passive.onEndTurn then
-                            animal.passive.onEndTurn(s.instance.currentMatch, animal)
+                            animal.passive.onEndTurn(s.instance.match, animal)
                         end
                     end
 
                     for _, item in ipairs(animal.inventory.items) do
                         if item.passive and item.passive.onEndTurn then
-                            item.passive.onEndTurn(s.instance.currentMatch, animal, item)
+                            item.passive.onEndTurn(s.instance.match, animal, item)
                         end
                     end
                 end
@@ -257,7 +257,7 @@ end
 function teamManager:teamHasActions()
     local actions = false
     for index, animal in ipairs(self.teams[self.turnTeamId]) do
-        actions = actions or self.currentMatch.stateSystem.hasActions(animal)
+        actions = actions or self.match.stateSystem.hasActions(animal)
     end    
     return actions
 end

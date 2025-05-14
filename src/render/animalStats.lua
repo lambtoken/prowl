@@ -57,7 +57,7 @@ function animalStats:loadAnimal(animal)
         self.statusBar:updateEffectIcons(animal)
         self:positionStatusBar()
         self.statusBar.root:resize()
-        print(self.statusBar.container.cx, self.statusBar.container.cy)
+        -- print(self.statusBar.container.cx, self.statusBar.container.cy)
     end
 end
 

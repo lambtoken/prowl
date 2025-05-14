@@ -94,7 +94,7 @@ function turnSystem:init()
                 
                 -- for index, entity in ipairs(s.instance.pool) do
                 --     if entity.passive and entity.passive.onStandBy then
-                --         entity.passive.onStandBy(gs.currentMatch, entity)
+                --         entity.passive.onStandBy(gs.match, entity)
                 --     end
                 -- end
                 
@@ -107,7 +107,7 @@ function turnSystem:init()
                 -- if no actions anymore switch to main_phase
                 
                 -- Check if all DoT effects are done before moving to main phase
-                -- if gs.currentMatch and gs.damageOverTimeSystem:allDotEffectsDone() then
+                -- if gs.match and gs.damageOverTimeSystem:allDotEffectsDone() then
                 --     s.instance.phase:set_state("main_phase")
                 -- end
             end,

@@ -7,7 +7,7 @@ local buffDebuffSystem = Concord.system({pool = {buffDebuff}})
 
 function buffDebuffSystem:update(dt)
     for _, entity in ipairs(self.pool) do
-        return gs.currentMatch
+        return gs.match
     end
 end
 

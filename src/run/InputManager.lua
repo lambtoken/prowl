@@ -13,7 +13,7 @@ local mouseTypes = {
 function InputManager:new(camera, currentMatch)
     local o = {
         camera = camera,
-        currentMatch = currentMatch,
+        match = currentMatch,
         selectedAnimal = nil,
         selectedAnimalDetails = nil,
         drag = false,
@@ -47,25 +47,25 @@ function InputManager:mousepressed(x, y, btn)
 
     if self.selectedAnimal then
         
-        local tile = self.currentMatch.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY)
-        local steppable = self.currentMatch:isSteppable(self.hoveredTileX, self.hoveredTileY, self.selectedAnimal)
+        local tile = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY)
+        local steppable = self.match:isSteppable(self.hoveredTileX, self.hoveredTileY, self.selectedAnimal)
        
         if sceneManager.currentScene.pattern.isInsideMovePattern
             and steppable -- or (steppable and (#tile == 1 and tile[1] == self.selectedAnimal)) 
         then
             if self.hoveredTileX ~= self.selectedAnimal.position.x then
                 local facing = self.hoveredTileX - self.selectedAnimal.position.x > 0 and "right" or "left"
-                self.currentMatch.animationSystem:face(self.selectedAnimal, facing)
+                self.match.animationSystem:face(self.selectedAnimal, facing)
             end
-            self.currentMatch.moveSystem:move(self.selectedAnimal, 'walk', self.hoveredTileX, self.hoveredTileY, true)
-            self.currentMatch.teamManager:setLastActiveMob(self.selectedAnimal)
+            self.match.moveSystem:move(self.selectedAnimal, 'walk', self.hoveredTileX, self.hoveredTileY, true)
+            self.match.teamManager:setLastActiveMob(self.selectedAnimal)
             self.selectedAnimal.state.pickedUp = false
             self.selectedAnimal = nil
         end
     else 
-        local currentTeam = self.currentMatch.teamManager.teams[self.currentMatch.teamManager.turnTeamId]
+        local currentTeam = self.match.teamManager.teams[self.match.teamManager.turnTeamId]
     
-        local tileAnimal = self.currentMatch.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY, 'animal')[1]
+        local tileAnimal = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY, 'animal')[1]
         
         if tileAnimal then
             sceneManager.currentScene.animalStats:loadAnimal(tileAnimal)
@@ -73,11 +73,11 @@ function InputManager:mousepressed(x, y, btn)
 
         if not self.selectedAnimal and tileAnimal 
         and tileAnimal.state.currentTurnMoves < tileAnimal.stats.current.moves
-        and tileAnimal.metadata.teamID == self.currentMatch.teamManager.turnTeamId
-        and not self.currentMatch.moveSystem:isMoving(tileAnimal)
+        and tileAnimal.metadata.teamID == self.match.teamManager.turnTeamId
+        and not self.match.moveSystem:isMoving(tileAnimal)
         and tileAnimal.state.alive 
         and currentTeam.agentType == 'player' then        
-            self.selectedAnimal = self.currentMatch.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY, 'animal')[1]
+            self.selectedAnimal = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY, 'animal')[1]
             self.selectedAnimal.state.pickedUp = true
             self.hangingPiece:resetAngularVelocity()
             self.hangingPiece:setAnimalSprite(self.selectedAnimal.metadata.species)
@@ -112,7 +112,7 @@ function InputManager:mousemoved(x, y)
     self.hoveredTileX = math.floor(worldX / RM.tileSize)
     self.hoveredTileY = math.floor(worldY / RM.tileSize)
 
-    local tile = self.currentMatch.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY)
+    local tile = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY)
 
     -- Check if we moved to a new tile AND there are entities on that tile
     if (self.hoveredTileX ~= self.lastHoveredTileX or self.hoveredTileY ~= self.lastHoveredTileY) and #tile > 0 then

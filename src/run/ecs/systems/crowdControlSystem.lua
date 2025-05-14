@@ -19,7 +19,7 @@ end
 
 function crowdControlSystem:applyCC(entity, type, source)
     local cc = self:createCC(type)
-    local matchState = sceneManager.currentScene.currentMatch
+    local matchState = sceneManager.currentScene.match
 
     if cc.callback(matchState, entity, source) then
         -- Create status effect bubble

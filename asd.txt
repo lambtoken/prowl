@@ -450,14 +450,14 @@ index 0660ae9..0a2f806 100644
 -            entity.collider.collisionGroups = {"projectile"}
 -        elseif entity.metadata.type == "projectile" then
 -            entity.collider.onCollision = function(source, target)
--                local matchState = gs.currentMatch
+-                local matchState = gs.match
 -                if target.state and target.state.current == "dead" then
 -                    return
 -                end
 -                projectileData[entity.metadata.projectileType].onHit(matchState, source, target)
 -                source.position.customMove = nil
 +        entity.collider.onCollision = function(source, target)
-+            local matchState = gs.currentMatch
++            local matchState = gs.match
 +            if target.state and target.state.current == "dead" then
 +                return
              end
@@ -521,12 +521,12 @@ index e669017..99894df 100644
 +++ b/src/run/InputManager.lua
 @@ -75,7 +75,7 @@ function InputManager:mousepressed(x, y, btn)
          and tileAnimal.state.currentTurnMoves < tileAnimal.stats.current.moves
-         and tileAnimal.metadata.teamID == self.currentMatch.teamManager.turnTeamId
-         and not self.currentMatch.moveSystem:isMoving(tileAnimal)
+         and tileAnimal.metadata.teamID == self.match.teamManager.turnTeamId
+         and not self.match.moveSystem:isMoving(tileAnimal)
 -        and tileAnimal.state.alive 
 +        and tileAnimal.state.current == "alive" 
          and currentTeam.agentType == 'player' then        
-             self.selectedAnimal = self.currentMatch.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY, 'animal')[1]
+             self.selectedAnimal = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY, 'animal')[1]
              self.selectedAnimal.state.pickedUp = true
 diff --git a/src/run/MatchManager.lua b/src/run/MatchManager.lua
 index 9255273..962514f 100644
@@ -589,7 +589,7 @@ index e4c9c0c..7860bdc 100644
  end
  
 -function Run:giveItemAndProgress(itemName)
--    gs.currentMatch.itemSystem:giveItem(gs.run.team[1], itemName)
+-    gs.match.itemSystem:giveItem(gs.run.team[1], itemName)
 -    gs.currentMatchNode.passed = true
 -    
 -    if self.currentNodeCoords[1] == #stageConfig.format - 1 then
@@ -612,7 +612,7 @@ index ce45b3c..5ae920e 100644
              instance = o,
  
              enter = function(s) 
-+                s.instance.currentMatch.statsSystem:initializeStats()
++                s.instance.match.statsSystem:initializeStats()
                  s.instance.states:set_state('stand_by_phase')
              end,
              
@@ -663,9 +663,9 @@ index af7fac3..7e318b9 100644
 @@ -155,7 +155,7 @@ function aiManager:getMove(teamID)
      local allMoves = {}
      
-     for _, e in ipairs(self.currentMatch.teamManager.teams[teamID].members) do
--        if e.state.alive and self.currentMatch.stateSystem:hasActions(e) then
-+        if e.state.current == "alive" and self.currentMatch.stateSystem:hasActions(e) then
+     for _, e in ipairs(self.match.teamManager.teams[teamID].members) do
+-        if e.state.alive and self.match.stateSystem:hasActions(e) then
++        if e.state.current == "alive" and self.match.stateSystem:hasActions(e) then
              for _, move in ipairs(self:rateMoves(e)) do
                  table.insert(allMoves, move)
              end
@@ -1100,7 +1100,7 @@ index e48cbe5..050f53f 100644
 +++ b/src/run/ecs/systems/moveSystem.lua
 @@ -119,9 +119,6 @@ function moveSystem:move(entity, type, targetX, targetY, attack, cancelPrev)
      if type == "walk" then
-         on("onMove", gs.currentMatch, entity)
+         on("onMove", gs.match, entity)
      end
 -    
 -    entity.position.attack = attack or entity.position.attack
@@ -1496,23 +1496,23 @@ index 349d4d1..fef0797 100644
 --- a/src/scene/scenes/match.lua
 +++ b/src/scene/scenes/match.lua
 @@ -36,7 +36,10 @@ function match:enter()
-         --self.currentMatch:addToTeam(1, self.currentMatch:newAnimal("bear", 4, 4, 1))
+         --self.match:addToTeam(1, self.match:newAnimal("bear", 4, 4, 1))
      end
  
--    -- self.currentMatch.itemSystem:giveItem(gs.run.team[1], "gear")
-+    -- self.currentMatch.itemSystem:giveItem(gs.run.team[1], "revolver")
+-    -- self.match.itemSystem:giveItem(gs.run.team[1], "gear")
++    -- self.match.itemSystem:giveItem(gs.run.team[1], "revolver")
 +
-+    self.currentMatch:preparePlayer()
-+    self.currentMatch:positionPlayer()
++    self.match:preparePlayer()
++    self.match:positionPlayer()
  
      self.turnTracker = turnTracker:new()
-     self.turnTracker:load(self.currentMatch.teamManager)
+     self.turnTracker:load(self.match.teamManager)
 @@ -97,8 +100,7 @@ function match:enter()
-     self.currentMatch:generateFlowers()
-     --self.currentMatch:generateMarks()
+     self.match:generateFlowers()
+     --self.match:generateMarks()
  
--    self.currentMatch:preparePlayer()
--    self.currentMatch:positionPlayer()
+-    self.match:preparePlayer()
+-    self.match:positionPlayer()
 +
  
      self.hearts = Hearts:new(gs.run.team[1])

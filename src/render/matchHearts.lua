@@ -30,8 +30,8 @@ function hearts:new(playerRef)
 
     local heartsObj = o 
     EventManager:on("damageBubble", function(entity, amount)
-        if gs.currentMatch and gs.currentMatch.teamManager and gs.currentMatch.teamManager.teams[1] then
-            for _, teamMember in ipairs(gs.currentMatch.teamManager.teams[1].members) do
+        if gs.match and gs.match.teamManager and gs.match.teamManager.teams[1] then
+            for _, teamMember in ipairs(gs.match.teamManager.teams[1].members) do
                 if entity == teamMember then
                     heartsObj:onDamage(amount)
                     break
