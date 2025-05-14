@@ -451,7 +451,7 @@ function moveSystem:getAveragePosition(...)
         if entity.metadata and entity.metadata.type == "animal" and entity.state.alive then
             for i = 1, select("#", ...) do
                 local id = select(i, ...)
-                if entity.metadata.teamID ~= id then
+                if entity.metadata.teamId ~= id then
                     sumX = sumX + entity.position.x
                     sumY = sumY + entity.position.y
                     n = n + 1
@@ -475,7 +475,7 @@ function moveSystem:getNearestEntity(entity, type, teamID)
 
         if otherEntity.metadata and otherEntity.metadata.type == type then
             
-            if teamID and otherEntity.metadata.teamID == teamID then
+            if teamID and otherEntity.metadata.teamId == teamID then
                 goto continue
             end
 

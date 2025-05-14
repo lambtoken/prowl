@@ -57,7 +57,7 @@ function combatSystem:init()
             for _, target in ipairs(entitiesToHit) do
                 missed = false
             
-                local isEnemy = entity.metadata.teamID ~= target.metadata.teamID
+                local isEnemy = entity.metadata.teamId ~= target.metadata.teamId
                 local isTargetable = target.status and target.status.current.isTargetable
                 local isAlive = not (target.state and not target.state.alive)
             

@@ -48,7 +48,7 @@ function teamManager:new(currentMatch)
                 local team = s.instance.teams[s.instance.turnTeamId]
 
                 for _, animal in ipairs(team.members) do
-                    if animal.metadata.teamID == s.instance.turnTeamId then
+                    if animal.metadata.teamId == s.instance.turnTeamId then
                         if animal.passive and animal.passive.onStandBy then
                             animal.passive.onStandBy(s.instance.match, animal)
                         end
@@ -151,7 +151,7 @@ function teamManager:new(currentMatch)
                 local team = s.instance.teams[s.instance.turnTeamId]
 
                 for _, animal in ipairs(team.members) do
-                    if animal.metadata.teamID == s.instance.turnTeamId then
+                    if animal.metadata.teamId == s.instance.turnTeamId then
                         if animal.passive and animal.passive.onEndTurn then
                             animal.passive.onEndTurn(s.instance.match, animal)
                         end
@@ -211,7 +211,7 @@ function teamManager:newTeam(agentType)
 end
 
 function teamManager:addToTeam(id, animal)
-    animal.metadata.teamID = id
+    animal.metadata.teamId = id
     table.insert(self.teams[id].members, animal)
 end
 

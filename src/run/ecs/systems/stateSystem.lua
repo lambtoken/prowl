@@ -66,7 +66,7 @@ function stateSystem:onStateEnter(entity, state)
         entity.state.alive = false
         entity.state.interactable = false
         if entity.metadata.type == 'animal' then
-            EventManager:emit("checkTeamStatus", entity.metadata.teamID)
+            EventManager:emit("checkTeamStatus", entity.metadata.teamId)
             EventManager:emit("onDeath", entity)
             EventManager:emit("onDeathAny", entity)
         end
@@ -94,11 +94,16 @@ function stateSystem:hasActions(entity)
     end
 end
 
-function stateSystem:hasMovesLeft(entity)
-    if entity.state.currentTurnMoves >= entity.stats.current.moves then
-        return false
+function stateSystem:hasMovesLeft(id)
+    for _, entity in ipairs(self.pool) do
+        if entity.metadata.teamId == id then
+            if entity.state.currentTurnMoves < entity.stats.current.moves then
+                return true
+            end
+        end
     end
-    return true
+
+    return false
 end
 
 return stateSystem

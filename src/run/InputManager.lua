@@ -73,7 +73,7 @@ function InputManager:mousepressed(x, y, btn)
 
         if not self.selectedAnimal and tileAnimal 
         and tileAnimal.state.currentTurnMoves < tileAnimal.stats.current.moves
-        and tileAnimal.metadata.teamID == self.match.teamManager.turnTeamId
+        and tileAnimal.metadata.teamId == self.match.teamManager.turnTeamId
         and not self.match.moveSystem:isMoving(tileAnimal)
         and tileAnimal.state.alive 
         and currentTeam.agentType == 'player' then        

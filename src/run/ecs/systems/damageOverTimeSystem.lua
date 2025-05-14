@@ -56,7 +56,7 @@ function damageOverTimeSystem:onStandBy(teamId)
 
         if entity.state.current == "dead" or entity.state.current == "dying" then goto continue end
 
-        if entity.metadata.teamID ~= teamId then goto continue end
+        if entity.metadata.teamId ~= teamId then goto continue end
 
         local effects = entity.dot.effects
 

@@ -3,6 +3,7 @@ local SceneManager = require'src.scene.SceneManager'
 local RenderManager = require'src.render.RenderManager'
 local music = require 'src.sound.music'
 local getFont = require 'src.render.getFont'
+local MatchManager = require 'src.run.MatchManager'
 
 -- _._     _,-'""`-._
 -- (,-.`._,'(       |\`-/|
@@ -47,6 +48,7 @@ function love.load(args)
     end
 
     gs = GameState:getInstance()
+    gs.match = MatchManager:new()
     gs:setSeed(os.time())
     
     sceneM = SceneManager:getInstance()

@@ -23,15 +23,15 @@ local noiseShader = love.graphics.newShader(require('src.render.shaders.noise_sh
 local getRandomItems= require('src.generation.functions.getRandomItems')
 local stageMobItems = require('src.generation.stageMobItems')
 local stageMobLevels = require('src.generation.stageMobLevels')
-local stageMarkAmount = require('src.generation.stageMarkAmount')
+-- local stageMarkAmount = require('src.generation.stageMarkAmount')
 local matchMarkRates = require('src.generation.matchMarkRates')
 local rng = require "src.utility.rng"
 
 local MatchManager = class("MatchManager")
 
-function MatchManager:initialize(node)
+function MatchManager:initialize()
 
-    self.matchNode = node
+    self.matchNode = nil
     self.width = 6
     self.height = 6
     self.teams = {}
@@ -41,55 +41,30 @@ function MatchManager:initialize(node)
         objects = {}
     }
 
+    self:init_ecs()
+
     self.eventManager = EventManager:getInstance()
+    
+    noiseShader:send("resolution", {love.graphics.getWidth(), love.graphics.getHeight()})
+end
 
-    self.ecs = Concord.world()
-
-    EntityFactory:loadComponents()
-
-    self.__systems = EntityFactory:loadSystems()
-
+function MatchManager:init()
     self.rng = rng:new(self.seed)
     self.rng:addGenerator("combat")
     self.rng:addGenerator("terrainGen")
     self.rng:addGenerator("mobGen")
     self.rng:addGenerator("objGen")
 
-    self.ecs:addSystems(
-        self.__systems.animationSystem,
-        self.__systems.renderSystem,
-        self.__systems.moveSystem,
-        self.__systems.combatSystem,
-        self.__systems.crowdControlSystem,
-        self.__systems.itemSystem,
-        self.__systems.statsSystem,
-        self.__systems.timerSystem,
-        self.__systems.buffDebuffSystem,
-        self.__systems.statusEffectSystem,
-        self.__systems.stateSystem,
-        self.__systems.turnSystem,
-        self.__systems.damageOverTimeSystem,
-        self.__systems.markSystem,
-        self.__systems.collisionSystem
-    )
+    self:removeEntitiesFromTheWorld()
+    self:init_ecs()
+    self:init_state_machine()
+    self.winnerId = nil
+    self.teamManager = TeamManager:new(self)
+    self.teamManager:load()
+    self.aiManager = aiManager:new(self)
+end
 
-    self.moveSystem = self.ecs:getSystem(self.__systems.moveSystem)
-    self.animationSystem = self.ecs:getSystem(self.__systems.animationSystem)
-    self.stateSystem = self.ecs:getSystem(self.__systems.stateSystem)
-    self.crowdControlSystem = self.ecs:getSystem(self.__systems.crowdControlSystem)
-    self.renderSystem = self.ecs:getSystem(self.__systems.renderSystem)
-    self.itemSystem = self.ecs:getSystem(self.__systems.itemSystem)
-    self.statsSystem = self.ecs:getSystem(self.__systems.statsSystem)
-    self.combatSystem = self.ecs:getSystem(self.__systems.combatSystem)
-    self.timerSystem = self.ecs:getSystem(self.__systems.timerSystem)
-    self.buffDebuffSystem = self.ecs:getSystem(self.__systems.buffDebuffSystem)
-    self.turnSystem = self.ecs:getSystem(self.__systems.turnSystem)
-    self.statusEffectSystem = self.ecs:getSystem(self.__systems.statusEffectSystem)
-    self.stateSystem = self.ecs:getSystem(self.__systems.stateSystem)
-    self.damageOverTimeSystem = self.ecs:getSystem(self.__systems.damageOverTimeSystem)
-    self.markSystem = self.ecs:getSystem(self.__systems.markSystem)
-    self.collisionSystem = self.ecs:getSystem(self.__systems.collisionSystem)
-    
+function MatchManager:init_state_machine()
     self.states = fsm({
         playing = {
             instance = self,
@@ -212,20 +187,53 @@ function MatchManager:initialize(node)
     }, "stand_by")
 
     self.phase:set_state("stand_by_phase")
-
-    self.winnerId = nil
-
-    self.teamManager = TeamManager:new(self)
-    self.teamManager:load()
-    self.aiManager = aiManager:new(self)
-
-    noiseShader:send("resolution", {love.graphics.getWidth(), love.graphics.getHeight()})
-
-    
 end
 
+function MatchManager:init_ecs()
+    self.ecs = Concord.world()
 
-function MatchManager:generateTerrain()
+    EntityFactory:loadComponents()
+
+    self.__systems = EntityFactory:loadSystems()
+
+    self.ecs:addSystems(
+        self.__systems.animationSystem,
+        self.__systems.renderSystem,
+        self.__systems.moveSystem,
+        self.__systems.combatSystem,
+        self.__systems.crowdControlSystem,
+        self.__systems.itemSystem,
+        self.__systems.statsSystem,
+        self.__systems.timerSystem,
+        self.__systems.buffDebuffSystem,
+        self.__systems.statusEffectSystem,
+        self.__systems.stateSystem,
+        self.__systems.turnSystem,
+        self.__systems.damageOverTimeSystem,
+        self.__systems.markSystem,
+        self.__systems.collisionSystem
+    )
+
+    self.moveSystem = self.ecs:getSystem(self.__systems.moveSystem)
+    self.animationSystem = self.ecs:getSystem(self.__systems.animationSystem)
+    self.stateSystem = self.ecs:getSystem(self.__systems.stateSystem)
+    self.crowdControlSystem = self.ecs:getSystem(self.__systems.crowdControlSystem)
+    self.renderSystem = self.ecs:getSystem(self.__systems.renderSystem)
+    self.itemSystem = self.ecs:getSystem(self.__systems.itemSystem)
+    self.statsSystem = self.ecs:getSystem(self.__systems.statsSystem)
+    self.combatSystem = self.ecs:getSystem(self.__systems.combatSystem)
+    self.timerSystem = self.ecs:getSystem(self.__systems.timerSystem)
+    self.buffDebuffSystem = self.ecs:getSystem(self.__systems.buffDebuffSystem)
+    self.turnSystem = self.ecs:getSystem(self.__systems.turnSystem)
+    self.statusEffectSystem = self.ecs:getSystem(self.__systems.statusEffectSystem)
+    self.stateSystem = self.ecs:getSystem(self.__systems.stateSystem)
+    self.damageOverTimeSystem = self.ecs:getSystem(self.__systems.damageOverTimeSystem)
+    self.markSystem = self.ecs:getSystem(self.__systems.markSystem)
+    self.collisionSystem = self.ecs:getSystem(self.__systems.collisionSystem)
+end
+
+function MatchManager:generateTerrain(node_type)
+    self.matchNode = node_type
     self.board = matchTerrain[self.matchNode.place][self.matchNode.variant](self.width, self.height)
 end
 
@@ -296,14 +304,15 @@ end
 
 
 function MatchManager:addToTeam(teamId, animal)
-    if animal:getWorld() then
-        animal:getWorld():removeEntity(animal)
-    end
+    -- if animal:getWorld() then
+    --     animal:getWorld():removeEntity(animal)
+    -- end
 
     self.teamManager:addToTeam(teamId, animal)
     self.ecs:addEntity(animal)
     -- do this somewhere else
-    self.ecs:emit('update', 0)
+    -- self.ecs:emits('update', 0)
+    self.ecs:__flush()
     self.statsSystem:initializeStats()
 end
 
@@ -455,7 +464,8 @@ function MatchManager:generateEnemies()
         self:addToTeam(2, animal)
     end
 
-    self.ecs:emit('update', 0.01)
+    -- self.ecs:emit('update', 0.01)
+    self.ecs:__flush()
 
     return enemies
 end
@@ -483,7 +493,9 @@ function MatchManager:generateFlowers()
             table.remove(positions, pos)
         end
     
-        self.ecs:emit('update', 0.01)
+        -- self.ecs:emit('update', 0.01)
+        self.ecs:__flush()
+
     end
 end
 
@@ -561,7 +573,8 @@ function MatchManager:generateObjects()
         end
     end
 
-    self.ecs:emit('update', 0.01)
+    -- self.ecs:emit('update', 0.01)
+    self.ecs:__flush()
 end
 
 function MatchManager:generateMarks()
@@ -625,9 +638,12 @@ end
 function MatchManager:removeEntitiesFromTheWorld()
     for _, entity in ipairs(self.ecs:getEntities()) do
         self.ecs:removeEntity(entity)
+        print("removing: " .. entity.metadata.type, (entity.metadata.species or ""))
         -- entity.__world = nil
+        -- entity = nil
     end
     self.ecs:__flush()
+    -- self.ecs:emit("update", 0.01)
 end
 
 
@@ -647,14 +663,15 @@ function MatchManager:positionPlayer()
 
     local pos = positions[math.ceil(math.random() * #positions)]
     self.moveSystem:setPosition(self.teamManager.teams[1].members[1], pos[1], pos[2])
-    self.ecs:emit('update', 0.01)
+    -- self.ecs:emit('update', 0.01)
+    self.ecs:__flush()
 end
 
 
 function MatchManager:onExit()
     -- not happy with this approach. we should just create MatchManager and register events once
     self.eventManager:reset()
-    self:removeEntitiesFromTheWorld()
+    -- self:removeEntitiesFromTheWorld()
     -- self.ecs = nil
     -- gs.match = nil
 end

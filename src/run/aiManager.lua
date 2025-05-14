@@ -36,7 +36,7 @@ function aiManager:ratingFormula(attacker, attackerX, attackerY, target)
     local lsWeight = ls > 0 and (2 - attackerHp / attackerMaxHp) or 1
     local lethalBonus = targetHp / 10
     
-    local averagePosX, averagePosY = self.match.moveSystem:getAveragePosition(attacker.metadata.teamID)
+    local averagePosX, averagePosY = self.match.moveSystem:getAveragePosition(attacker.metadata.teamId)
     local targetX = target and target.position.x or averagePosX
     local targetY = target and target.position.y or averagePosY
 
@@ -73,7 +73,7 @@ function aiManager:rateMoves(entity)
                                 local targetY = steppableY + a_y - math.ceil(#attackPattern / 2)
                                 local targets = self.match.moveSystem:findByCoordinates(targetX, targetY)
                                 for _, t in ipairs(targets) do
-                                    if t.metadata.type == 'animal' and entity.metadata.teamID ~= t.metadata.teamID then
+                                    if t.metadata.type == 'animal' and entity.metadata.teamId ~= t.metadata.teamId then
                                         local score = self:ratingFormula(entity, steppableX, steppableY, t)
                                         table.insert(allPossibleMoves, {entity = entity, target = t, score = score, x = steppableX, y = steppableY})
                                     end

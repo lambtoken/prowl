@@ -90,7 +90,7 @@ end
 
 function itemSystem:onStandBy(teamId)
     for _, animal in ipairs(self.pool) do
-        if not animal.inventory or animal.metadata.teamID ~= teamId then
+        if not animal.inventory or animal.metadata.teamId ~= teamId then
             goto skip_animal
         end
 

@@ -85,7 +85,7 @@ end
 
 function buffDebuffSystem:onStandBy(teamId)
     for _, entity in ipairs(self.pool) do
-        if entity.metadata.teamID ~= teamId then
+        if entity.metadata.teamId ~= teamId then
             goto continue
         end
 

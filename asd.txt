@@ -79,7 +79,7 @@ index 8aa1c89..222bfa2 100644
              end
 @@ -517,7 +514,6 @@ local items = {
              onStep = function(matchState, source)
-                 local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.metadata.teamID)
+                 local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.metadata.teamId)
                  if nearestEntity then
 -                    SoundManager:playSound("arrow")
                      matchState:newProjectile('arrow', source.position.x, source.position.y, nearestEntity.position.x, nearestEntity.position.y, source.metadata.id)
@@ -521,7 +521,7 @@ index e669017..99894df 100644
 +++ b/src/run/InputManager.lua
 @@ -75,7 +75,7 @@ function InputManager:mousepressed(x, y, btn)
          and tileAnimal.state.currentTurnMoves < tileAnimal.stats.current.moves
-         and tileAnimal.metadata.teamID == self.match.teamManager.turnTeamId
+         and tileAnimal.metadata.teamId == self.match.teamManager.turnTeamId
          and not self.match.moveSystem:isMoving(tileAnimal)
 -        and tileAnimal.state.alive 
 +        and tileAnimal.state.current == "alive" 
@@ -1034,7 +1034,7 @@ index 0a5c80b..4d17226 100644
          end
 @@ -59,7 +85,7 @@ function combatSystem:init()
              
-                 local isEnemy = entity.metadata.teamID ~= target.metadata.teamID
+                 local isEnemy = entity.metadata.teamId ~= target.metadata.teamId
                  local isTargetable = target.status and target.status.current.isTargetable
 -                local isAlive = not (target.state and not target.state.alive)
 +                local isAlive = not (target.state and target.state.current ~= "alive")
@@ -1223,7 +1223,7 @@ index e48cbe5..050f53f 100644
 +        if entity.metadata and entity.metadata.type == "animal" and entity.state.current == "alive" then
              for i = 1, select("#", ...) do
                  local id = select(i, ...)
-                 if entity.metadata.teamID ~= id then
+                 if entity.metadata.teamId ~= id then
 @@ -469,7 +464,7 @@ function moveSystem:getNearestEntity(entity, type, teamID)
  
      for _, otherEntity in ipairs(self.pool) do
@@ -1275,7 +1275,7 @@ index 17ceae4..69e2358 100644
 -        entity.state.alive = false
 -        entity.state.interactable = false
          if entity.metadata.type == 'animal' then
-             EventManager:emit("checkTeamStatus", entity.metadata.teamID)
+             EventManager:emit("checkTeamStatus", entity.metadata.teamId)
              EventManager:emit("onDeath", entity)
 @@ -101,9 +99,4 @@ function stateSystem:hasMovesLeft(entity)
      return true

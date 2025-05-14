@@ -1,7 +1,6 @@
 local Scene = require 'src.scene.scene'
 local getFont = require 'src.render.getFont'
 local RM = require ('src.render.RenderManager'):getInstance()
-local MatchManager = require 'src.run.MatchManager'
 local sceneM = require('src.scene.SceneManager'):getInstance()
 local Camera = require 'libs.hump_camera'
 local button = require 'src.render.ui.button'
@@ -22,10 +21,13 @@ local pretty = require "libs.batteries.pretty"
 local match = Scene:new('match')
 
 function match:enter()
-    gs.match = MatchManager:new(gs.currentMatchNode)
-    -- clear state
+    -- gs.match = MatchManager:new(gs.currentMatchNode)
     self.match = gs.match
-    self.match:generateTerrain()
+    -- self.match:reset()
+    -- self.match:removeEntitiesFromTheWorld()
+    self.match:init()
+    -- clear state
+    self.match:generateTerrain(gs.currentMatchNode)
     self.camera = Camera((self.match.width * RM.tileSize) / 2, (self.match.height * RM.tileSize) / 2)
     self.matchEvents = self.match.eventManager
 
@@ -112,7 +114,7 @@ end
 function match:update(dt) 
     if not self.paused then
         if self.match.teamManager.turnTeamId == 1 then
-            if self.match.teamManager:canCurrentTeamRest() and self.match:areAllMobsIdle() and self.match.stateSystem:hasMovesLeft(self.match.teamManager.teams[1].members[1]) then
+            if self.match.teamManager:canCurrentTeamRest() and self.match:areAllMobsIdle() and self.match.stateSystem:hasMovesLeft(1) then
                 self.endTurnButton.disabled = false
             else
                 self.endTurnButton.disabled = true
