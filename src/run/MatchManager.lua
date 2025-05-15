@@ -1,6 +1,7 @@
 local class = require 'libs.middleclass'
 local Concord = require "libs.concord"
 local fsm = require "libs.batteries.state_machine"
+local pretty = require "libs.batteries.pretty"
 
 local RM = require ('src.render.RenderManager'):getInstance()
 local TeamManager = require 'src.run.TeamManager'

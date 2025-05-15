@@ -1,6 +1,6 @@
 local index = 0
 
-function generate()
+local function generate()
     index = index + 1
     return index
 end

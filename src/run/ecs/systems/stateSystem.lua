@@ -94,7 +94,15 @@ function stateSystem:hasActions(entity)
     end
 end
 
-function stateSystem:hasMovesLeft(id)
+function stateSystem:hasMovesLeft(entity)
+    if entity.state.currentTurnMoves >= entity.stats.current.moves then
+        return false
+    end
+
+    return true
+end
+
+function stateSystem:teamHasMovesLeft(id)
     for _, entity in ipairs(self.pool) do
         if entity.metadata.teamId == id then
             if entity.state.currentTurnMoves < entity.stats.current.moves then

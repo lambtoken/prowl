@@ -282,4 +282,53 @@ function EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId)
     return entity
 end
 
+function EntityFactory:reinitializeEntityComponents(entity, ignore)
+    self:loadComponents()
+
+    ignore = ignore or {}
+    local ignoreSet = {}
+    for _, name in ipairs(ignore) do
+        ignoreSet[name] = true
+    end
+
+    local preserve_level = entity.stats.level
+    entity.metadata.type = 'animal'
+    entity.stats.level = preserve_level or 1
+
+    for name, _ in pairs(entity) do
+        if not ignoreSet[name] and not name:match("^__") then
+            local constructorArgs = nil
+
+            -- Special handling for components that need constructor args
+            if name == "position" then
+                constructorArgs = { entity.position.x, entity.position.y }
+            elseif name == "renderable" then
+                constructorArgs = { entity.metadata.species }
+            elseif name == "metadata" then
+                constructorArgs = { entity.metadata.name or entity.metadata.species }
+            end
+
+            local componentDef = Concord.components[name]
+            if componentDef then
+                entity:remove(name)
+                pretty.print(constructorArgs)
+                if constructorArgs then
+                    entity:give(name, unpack(constructorArgs))
+                else
+                    entity:give(name)
+                end
+
+                if self.applyDefault then
+                    self:applyDefault(entity, name)
+                end
+            else
+                print("Warning: No component definition found for:", name)
+            end
+        end
+    end
+end
+
+
+
+
 return EntityFactory

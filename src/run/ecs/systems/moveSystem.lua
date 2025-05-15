@@ -506,6 +506,7 @@ end
 
 function moveSystem:removeAll(entity)
     entity.position.moveTweens = {}
+    entity.position.step = false
 end
 
 return moveSystem

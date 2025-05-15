@@ -1,5 +1,4 @@
 local Concord = require("libs.concord")
-local RM = require("src.render.RenderManager"):getInstance()
 
 local collider = Concord.component("collider", function(component)
     component.collidedWith = {}

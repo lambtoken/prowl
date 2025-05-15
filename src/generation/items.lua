@@ -456,7 +456,6 @@ local items = {
         passive = {
             description = "Attacks knockback enemies.",
             onAttack = function(matchState, source, target) 
-                print("DOOOOOOOOOOOOOOO ITTTTTTTTTTTTTTTTT")
                 matchState.crowdControlSystem:applyCC(target, "knockback", source)
             end
         },

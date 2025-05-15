@@ -114,7 +114,7 @@ end
 function match:update(dt) 
     if not self.paused then
         if self.match.teamManager.turnTeamId == 1 then
-            if self.match.teamManager:canCurrentTeamRest() and self.match:areAllMobsIdle() and self.match.stateSystem:hasMovesLeft(1) then
+            if self.match.teamManager:canCurrentTeamRest() and self.match:areAllMobsIdle() and self.match.stateSystem:teamHasMovesLeft(1) then
                 self.endTurnButton.disabled = false
             else
                 self.endTurnButton.disabled = true
