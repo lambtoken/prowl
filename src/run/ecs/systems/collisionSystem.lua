@@ -111,4 +111,10 @@ function collisionSystem:checkAABB(posA, colA, posB, colB)
            ay + ah > by
 end
 
+function collisionSystem:removeAll(animal)
+    animal.collidedWith = {}
+    animal.collisionGroups = {}
+    animal.ignoreIds = {}
+end
+
 return collisionSystem

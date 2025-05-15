@@ -654,6 +654,10 @@ function MatchManager:preparePlayer()
         animal.state.currentTurnMoves = 0
         self.animationSystem:removeAll(animal)
         self.moveSystem:removeAll(animal)
+        self.damageOverTimeSystem:removeAll(animal)
+        self.buffDebuffSystem:removeAll(animal)
+        self.collisionSystem:removeAll(animal)
+        self.statusEffectSystem:removeAll(animal)
         self.stateSystem:changeState(animal, "idle")
     end
 end

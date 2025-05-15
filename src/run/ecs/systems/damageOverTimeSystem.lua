@@ -100,4 +100,8 @@ function damageOverTimeSystem:onStandBy(teamId)
     end
 end
 
+function damageOverTimeSystem:removeAll(animal)
+    animal.dot.effects = {}
+end
+
 return damageOverTimeSystem

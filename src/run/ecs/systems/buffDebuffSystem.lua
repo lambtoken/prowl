@@ -115,4 +115,8 @@ function buffDebuffSystem:onStandBy(teamId)
     end
 end
 
+function buffDebuffSystem:removeAll(animal)
+    animal.buffDebuff.effects = {}
+end
+
 return buffDebuffSystem

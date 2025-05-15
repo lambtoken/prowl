@@ -75,6 +75,9 @@ function statusEFfectSystem:onStandBy(teamId)
     end
 end
 
+function statusEFfectSystem:removeAll(animal)
+    animal.status.effects = {}
+end
 -- reset animations
 
 -- add status effect:
