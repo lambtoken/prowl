@@ -46,8 +46,18 @@ function itemSystem:giveItem(entity, itemName)
 end
 
 function itemSystem:unequipItem(entity, item)
-    for i, equippedItem in ipairs(entity.inventory) do
+    for i, equippedItem in ipairs(entity.inventory.items) do
         if equippedItem == item then
+            table.remove(entity.inventory.items, i)
+            EventManager:emit("calculateStats")
+            break
+        end
+    end
+end
+
+function itemSystem:unequipItemById(entity, itemId)
+    for i, equippedItem in ipairs(entity.inventory.items) do
+        if equippedItem.id == itemId then
             table.remove(entity.inventory.items, i)
             EventManager:emit("calculateStats")
             break

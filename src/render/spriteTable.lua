@@ -298,6 +298,7 @@ local spriteTable = {
     office_chair = {48, 4},
     granade = {49, 4},
     shield = {50, 4},
+    medal = {51, 4},
 
     start_node = {},
     treasure_node = {16, 28},

@@ -649,7 +649,7 @@ end
 
 
 function MatchManager:preparePlayer()
-    for index, animal in ipairs(self.teamManager.teams[1].members) do
+    for _, animal in ipairs(self.teamManager.teams[1].members) do
         animal.stats.current.hp = animal.stats.current.maxHp
         animal.state.currentTurnMoves = 0
         self.animationSystem:removeAll(animal)

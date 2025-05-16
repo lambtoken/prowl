@@ -463,6 +463,15 @@ function Container:addContainer()
     return newContainer
 end
 
+function Container:removeChild(child)
+    for i = #self.children, 1 , -1 do
+        local c = self.children[i]
+        if c == child then 
+            table.remove(self.children, i)
+        end
+    end
+end
+
 function Container:setJustifyContent(str)
     for key, value in pairs(FLEX_JUSTIFY) do
         if value == str then

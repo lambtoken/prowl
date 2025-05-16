@@ -41,6 +41,7 @@ function itemSelect:enter()
     self.root:addChild(self.item_container)
 
     self.items = {} 
+    self.hoverItemId = nil
     
     local generated_items = getRandomItems(math.random(1, 3), nItems)
 
@@ -52,6 +53,15 @@ function itemSelect:enter()
         local item = item_box(i)
             :setWidth("20%")
             :setScaleBy("width")
+
+        item.onMouseEnter = function(s)
+            self:previewItem(i)
+        end
+
+        item.onMouseExited = function(s)
+            self:removeItem()
+        end
+
         table.insert(self.items, item)
         self.item_container:addChild(item)
     end
@@ -66,14 +76,17 @@ function itemSelect:enter()
     SoundManager:playSound('clickyclicky')
 end
 
-function itemSelect:buildUI(change_portrait)
-    self.animal_atk_pattern = nil
-    self.animal_move_pattern = nil
-    self.animal_stats = nil
-    
+function itemSelect:buildUI(change_portrait)    
     if not self.current_animal then
         return
     end
+    
+    self.root:removeChild(self.animal_container)
+    self.root:removeChild(self.animal_stats)
+    
+    self.animal_atk_pattern = nil
+    self.animal_move_pattern = nil
+    self.animal_stats = nil
 
     self.animal_container = mold.Container:new()
         :setWidth("70%")
@@ -115,13 +128,24 @@ function itemSelect:change_animal(id)
     self.current_animal = gs.run.team[id]
 end
 
-function itemSelect:previewItem(item)
+function itemSelect:previewItem(item_name)
     -- equip item
+    self.hoverItemId = gs.match.itemSystem:giveItem(self.current_animal, item_name).id
 
     -- recalc
-    
+    gs.match.statsSystem:calculateAnimalStats(self.current_animal)
+
     -- rerender
+    self:buildUI(true)
 end
+
+function itemSelect:removeItem()
+    print(self.hoverItemId)
+    gs.match.itemSystem:unequipItemById(self.current_animal, self.hoverItemId)
+    gs.match.statsSystem:calculateAnimalStats(self.current_animal)
+    self:buildUI(true)
+end
+
 
 function itemSelect:update(dt)
     checkerShader:send("time", love.timer.getTime())
@@ -136,6 +160,12 @@ function itemSelect:draw()
     love.graphics.setShader()
 
     self.root:draw()
+end
+
+function itemSelect:exit()
+    if self.hoverItemId then
+        gs.match.itemSystem:unequipItemById(self.current_animal, self.hoverItemId)
+    end
 end
 
 function itemSelect:mousemoved(x, y)
