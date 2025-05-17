@@ -1299,6 +1299,18 @@ function Container:mouseMoved(x, y)
 
     local activeChild = capturedChild or topmost
 
+    -- First pass: handle mouse exited
+    for _, childObj in ipairs(self.flattened) do
+        local child = childObj.child
+        local isInside = (child == activeChild)
+
+        if not isInside and child._mouseEntered then
+            child._mouseEntered = false
+            if child.onMouseExited then child:onMouseExited() end
+        end
+    end
+
+    -- Second pass: handle mouse entered and moved
     for _, childObj in ipairs(self.flattened) do
         local child = childObj.child
         local isInside = (child == activeChild)
@@ -1309,11 +1321,6 @@ function Container:mouseMoved(x, y)
                 if child.onMouseEnter then child:onMouseEnter() end
             end
             if child.onMouseMoved then child:onMouseMoved(x, y) end
-        else
-            if child._mouseEntered then
-                child._mouseEntered = false
-                if child.onMouseExited then child:onMouseExited() end
-            end
         end
     end
 end

@@ -339,10 +339,10 @@ local items = {
         name = 'mixer',
         type = 'weapon',
         rarity = 'rare',
-        stats = {
+        stats = {},
+        pattern = {
             {'swap', 'movePattern', 'atkPattern'}   
         },
-        pattern = {},
         passive = {},
         active = {},
     },
@@ -363,7 +363,7 @@ local items = {
         rarity = 'rare',
         stats = {
             {'increase', 'atk', 3},
-            {'swap', 'atk', 'maxHp'},      
+            {'swap', 'atk', 'maxHp'},
         },
         pattern = {
         },

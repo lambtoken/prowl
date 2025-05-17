@@ -21,7 +21,7 @@ end
 
 function statsSystem:calculateAnimalStats(entity, preserveHp)
     preserveHp = preserveHp ~= false
-        
+
     local oldHp = preserveHp and entity.stats.current.hp
     local items = entity.inventory.items
     local baseStats = entity.stats.base
@@ -70,15 +70,9 @@ function statsSystem:calculateAnimalStats(entity, preserveHp)
             currentStats[to] = currentStats[to] + math.floor(currentStats[from] * pct / 100)
         end,
         swap = function(a, b)
-            if (a == 'atkPattern' or a == 'movePattern') and (b == 'atkPattern' or b == 'movePattern') then
-                local temp = tablex.deep_copy(currentPatterns[a])
-                currentPatterns[a] = tablex.deep_copy(currentPatterns[b])
-                currentPatterns[b] = temp
-            else
-                local temp = currentStats[a]
-                currentStats[a] = currentStats[b]
-                currentStats[b] = temp
-            end
+            local temp = currentStats[a]
+            currentStats[a] = currentStats[b]
+            currentStats[b] = temp
         end
     }
 
@@ -91,9 +85,14 @@ function statsSystem:calculateAnimalStats(entity, preserveHp)
         end,
         remove = function(k, v)
             currentPatterns[k] = removeFromPattern(currentPatterns[k], v)
+        end,
+        swap = function(a, b)
+            local temp = tablex.deep_copy(currentPatterns[a])
+            currentPatterns[a] = tablex.deep_copy(currentPatterns[b])
+            currentPatterns[b] = temp
         end
     }
-
+    
     for _, effect in ipairs(statEffects) do
         local tag, k, v = effect[1], effect[2], effect[3]
         if tag == "increaseP" then
@@ -110,24 +109,11 @@ function statsSystem:calculateAnimalStats(entity, preserveHp)
 
     for _, effect in ipairs(patternEffects) do
         local tag = effect[1]
-
-        if tag ~= "swap" then
-            local args = { unpack(effect, 2) }
-            if patternHandlers[tag] then patternHandlers[tag](unpack(args)) end
-            if statHandlers[tag] then statHandlers[tag](unpack(args)) end
-        end
-    end
-
-    for _, effect in ipairs(statEffects) do
-        local tag = effect[1]
-       
-        if tag == "swap" then
-            local args = { unpack(effect, 2) }
-            if patternHandlers[tag] then patternHandlers[tag](unpack(args)) end
-            if statHandlers[tag] then statHandlers[tag](unpack(args)) end
-        end
+        local args = { unpack(effect, 2) }
+        if patternHandlers[tag] then patternHandlers[tag](unpack(args)) end
     end
 end
+
 
 function statsSystem:calculateStats(preserveHp)
     

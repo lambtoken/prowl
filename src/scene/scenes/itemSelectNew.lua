@@ -16,7 +16,7 @@ local gs = require("src.state.GameState"):getInstance()
 
 local itemMargin = 100
 local itemSize = 200
-local nItems = 3
+local nItems = 10
 
 local itemSelect = Scene:new('itemSelectNew')
 
@@ -45,14 +45,13 @@ function itemSelect:enter()
     
     local generated_items = getRandomItems(math.random(1, 3), nItems)
 
-    generated_items[1] = 'crossbow'
-    -- randomItems[2] = 'racing_flag'
-    -- randomItems[3] = 'mace'
+    generated_items[1] = 'mixer'
 
     for _, i in ipairs(generated_items) do
         local item = item_box(i)
             :setWidth("20%")
             :setScaleBy("width")
+            :debug()
 
         item.onMouseEnter = function(s)
             self:previewItem(i)
@@ -69,7 +68,7 @@ function itemSelect:enter()
     self.current_animal = gs.run.team[1]
 
     -- team 1 (player), animal 1 (usually starter animal)
-    self:change_animal(1, 1)
+    self:change_animal(1)
     self:load_animal()
 
     self.root:resize()
