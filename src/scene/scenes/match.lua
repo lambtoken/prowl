@@ -220,7 +220,7 @@ function match:draw()
 
     if self.inputManager.selectedAnimal then
         local wx, wy = self.camera:cameraCoords(0, 0)
-        love.graphics.intersectScissor(wx, wy, 6 * RM.tileSize, 6 * RM.tileSize)
+        love.graphics.intersectScissor(wx, wy, self.match.width * RM.tileSize, self.match.height * RM.tileSize)
         RM:pushShader("shimmer")
         RM:sendUniform("time", love.timer.getTime())
         RM:sendUniform("frequency", 20.0)

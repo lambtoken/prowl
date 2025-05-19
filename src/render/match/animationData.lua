@@ -323,6 +323,66 @@ local animations = {
 
     },
 
+    rand_wave = { 
+
+        cancelCategory = "none",
+        loop = false,
+        stackable = true,
+        onFinish = function() end,
+        tweens = {
+            {
+                delay = 0,
+                duration = function() return SINE_DURATION * math.random() end,
+                target = 'translateX',
+                from = 0,
+                to = 5,
+                func = "outSine"
+            },
+            {
+                delay = function() return SINE_DURATION end,
+                duration = function() return SINE_DURATION * math.random() * 2 end,
+                target = 'translateX',
+                from = 5,
+                to = -5,
+                func = "inOutSine"
+            },
+            {
+                delay = function() return SINE_DURATION + SINE_DURATION * math.random() * 2 end,
+                duration = SINE_DURATION,
+                target = 'translateX',
+                from = -5,
+                to = 0,
+                func = "inSine"
+            },
+
+            -- {
+            --     delay = 0,
+            --     duration = SINE_DURATION * math.random(),
+            --     target = 'translateY',
+            --     from = 0,
+            --     to = 5,
+            --     func = "outSine"
+            -- },
+            -- {
+            --     delay = SINE_DURATION,
+            --     duration = SINE_DURATION * math.random() * 2,
+            --     target = 'translateY',
+            --     from = 5,
+            --     to = -5,
+            --     func = "inOutSine"
+            -- },
+            -- {
+            --     delay = SINE_DURATION + SINE_DURATION * math.random() * 2,
+            --     duration = SINE_DURATION,
+            --     target = 'translateY',
+            --     from = -5,
+            --     to = 0,
+            --     func = "inSine"
+            -- }
+        }
+
+    },
+
     bubble_up = { 
 
         cancelCategory = "none",

@@ -197,13 +197,15 @@ function Box:initialize()
     self.cPivotY = 0
 
     -- transforms: rotation, scale
-    self.tr = 0
-    self.tsx = 1
-    self.tsy = 1
+    -- self.tr = 0
+    -- self.tsx = 1
+    -- self.tsy = 1
 
     self.transform = {
-        scaleX = 0,
-        scaleY = 0,
+        translateX = 0,
+        translateY =0,
+        scaleX = 1,
+        scaleY = 1,
         rotation = 0
     }
 
@@ -361,17 +363,24 @@ end
 
 function Box:createAnimation(name, loop)
     local anim = {}
-
-    anim.cancelCategory = animationData[name].cancelCategory
+    local sourceData = animationData[name]
+    
+    anim.cancelCategory = sourceData.cancelCategory or "none"
     anim.tweens = {}
     anim.name = name
-    anim.loop = animationData[name].loop or loop
-    anim.stackable = animationData[name].stackable
+    anim.loop = sourceData.loop or loop or false
+    anim.stackable = sourceData.stackable or true
     anim.timePassed = 0
-    anim.onFinish = animationData[name].onFinish
+    anim.onFinish = sourceData.onFinish or function() end
     
-    for _, tweenData in ipairs(animationData[name].tweens) do
+    for _, tweenData in ipairs(sourceData.tweens) do
         local t = tablex.copy(tweenData)
+        
+        for k, v in pairs(t) do
+            if type(v) == "function" then
+                t[k] = v()
+            end
+        end
         
         t.x = t.from
 
@@ -1175,8 +1184,10 @@ function Container:collectTweens()
         local animationComponent = entity.child
         
         local sums = {
-            scaleX = 0,
-            scaleY = 0,
+            translateX = 0,
+            translateY = 0,
+            scaleX = 1,
+            scaleY = 1,
             rotation = 0
         }
         
@@ -1192,13 +1203,16 @@ function Container:collectTweens()
 
         end
 
-        animationComponent.transform = {
-            scaleX = 0,
-            scaleY = 0,
-            rotation = 0
-        }
+        animationComponent.transform.translateX = 0
+        animationComponent.transform.translateY = 0
+        animationComponent.transform.scaleX = 1
+        animationComponent.transform.scaleY = 1
+        animationComponent.transform.rotation = 0
 
         for property, sum in pairs(sums) do
+            if property == "translateX" or property == "translateY" then 
+                sum = math.floor(sum + 0.5)
+            end
             animationComponent.transform[property] = sum
         end
     end
@@ -1457,8 +1471,9 @@ function Container:draw()
             )
         end
 
-        love.graphics.rotate(child.tr + child.transform.rotation)
-        love.graphics.scale(child.tsx, child.tsy)
+        love.graphics.scale(child.transform.scaleX, child.transform.scaleY)
+        love.graphics.rotate(child.transform.rotation)
+        love.graphics.translate(child.transform.translateX, child.transform.translateY)
         -- if child.overflow == OVERFLOW.CLIP then
         --     love.graphics.intersectScissor(child.cx, child.cy, child.cw, child.ch)
         -- end
@@ -2070,9 +2085,6 @@ function ImageBox:initialize(path)
     self:setHeight(self.origHeight .. "px")
     self.bgColor = nil
     self.scaleBy = nil
-    self.tsx = 1
-    self.tsy = 1
-    self.tr = 0
 end
 
 function ImageBox:setScale()
@@ -2133,9 +2145,6 @@ function QuadBox:initialize(texture, x, y, w, h)
     self:setHeight(self.origHeight .. "px")
     self.bgColor = nil
     self.scaleBy = nil
-    self.tsx = 1
-    self.tsy = 1
-    self.tr = 0
 
     self.texture:setWrap("clamp", "clamp")
 end

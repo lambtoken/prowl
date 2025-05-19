@@ -34,9 +34,7 @@ for i = 1, 3 do
             )
         end
     end
-    
 end
-
 
 local Pattern = {}
 Pattern.__index = Pattern
