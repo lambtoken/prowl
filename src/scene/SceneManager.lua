@@ -64,6 +64,8 @@ end
 
 function SceneManager:draw()
 
+    renderManager:pushVirtual()
+
     if self.currentScene then
         self.currentScene:draw()
         if self.currentScene.subScenes then
@@ -72,6 +74,8 @@ function SceneManager:draw()
             end
         end
     end
+
+    love.graphics.pop()
 
     if self.transitionExit then
         transitions[self.transitionType].onExit.draw()
@@ -142,10 +146,9 @@ function SceneManager:changeScene()
 end
 
 function SceneManager:mousemoved(x, y, dx, dy)
-    mouse.x = x
-    mouse.y = y
-
-    self.mouseX, self.mouseY = x, y
+    x, y = renderManager:mouseToVirtual(x, y)
+    mouse.x, mouse.y = x, y
+    -- self.mouseX, self.mouseY = x, y
 
     if self.currentScene and self.currentScene.mousemoved then
         self.currentScene:mousemoved(x, y, dx, dy)
@@ -153,6 +156,8 @@ function SceneManager:mousemoved(x, y, dx, dy)
 end
 
 function SceneManager:mousepressed(x, y, btn)
+    x, y = renderManager:mouseToVirtual(x, y)
+
     if self.currentScene and self.currentScene.mousepressed then
         if not self.transitionExit then 
             self.currentScene:mousepressed(x, y, btn)
@@ -163,6 +168,8 @@ function SceneManager:mousepressed(x, y, btn)
 end
 
 function SceneManager:mousereleased(x, y, btn)
+    x, y = renderManager:mouseToVirtual(x, y)
+
     if self.currentScene and self.currentScene.mousereleased then
         if not self.transitionExit then 
             self.currentScene:mousereleased(x, y, btn)

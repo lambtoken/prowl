@@ -105,12 +105,8 @@ function InputManager:mousemoved(x, y)
     if self.drag then
         self.camera:lookAt(self.dragX - (x - self.dragMouseX), self.dragY - (y - self.dragMouseY))
     end
-
-    local worldX, worldY = self.camera:worldCoords(x, y)
     
-    -- Calculate tile coordinates by dividing by tile size and flooring
-    self.hoveredTileX = math.floor(worldX / RM.tileSize)
-    self.hoveredTileY = math.floor(worldY / RM.tileSize)
+    self.hoveredTileX, self.hoveredTileY = self:getHoveredTileCoordinates()
 
     local tile = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY)
 
@@ -129,9 +125,12 @@ end
 
 function InputManager:getHoveredTileCoordinates()
     -- Calculate hovered tile coordinates
-    local x, y = self.camera:worldCoords(love.mouse.getX(), love.mouse.getY())
+    local screenX, screenY = love.mouse.getPosition()
+    local virtualX, virtualY = RM:mouseToVirtual(screenX, screenY)
+    local x, y = self.camera:worldCoords(virtualX, virtualY, 0, 0, RM.windowWidth, RM.windowHeight)
     local tileX = math.floor(x / RM.tileSize)
     local tileY = math.floor(y / RM.tileSize)
+    print(screenX, virtualX, x, tileX)
     return tileX, tileY
 end
 

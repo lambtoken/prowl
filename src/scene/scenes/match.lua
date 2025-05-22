@@ -198,7 +198,7 @@ function match:draw()
         self.pattern:preparePatterns()
     end
 
-    self.camera:attach()
+    self.camera:attach(0, 0, RM.windowWidth, RM.windowHeight, true)
     self.match:draw()
     self.particleSystem:draw()
     self.TextBubbleManager:draw()
@@ -219,15 +219,15 @@ function match:draw()
     love.graphics.setColor(1, 1, 1, 1)
 
     if self.inputManager.selectedAnimal then
-        local wx, wy = self.camera:cameraCoords(0, 0)
-        love.graphics.intersectScissor(wx, wy, self.match.width * RM.tileSize, self.match.height * RM.tileSize)
+        -- local wx, wy = self.camera:cameraCoords(0, 0)
+        -- love.graphics.intersectScissor(wx, wy, self.match.width * RM.tileSize, self.match.height * RM.tileSize)
         RM:pushShader("shimmer")
         RM:sendUniform("time", love.timer.getTime())
         RM:sendUniform("frequency", 20.0)
         self.pattern:drawMovePattern()
         self.pattern:drawAttackPattern()
         RM:popShader()
-        love.graphics.setScissor()
+        -- love.graphics.setScissor()
     end
     
     self.camera:detach()

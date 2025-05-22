@@ -5,7 +5,6 @@ local sceneManager = require("src.scene.SceneManager"):getInstance()
 local outline_shader = require "src.render.shaders.outline_shader"
 local tween = require "libs.tween"
 
-local renderStats = false
 local outlineShader = love.graphics.newShader(outline_shader)
 
 local renderSystem = Concord.system({pool = {"position", "renderable", "shader"}})
@@ -38,10 +37,6 @@ function renderSystem:draw()
         --     return a.position.screenY > b.position.screenY
         -- end
 
-        -- fallback
-
-        -- Apply dynamic offset for mobs coming from underneath
-        -- Higher screenY should render sooner
         local adjustedAY = a.position.screenY - a.position.screenY * 0.001
         local adjustedBY = b.position.screenY - b.position.screenY * 0.001
 

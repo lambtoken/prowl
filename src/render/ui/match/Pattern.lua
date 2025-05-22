@@ -26,6 +26,8 @@ function Pattern:loadAnimal(animal)
 end
 
 function Pattern:preparePatterns()
+    RM.pushScreen()
+
     local moveCanvasWidth = #self.animal.stats.currentPatterns.movePattern[1] * RM.tileSize
     local moveCanvasHeight = #self.animal.stats.currentPatterns.movePattern * RM.tileSize
 
@@ -76,6 +78,7 @@ function Pattern:preparePatterns()
     self.attackAdjX = math.floor(#self.animal.stats.currentPatterns.atkPattern[1] / 2) * RM.tileSize
     self.attackAdjY = math.floor(#self.animal.stats.currentPatterns.atkPattern / 2) * RM.tileSize
 
+    love.graphics.pop()
     love.graphics.setCanvas()
 end
 

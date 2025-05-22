@@ -107,6 +107,7 @@ end
 
 function love.resize(w, h)
     sceneM:resize(w, h)
+    renderM:resize(w, h)
 end
 
 function love.keypressed(key, scancode, isrepeat)

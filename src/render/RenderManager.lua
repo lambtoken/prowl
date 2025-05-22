@@ -55,6 +55,12 @@ function RenderManager:init()
 
     self.renderDistanceX = 16
     self.renderDistanceY = 16
+
+    self.virtualWidth = 1280
+    self.virtualHeight = 720
+    self.scale = 1
+    self.offsetX = 0
+    self.offsetY = 0
 end
 
 function RenderManager:getInstance()
@@ -88,10 +94,31 @@ function RenderManager:applyShake()
     love.graphics.translate(self.xoffset, self.yoffset)
 end
 
-function RenderManager:resize()
-    self:updateWindowSize()
+function RenderManager:resize(w, h)
+    self.virtualWidth = w
+    self.virtualHeight = h
+    self.scale = math.min(self.virtualWidth / self.windowWidth, self.virtualHeight / self.windowHeight)
+    -- self.scale = math.floor(self.scale + 0)
+    print(self.scale)
+    self.offsetX = math.floor((self.virtualWidth - self.windowWidth * self.scale) / 2)
+    self.offsetY = math.floor((self.virtualHeight - self.windowHeight * self.scale) / 2)
 
-    self.tileSize = math.floor(self.windowHeight / 10 / 16) * 16
+    -- self.tileSize = math.floor(self.windowHeight / 10 / 16) * 16
+end
+
+function RenderManager:pushVirtual()
+    love.graphics.push()
+    love.graphics.translate(self.offsetX, self.offsetY)
+    love.graphics.scale(self.scale)
+end
+
+function RenderManager:pushScreen()
+    love.graphics.push()
+    love.graphics.origin()
+end
+
+function RenderManager:mouseToVirtual(x, y)
+    return (x - self.offsetX) / self.scale, (y - self.offsetY) / self.scale
 end
 
 function RenderManager:createShaders()
@@ -166,7 +193,6 @@ function RenderManager:draw()
     love.graphics.setCanvas()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(self.mainCanvas, 0, 0)
-    
 end
 
 function RenderManager:setShader()

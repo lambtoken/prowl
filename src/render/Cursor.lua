@@ -66,7 +66,8 @@ function Cursor:draw()
     if self.visibility then
         love.graphics.setColor(1,1,1,1)
         love.graphics.draw(self.ps)
-        love.graphics.draw(renderManager.image, self.texture, mouse.x, mouse.y, 0, renderManager.increaseFactor * self.cursorShrink * self.cursorSize)
+        local x, y = love.mouse.getPosition()
+        love.graphics.draw(renderManager.image, self.texture, x, y, 0, renderManager.increaseFactor * self.cursorShrink * self.cursorSize)
     end
 end
 
