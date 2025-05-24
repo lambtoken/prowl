@@ -40,6 +40,8 @@ local renderM
 
 function love.load(args)
 
+    math.randomseed(os.time())
+
     for index, value in ipairs(args) do
         if value == "test" then
             print("TESTING")

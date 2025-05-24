@@ -1219,7 +1219,7 @@ function Container:collectTweens()
 end
 
 function Container:updateAnimations(dt)
-    -- First process all animations
+
     for _, entity in ipairs(self.flattened) do 
         local animationComponent = entity.child
         if not animationComponent or not animationComponent.animations then
@@ -1245,7 +1245,7 @@ function Container:updateAnimations(dt)
             if allTweensComplete then
                 if animation.loop then
                     animation.timePassed = 0
-                    -- Reset tweens
+                    -- reset
                     for _, t in ipairs(animation.tweens) do
                         t.tween:reset()
                         t.x = t.from
@@ -1262,7 +1262,6 @@ function Container:updateAnimations(dt)
         ::continue::
     end
 
-    -- Single collectTweens call after all updates
     self:collectTweens()
 end
 

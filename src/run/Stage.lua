@@ -53,75 +53,78 @@ function Stage:generateNodes()
 end
 
 function Stage:getNeighborNode(row1Size, row2Size, j)
-    -- Handle edge cases where either size is 1
-    if row1Size == 1 or row2Size == 1 then
-        return {1}
-    end
+    -- Handle edge cases with size 1
+    if row1Size == 1 or row2Size == 1 then return {1} end
 
-    -- Calculate the exact proportional position in row2
-    local exactPos = (j - 1) * (row2Size - 1) / (row1Size - 1) + 1
-    local base = math.floor(exactPos + 1e-6) -- fuck you IEEE 754
-
-    -- Collect potential neighbors (base-1, base, base+1)
-    local neighbors = {}
-    for i = -1, 1 do
-        local index = base + i
-        if index >= 1 and index <= row2Size then
-            table.insert(neighbors, index)
-        end
-    end
-
-    -- Special case when mapping to size 2
+    -- Special case for mapping to size 2
     if row2Size == 2 and row1Size > 2 then
-        if j == math.ceil(row1Size / 2) then
-            return {1, 2}
-        end
+        if j == math.ceil(row1Size / 2) then return {1, 2} end
     end
 
-    -- Handle expansion case (row1Size < row2Size)
-    if row1Size < row2Size then
-        -- For expansion, we should only return the closest 2 neighbors when not exactly on a node
-        if math.abs(exactPos - math.floor(exactPos + 0.5)) > 1e-6 then
-            table.sort(neighbors, function(a, b)
-                return math.abs(a - exactPos) < math.abs(b - exactPos)
-            end)
-            -- Return the two closest neighbors
-            return {neighbors[1], neighbors[2]}
-        else
-            -- Exactly on a node, return just that node
-            return {math.floor(exactPos + 0.5)}
-        end
-    end
+    -- Calculate proportional position
+    local pos = (j-1) * (row2Size-1)/(row1Size-1) + 1
 
-    -- Handle compression case (row1Size > row2Size)
-    if row1Size > row2Size then
-        return self:getClosestNeighbors(neighbors, exactPos)
+    -- Determine neighbors based on mapping direction
+    if row1Size < row2Size then  -- Expansion
+        return handleExpansion(pos, row2Size)
+    elseif row1Size > row2Size then  -- Compression
+        return handleCompression(pos, row2Size)
+    else  -- Equal sizes
+        return handleEqualCase(pos, row2Size)
     end
-
-    -- For equal sizes, return all potential neighbors (base-1, base, base+1)
-    return neighbors
 end
 
--- helper function to select closest neighbor(s) during compression
-function Stage:getClosestNeighbors(neighbors, exactPos)
-    -- If exactly on a node, return just that node
-    if math.abs(exactPos - math.floor(exactPos + 0.5)) < 1e-6 then
-        return {math.floor(exactPos + 0.5)}
+function handleExpansion(pos, row2Size)
+    if math.abs(pos - math.floor(pos)) < 1e-6 then
+        -- Exact position: return surrounding nodes
+        local exact = math.floor(pos)
+        return getClampedNodes(exact-1, exact+1, row2Size)
+    else
+        -- Non-exact: return two closest nodes
+        return {
+            math.max(1, math.floor(pos)),
+            math.min(row2Size, math.ceil(pos))
+        }
     end
-
-    -- Sort by distance to exact position
-    table.sort(neighbors, function(a, b)
-        return math.abs(a - exactPos) < math.abs(b - exactPos)
-    end)
-
-    -- If two neighbors are equally close, return both
-    if #neighbors > 1 and 
-       math.abs(math.abs(neighbors[1] - exactPos) - math.abs(neighbors[2] - exactPos)) < 1e-6 then
-        return {neighbors[1], neighbors[2]}
-    end
-
-    return {neighbors[1]}
 end
+
+function handleCompression(pos, row2Size)
+    local rounded = math.floor(pos + 0.5)
+    if math.abs(pos - rounded) < 1e-6 then
+        return {rounded}
+    end
+    
+    local n1 = math.floor(pos)
+    local n2 = math.ceil(pos)
+    n1 = clamp(n1, 1, row2Size)
+    n2 = clamp(n2, 1, row2Size)
+    
+    local d1 = math.abs(pos - n1)
+    local d2 = math.abs(pos - n2)
+    
+    if d1 < d2 then return {n1}
+    elseif d1 > d2 then return {n2}
+    else return {n1, n2} end
+end
+
+function handleEqualCase(pos, row2Size)
+    local base = math.floor(pos + 0.5)
+    return getClampedNodes(base-1, base+1, row2Size)
+end
+
+-- Helper functions
+function getClampedNodes(start, finish, row2Size)
+    local nodes = {}
+    for i = math.max(1, start), math.min(row2Size, finish) do
+        table.insert(nodes, i)
+    end
+    return nodes
+end
+
+function clamp(value, min, max)
+    return math.max(min, math.min(max, value))
+end
+
 
 function Stage:connectNodes()
 
@@ -254,28 +257,28 @@ function Stage:connectNodes()
     end
 
     for i = 2, #self.nodes - 1, 1 do
-    local currentRow = self.nodes[i]
-    local nextRow = self.nodes[i + 1]
+         local currentRow = self.nodes[i]
+         local nextRow = self.nodes[i + 1]
 
-    for j, node in ipairs(currentRow) do
-        if #node.to == 0 then
-            local potentialNextNodes = self:getNeighborNode(#currentRow, #nextRow, j)
-            
-            if #potentialNextNodes == 0 then
-                goto continue
-            end
+        for j, node in ipairs(currentRow) do
+            if #node.to == 0 then
+                local potentialNextNodes = self:getNeighborNode(#currentRow, #nextRow, j)
+                
+                if #potentialNextNodes == 0 then
+                    goto continue
+                end
 
-            for _, nextNodeIndex in ipairs(potentialNextNodes) do
-                local nextNode = nextRow[nextNodeIndex]
-                if #node.to == 0 then
-                    table.insert(node.to, {i + 1, nextNodeIndex})
-                    table.insert(nextNode.from, {i, j})
+                for _, nextNodeIndex in ipairs(potentialNextNodes) do
+                    local nextNode = nextRow[nextNodeIndex]
+                    if #node.to == 0 then
+                        table.insert(node.to, {i + 1, nextNodeIndex})
+                        table.insert(nextNode.from, {i, j})
+                    end
                 end
             end
+            ::continue::
         end
-        ::continue::
     end
-end
 end
 
 function Stage:generate()
