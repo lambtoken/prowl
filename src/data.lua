@@ -175,6 +175,11 @@ local data = {
             name = 'ram',
             unlocked = false
         },
+        {
+            key = 'apple',
+            name = 'apple',
+            unlocked = true
+        }
         
         -- {
         --     key = 'unicorn',

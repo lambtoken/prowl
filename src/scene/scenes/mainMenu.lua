@@ -56,11 +56,11 @@ function animalBg:draw()
     -- RM:pushShader("gray")
 
     love.graphics.clear(193/255, 224/255, 201/255, 1)
-    for index, a in ipairs(self.animals) do
+    for _, a in ipairs(self.animals) do
         -- -0.1 + math.random() % 0.2
         love.graphics.push()
         love.graphics.translate(a.x + a.offsetX, a.y + a.offsetY)
-        love.graphics.draw(RM.image, a.quad, - self.size/ 2, - self.size/2, 0, self.increase)
+        love.graphics.draw(RM.image, a.quad, - self.size/2, - self.size/2, 0, self.increase)
         love.graphics.pop()
     end
 

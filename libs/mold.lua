@@ -1218,28 +1218,20 @@ function Container:collectTweens()
     end
 end
 
-
 function Container:updateAnimations(dt)
+    -- First process all animations
     for _, entity in ipairs(self.flattened) do 
-
         local animationComponent = entity.child
-        
-        if not animationComponent.animations then
-            -- for key, value in pairs(animationComponent) do
-            --     print(key)
-                
-            -- end
+        if not animationComponent or not animationComponent.animations then
             goto continue
-        end 
+        end
 
         for i = #animationComponent.animations, 1, -1 do
             local animation = animationComponent.animations[i]
-
             animation.timePassed = animation.timePassed + dt
 
             local allTweensComplete = true
             for _, t in ipairs(animation.tweens) do
-
                 if animation.timePassed >= t.delay then
                     if not t.tween:update(dt) then
                         allTweensComplete = false
@@ -1248,15 +1240,12 @@ function Container:updateAnimations(dt)
                     allTweensComplete = false
                     break
                 end
-
             end
-
-            -- this shouldn't be here. but it fixes a looping glitch for now
-            self:collectTweens()
 
             if allTweensComplete then
                 if animation.loop then
                     animation.timePassed = 0
+                    -- Reset tweens
                     for _, t in ipairs(animation.tweens) do
                         t.tween:reset()
                         t.x = t.from
@@ -1273,6 +1262,8 @@ function Container:updateAnimations(dt)
         ::continue::
     end
 
+    -- Single collectTweens call after all updates
+    self:collectTweens()
 end
 
 
