@@ -52,19 +52,82 @@ function Stage:generateNodes()
     end
 end
 
-function getNeighborNode(row1Size, row2Size, j)
-    if row1Size > row2Size then
-        return math.ceil(j / row2Size - 1)
-    else
-        return math.ceil(j / row1Size - 1)
+function Stage:getNeighborNode(row1Size, row2Size, j)
+    -- Handle edge cases where either size is 1
+    if row1Size == 1 or row2Size == 1 then
+        return {1}
     end
+
+    -- Calculate the exact proportional position in row2
+    local exactPos = (j - 1) * (row2Size - 1) / (row1Size - 1) + 1
+    local base = math.floor(exactPos + 1e-6) -- fuck you IEEE 754
+
+    -- Collect potential neighbors (base-1, base, base+1)
+    local neighbors = {}
+    for i = -1, 1 do
+        local index = base + i
+        if index >= 1 and index <= row2Size then
+            table.insert(neighbors, index)
+        end
+    end
+
+    -- Special case when mapping to size 2
+    if row2Size == 2 and row1Size > 2 then
+        if j == math.ceil(row1Size / 2) then
+            return {1, 2}
+        end
+    end
+
+    -- Handle expansion case (row1Size < row2Size)
+    if row1Size < row2Size then
+        -- For expansion, we should only return the closest 2 neighbors when not exactly on a node
+        if math.abs(exactPos - math.floor(exactPos + 0.5)) > 1e-6 then
+            table.sort(neighbors, function(a, b)
+                return math.abs(a - exactPos) < math.abs(b - exactPos)
+            end)
+            -- Return the two closest neighbors
+            return {neighbors[1], neighbors[2]}
+        else
+            -- Exactly on a node, return just that node
+            return {math.floor(exactPos + 0.5)}
+        end
+    end
+
+    -- Handle compression case (row1Size > row2Size)
+    if row1Size > row2Size then
+        return self:getClosestNeighbors(neighbors, exactPos)
+    end
+
+    -- For equal sizes, return all potential neighbors (base-1, base, base+1)
+    return neighbors
+end
+
+-- helper function to select closest neighbor(s) during compression
+function Stage:getClosestNeighbors(neighbors, exactPos)
+    -- If exactly on a node, return just that node
+    if math.abs(exactPos - math.floor(exactPos + 0.5)) < 1e-6 then
+        return {math.floor(exactPos + 0.5)}
+    end
+
+    -- Sort by distance to exact position
+    table.sort(neighbors, function(a, b)
+        return math.abs(a - exactPos) < math.abs(b - exactPos)
+    end)
+
+    -- If two neighbors are equally close, return both
+    if #neighbors > 1 and 
+       math.abs(math.abs(neighbors[1] - exactPos) - math.abs(neighbors[2] - exactPos)) < 1e-6 then
+        return {neighbors[1], neighbors[2]}
+    end
+
+    return {neighbors[1]}
 end
 
 function Stage:connectNodes()
 
     math.randomseed(os.time())
 
-    -- uncle bob i am sorry...
+    -- i am sorry uncle bob...
     local function getValidEdges(row1, row2, rowNumber, forward)
         local edges = {}
 
@@ -75,7 +138,7 @@ function Stage:connectNodes()
         else rowAdvance = -1
         end
 
-        -- Determine offsets based on row lengths
+        -- offsets based on row lengths
         local iOffset, jOffset = 0, 0
         if #row1 > #row2 then
             jOffset = -1
@@ -137,13 +200,9 @@ function Stage:connectNodes()
 
                 if forward then
                     table.insert(self.nodes[rowNumber][i].to, {randomEdge[1], randomEdge[2]})
-                    -- print(rowNumber, i, randomEdge[1], randomEdge[2])
-                    -- pretty.print(self.nodes[randomEdge[1]][randomEdge[2]].from)
                     table.insert(self.nodes[randomEdge[1]][randomEdge[2]].from, {rowNumber, i})
                 else
                     table.insert(self.nodes[randomEdge[1]][randomEdge[2]].to, {rowNumber, i})
-                    -- print(rowNumber, i, randomEdge[1], randomEdge[2])
-                    -- pretty.print(self.nodes[randomEdge[1]][randomEdge[2]].from)
                     table.insert(self.nodes[rowNumber][i].from, {randomEdge[1], randomEdge[2]})
                 end
 
@@ -166,22 +225,57 @@ function Stage:connectNodes()
         getValidEdges(currentRow, nextRow, i, false)
     end
 
+    print("size",#self.nodes,#self.nodes[1])
+
     -- connect ramaining nodes
-    -- for i = #self.nodes - 1, 2, -1 do
-    --     local currentRow = self.nodes[i]
-    --     local previousRow = self.nodes[i - 1]
+    -- this shit needs a refactor...whatever. one day. as long as it doesn't break
+    for i = #self.nodes - 1, 2, -1 do
+        local currentRow = self.nodes[i]
+        local previousRow = self.nodes[i - 1]
 
-    --     for j, node in ipairs(currentRow) do
-    --         if #node.from == 0 then
-    --             local previousNodeIndex = getNeighborNode(#previousRow, #currentRow, j)
-    --             local previousNode = previousRow[previousNodeIndex]
+        for j, node in ipairs(currentRow) do
+            if #node.from == 0 then
+                local potentialPreviousNodes = self:getNeighborNode(#currentRow, #previousRow, j)
                 
-    --             table.insert(node.from, {i - 1, previousNodeIndex})
-    --             table.insert(previousNode.to, {i, j})
-    --         end
-    --     end
-    -- end
+                if #potentialPreviousNodes == 0 then
+                    goto continue
+                end
 
+                for index, value in ipairs(potentialPreviousNodes) do
+                    local previousNode = previousRow[value]
+                    if #node.from == 0 or #previousNode.to == 0 then
+                        table.insert(node.from, {i - 1, value})
+                        table.insert(previousNode.to, {i, j})
+                    end
+                end
+            end
+            ::continue::
+        end
+    end
+
+    for i = 2, #self.nodes - 1, 1 do
+    local currentRow = self.nodes[i]
+    local nextRow = self.nodes[i + 1]
+
+    for j, node in ipairs(currentRow) do
+        if #node.to == 0 then
+            local potentialNextNodes = self:getNeighborNode(#currentRow, #nextRow, j)
+            
+            if #potentialNextNodes == 0 then
+                goto continue
+            end
+
+            for _, nextNodeIndex in ipairs(potentialNextNodes) do
+                local nextNode = nextRow[nextNodeIndex]
+                if #node.to == 0 then
+                    table.insert(node.to, {i + 1, nextNodeIndex})
+                    table.insert(nextNode.from, {i, j})
+                end
+            end
+        end
+        ::continue::
+    end
+end
 end
 
 function Stage:generate()
@@ -189,4 +283,4 @@ function Stage:generate()
     self:connectNodes()
 end
 
-return Stage
+return Stage 

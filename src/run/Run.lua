@@ -27,12 +27,10 @@ function Run:nextStage()
 end
 
 function Run:generateStages()
-    self.stages[1] = Stage:new(1)
-    self.stages[1]:generate()
-    self.stages[2] = Stage:new(2)
-    self.stages[2]:generate()
-    self.stages[3] = Stage:new(3)
-    self.stages[3]:generate()
+    for i = 1, 3, 1 do
+        self.stages[i] = Stage:new(i)
+        self.stages[i]:generate()
+    end
 end
 
 -- function Run:generateMatches()
