@@ -2,6 +2,7 @@ local animationData = require "src.render.match.animationData"
 local tween = require "libs.tween"
 local tablex = require "libs.batteries.tablex"
 local getFont = require "src.render.getFont"
+local pretty  = require "libs.batteries.pretty"
 
 local class = require "libs.middleclass"
 
@@ -195,11 +196,6 @@ function Box:initialize()
     self.sPivotY = 0.5
     self.cPivotX = 0
     self.cPivotY = 0
-
-    -- transforms: rotation, scale
-    -- self.tr = 0
-    -- self.tsx = 1
-    -- self.tsy = 1
 
     self.transform = {
         translateX = 0,
@@ -443,7 +439,6 @@ end
 
 local Container = class("Container", Box)
 
-
 function Container:initialize()
     Box.initialize(self)
 
@@ -538,15 +533,14 @@ function Container:resize()
 end
 
 function Container:_resizeChildren()
-
     -- process px, percent, fr... in that order
 
     local props
 
-    if self.flexDirection == FLEX_DIRECTION.ROW then
-        props = ROW_LOOKUP
-    elseif self.flexDirection == FLEX_DIRECTION.COLUMN then
+    if self.flexDirection == FLEX_DIRECTION.COLUMN then
         props = COLUMN_LOOKUP
+    elseif self.flexDirection == FLEX_DIRECTION.ROW then
+        props = ROW_LOOKUP
     end
 
     -- this branch should not be here
@@ -595,7 +589,6 @@ function Container:_resizeChildren()
 
     -- main calc
     for _, child in ipairs(self.children) do
-
         if child.sMargin then
 
             for key, side in pairs(child.sMargin) do
@@ -652,16 +645,15 @@ function Container:_resizeChildren()
             cross_size_value = clamp(cross_size_value, 0, cross_size_value)
         end
 
-        if child.children then
+        local _props
 
-            local _props
-    
-            if child.flexDirection == FLEX_DIRECTION.ROW then
-                _props = ROW_LOOKUP
-            elseif child.flexDirection == FLEX_DIRECTION.COLUMN then
-                _props = COLUMN_LOOKUP
-            end
-            
+        if child.flexDirection == FLEX_DIRECTION.ROW then
+            _props = ROW_LOOKUP
+        elseif child.flexDirection == FLEX_DIRECTION.COLUMN then
+            _props = COLUMN_LOOKUP
+        end
+        
+        if child.children then
             if child['s' .. _props.main_size].unit == UNIT_TYPES.AUTO then
                 child:_resizeChildren()
                 
@@ -691,10 +683,15 @@ function Container:_resizeChildren()
                     cross_size_value = largest
                 end
             end
-
         end
 
-        -- assert(main_size_value and cross_size_value, "main_size_value or cross_size_value calculation error!")
+        -- HACK. should figure out a better solution when i refactor all this crap
+        if self.flexDirection == FLEX_DIRECTION.ROW and _props and
+        child['s' .. _props.cross_size].unit == UNIT_TYPES.AUTO then
+            local temp = main_size_value
+            main_size_value = cross_size_value
+            cross_size_value = temp
+        end
 
         -- calc minmax size
         local minMain = child["smin" .. props.main_size]
@@ -768,7 +765,6 @@ function Container:_resizeChildren()
         end
 
         -- calculate pivots
-
         if child.sPivotX then
             if props.main_size == "w"then
                 child.cPivotX = child.sPivotX * main_size_value
@@ -820,7 +816,6 @@ function Container:_resizeChildren()
             elseif child.sMargin[props.cross_end_margin].unit == UNIT_TYPES.AUTO then
                 child.cMargin[props.cross_end_margin] = remainingMain
             end
-
         end
 
         local marginbox_main_size_value = main_size_value + child.cMargin[props.start_margin] + child.cMargin[props.end_margin]
@@ -836,12 +831,15 @@ function Container:_resizeChildren()
             child['c' .. props.main_size] = main_size_value - child.cPadding[props.start_margin] - child.cPadding[props.cross_end_margin]
         end
 
+        -- print(child['c' .. props.main_size], props.main_size)
+        
         if child.cPadding[props.cross_start_margin] + child.cPadding[props.cross_end_margin] > cross_size_value then
             child['c' .. props.cross_size] = 0
         else
             child['c' .. props.cross_size] = cross_size_value - child.cPadding[props.cross_start_margin] - child.cPadding[props.cross_end_margin]
         end
-
+        
+        -- print(child['c' .. props.cross_size], props.cross_size)
 
         if child.position == POSITION_TYPES.STATIC or child.position == POSITION_TYPES.RELATIVE then
             remainingSpace = remainingSpace - marginbox_main_size_value
@@ -905,7 +903,6 @@ function Container:_resizeChildren()
         end
 
     end
-
 end
 
 -- i hate this function, and i bet it hates me back for creating it
@@ -1504,6 +1501,23 @@ function Container:setRoot(w, h)
     return self
 end
 
+function Box:printTree(prefix, isLast)
+    prefix = prefix or ""
+    isLast = isLast or true
+
+    local linePrefix = isLast and "└── " or "├── "
+    print(prefix .. linePrefix .. self.class.name)
+
+    local childPrefix = prefix .. (isLast and "    " or "│   ")
+
+    if self.children then
+        for i, child in ipairs(self.children) do
+            local isChildLast = (i == #self.children)
+            child:printTree(childPrefix, isChildLast)
+        end
+    end
+end
+
 
 local function parseText(input)
     local result = {}
@@ -1557,6 +1571,7 @@ function TextRow:initialize(str, box)
     self.bgColor = nil
     self.formatted = {}
     self.ignoreClick = true
+    -- self:debug()
     -- self:setWidth("auto")
     -- self:setHeight("auto")
 end
@@ -1640,7 +1655,7 @@ function TextRow:draw()
 end
 
 
-local TextBox = class("TextBox", Container)
+TextBox = class("TextBox", Container)
 
 function TextBox:initialize(str)
     Container.initialize(self)
@@ -1650,9 +1665,9 @@ function TextBox:initialize(str)
     self.fontName = "basis33"
     self:setWidth("auto")
     self:setHeight("auto")
+    self:alignText("start")
     if str then
         self:setText(str)
-        self:resize()
     end
     self.font = nil
     self.bgColor = nil
@@ -1661,18 +1676,17 @@ function TextBox:initialize(str)
     self.ignoreClick = true
 
     -- self:setOverflow("clip")
-    self:alignText("start")
 end
 
-function TextBox:resize()
-    for index, child in ipairs(self.children) do
-        if index ~= #self.children then
-            child:setMargin(tostring(self.lineSpacing) .. "px", "bottom")
-        end
-    end
+-- function TextBox:resize()
+--     for index, child in ipairs(self.children) do
+--         if index ~= #self.children then
+--             child:setMargin(tostring(self.lineSpacing) .. "px", "bottom")
+--         end
+--     end
 
-    Container.resize(self)
-end
+--     Container.resize(self)
+-- end
 
 function TextBox:setText(str)
     self.text = str

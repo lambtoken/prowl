@@ -1,0 +1,26 @@
+- step on every square in a match
+- dont take damage
+- dont take damage for the whole run
+- move the whole diagonal
+- Barely Breathing - finish a boss with 1 hp left
+- equip a bow and a crossbow
+- home sweet home - finish on the starting tile.
+- "Overkill" – Deal double the required damage to kill an enemy.
+- "Last Shot" – .
+- Restless - Dont rest for a whole run
+- "Pacifist" – Finish a match without attacking.
+- "Slippery" – Evade 3 attacks in a row.
+- "Tile Artist" – Step in a path that draws a recognizable shape. Smiley
+- "Fashion Before Function" –
+
+so we need to keep some sort of crude history for all of this
+for the matches
+
+- movement
+- attacks/dodges
+- resting
+
+other cases
+
+-equiping
+-attacking

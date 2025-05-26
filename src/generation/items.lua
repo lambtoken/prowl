@@ -777,7 +777,6 @@ local items = {
                     matchState.statusEffectSystem:giveStatusEffect(entity, entity, "disarm", 1)
                     item.data.moved = true
                 end
-
             end
         },
         active = {},

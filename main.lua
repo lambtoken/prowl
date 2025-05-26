@@ -55,6 +55,7 @@ function love.load(args)
     
     sceneM = SceneManager:getInstance()
     sceneM:load()
+    -- sceneM:switchScene('uiTest')
     sceneM:switchScene('loading')
 
     renderM = RenderManager:getInstance()

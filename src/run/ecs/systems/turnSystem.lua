@@ -54,7 +54,7 @@ function turnSystem:init()
     --                         SceneManager:switchScene("runMap")
     --                     else
     --                         gs.run:setOutcome()
-    --                         SceneManager:switchScene("runEnd")
+    --                         SceneManager:switchScene("uiTest")
     --                     end
     --                 end
                     

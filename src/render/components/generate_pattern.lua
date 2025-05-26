@@ -33,6 +33,10 @@ end
 local function generate_pattern(pattern, pattern_type)
     local container = mold.Container:new()
 
+    if pattern_type == "swap" then
+        return container
+    end 
+
     for y, row in ipairs(pattern) do
         local r = mold.Container:new()
         r:setDirection("row")
@@ -50,6 +54,8 @@ local function generate_pattern(pattern, pattern_type)
                     c = mold.QuadBox:new(RM.image, quads.remove[1], quads.remove[2], SPRITE_SIZE, SPRITE_SIZE)
                 elseif pattern_type == "extend" then
                     c = mold.QuadBox:new(RM.image, quads.dir[y][x][1], quads.dir[y][x][2], SPRITE_SIZE, SPRITE_SIZE)
+                elseif pattern_type == "swap" then
+
                 end
             else
                 c = mold.Container:new()

@@ -3,7 +3,7 @@ local mold = require "libs.mold"
 local stat_size = 20
 
 local function new_stat(stat)
-    local sign, target, value, perc
+    local sign, target, value, perc = "", "", "", ""
 
     if stat[1] == "increase" or stat[1] == "increaseP" then
         sign = "+"
@@ -20,16 +20,14 @@ local function new_stat(stat)
 
     if stat[1] == "increaseP" or stat[1] == "decreaseP" then
         perc = "%"
-    else
-        perc = ""
     end
 
-    local s = mold.TextBox(sign .. target .. value .. perc)
+    print(sign, target, value, perc)
+
+    return mold.TextBox:new(sign .. target .. value .. perc)
         :setSize(stat_size)
         :setColor({1, 1, 1, 1})
-        :debug()
-
-    return s
+        -- :debug()
 end
 
 local function new_stats(stats)
@@ -37,16 +35,17 @@ local function new_stats(stats)
     local s = mold.Container:new()
     s.bgColor = {0, 0, 0, 1}
 
-    s:setWidth("200px")
+    -- s:setWidth("200px")
     s:setHeight("auto")
+    s:setWidth("auto")
     s:debug()
 
     for _, value in ipairs(stats) do
+        assert(type(value) == "table", "Stat is not a table!")
         s:addChild(new_stat(value))
     end
 
     return s
-
 end
 
 return new_stats

@@ -10,6 +10,7 @@ local item_box = require "src.render.components.item_select.item_box"
 local portrait = require "src.render.components.portrait"
 local stats = require "src.render.components.stats"
 local move_atk_pattern = require "src.render.components.move_atk_pattern"
+local item_details = require "src.render.components.item_details"
 
 local gs = require("src.state.GameState"):getInstance()
 
@@ -42,9 +43,13 @@ function itemSelect:enter()
     self.items = {} 
     self.hoverItemId = nil
     
-    local generated_items = getRandomItems(math.random(1, 3), nItems)
+    local generated_items = getRandomItems(math.random(1, 3), nItems) -- just names
 
     -- generated_items[1] = 'mixer'
+
+    self.test = item_details(generated_items[1])
+    print(generated_items[1])
+    -- racing flag
 
     for _, i in ipairs(generated_items) do
         local item = item_box(i)
@@ -55,10 +60,12 @@ function itemSelect:enter()
         item.onMouseEnter = function(s)
             s:playAnimation("attack")
             self:previewItem(i)
+            self.root:addChild(self.test)
         end
 
         item.onMouseExited = function(s)
             self:removeItem()
+            self.root:removeChild(self.test)
         end
 
         table.insert(self.items, item)
