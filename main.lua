@@ -5,6 +5,16 @@ local music = require 'src.sound.music'
 local getFont = require 'src.render.getFont'
 local MatchManager = require 'src.run.MatchManager'
 
+local platform = love.system.getOS()
+local ext = ({
+    Windows = "dll",
+    Linux = "so",
+    OSX = "dylib"
+})[platform] or "so"
+
+package.cpath = string.format("%s;%s/?.%s", package.cpath, love.filesystem.getSource(), ext)
+local steam = require 'luasteam'
+
 -- _._     _,-'""`-._
 -- (,-.`._,'(       |\`-/|
 --     `-.-' \ )-`( , o o)
@@ -38,7 +48,10 @@ local sceneM = nil
 local shaderM = nil
 local renderM
 
+
 function love.load(args)
+    
+    steam.init()
 
     math.randomseed(os.time())
 
@@ -115,4 +128,10 @@ end
 
 function love.keypressed(key, scancode, isrepeat)
     sceneM:keypressed(key, scancode, isrepeat)
+end
+
+function love.quit()
+    if steam then
+        steam.shutdown()
+    end
 end
