@@ -183,8 +183,8 @@ end
 function SceneManager:resize(w, h)
     if self.currentScene and self.currentScene.resize then
         self.currentScene:resize(w, h)
-        renderManager.windowWidth = w
-        renderManager.windowHeight = h
+        -- renderManager.windowWidth = w
+        -- renderManager.windowHeight = h
     end
 end
 

@@ -83,24 +83,9 @@ local root
 local logo
 
 function mainMenu:enter()
-    -- self.logoX = math.floor(RM.windowWidth / 2) - math.floor((RM.logoImage:getWidth() * RM.logoScale) / 2)
-    -- self.logoY = 30
 
-    -- self.bounceDistance = 19
-    -- self.bounceTimer = 0
-    -- self.bounceTime = 6
-    -- self.tweenTime = 2
-    -- self.logoTween = tween.new(self.tweenTime, self, {logoY = self.logoY + self.bounceDistance}, 'inQuad')
-
-    -- mainMenuButtons:load()
-
-    -- if gs.run then
-    --     mainMenuButtons.runInProgress(true)
-    -- else
-    --     mainMenuButtons.runInProgress(false)
-    -- end
     root = mold.Container:new()
-        :setRoot(love.graphics.getWidth(), love.graphics.getHeight())
+        :setRoot(RM.windowWidth, RM.windowHeight)
         :setJustifyContent("space-evenly")
         :setAlignContent("center")
         :setPadding("16px")
@@ -201,16 +186,6 @@ end
 
 
 function mainMenu:update(dt)
-    -- self.bounceTimer = self.bounceTimer + dt
-
-    -- if self.bounceTimer >= self.bounceTime then
-    --     self.bounceTimer = 0
-    --     self.bounceDistance = -self.bounceDistance
-    --     self.logoTween = tween.new(self.tweenTime, self, {logoY = self.logoY + self.bounceDistance}, 'inOutQuad')
-    -- end
-
-    -- mainMenuButtons:update(dt)
-    -- self.logoTween:update(dt)
 
     if self.logoTween:update(dt) then
         if self.logoSwing == 1 then
@@ -230,15 +205,8 @@ function mainMenu:update(dt)
 end
 
 function mainMenu:draw()
-  --  love.graphics.setColor(0.8, 0.8, 0.8)
---    love.graphics.rectangle('fill', 0, 0, RM.windowWidth, RM.windowHeight)
-
     animalBg:draw()
-    -- love.graphics.setColor(1, 1, 1)
 
-    -- love.graphics.draw(RM.logoImage, math.floor(self.logoX), math.floor(self.logoY), 0, RM.logoScale)
-
-    -- mainMenuButtons:draw()
     if root then
         root:draw()
     end
@@ -265,8 +233,8 @@ function mainMenu:keypressed(k)
 end
 
 function mainMenu:resize(w, h)
-    root:setRoot(love.graphics.getWidth(), love.graphics.getHeight())
-    root:resize()
+    -- root:setRoot(RM.windowWidth, RM.windowHeight)
+    -- root:resize()
 end
 
 return mainMenu

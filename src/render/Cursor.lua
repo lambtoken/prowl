@@ -3,6 +3,7 @@ local mouse = require 'src.input.mouse'
 local tween = require 'libs.tween'
 local spriteTable = require 'src.render.spriteTable'
 local soundM = require('src.sound.SoundManager'):getInstance()
+local RenderManager = require('src.render.RenderManager'):getInstance()
 
 local instance = nil
 
@@ -65,7 +66,9 @@ end
 function Cursor:draw()
     if self.visibility then
         love.graphics.setColor(1,1,1,1)
+        RenderManager.pushScreen()
         love.graphics.draw(self.ps)
+        love.graphics.pop()
         local x, y = love.mouse.getPosition()
         love.graphics.draw(renderManager.image, self.texture, x, y, 0, renderManager.increaseFactor * self.cursorShrink * self.cursorSize)
     end
@@ -76,8 +79,9 @@ function Cursor:update(dt)
     self.ps:update(dt)
 end
 
-function Cursor:mousepressed(x, y, click)
+function Cursor:mousepressed(xx, yy, click)
     if click == 1 then
+        local x, y = love.mouse.getPosition()
         soundM:playSound('click10')
         self.cursorShrink = self.shrinkRatio
         self.clickTween = tween.new(self.shrinkTime, self, {cursorShrink = self.shrinkRatio}, "inQuint")

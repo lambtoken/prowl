@@ -38,7 +38,7 @@ end
 
 transitions.fade.onExit.draw = function()
     love.graphics.setColor(0,0,0, transitions.fade.alpha)
-    love.graphics.rectangle('fill', 0, 0, RM.windowWidth, RM.windowHeight)
+    love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 end
 
 transitions.fade.onExit.exit = function() end
@@ -54,7 +54,7 @@ end
 
 transitions.fade.onEnter.draw = function()
     love.graphics.setColor(0,0,0, transitions.fade.alpha)
-    love.graphics.rectangle('fill', 0, 0, RM.windowWidth, RM.windowHeight)
+    love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 end
 
 transitions.fade.onEnter.exit = function() end

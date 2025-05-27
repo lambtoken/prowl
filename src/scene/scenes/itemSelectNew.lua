@@ -187,8 +187,8 @@ function itemSelect:mousereleased(x, y, btn)
 end
 
 function itemSelect:resize(w, h)
-    self.root:setRoot(w, h)
-    self.root:resize()
+    -- self.root:setRoot(w, h)
+    -- self.root:resize()
 end
 
 return itemSelect

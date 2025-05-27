@@ -15,6 +15,11 @@ local ext = ({
 package.cpath = string.format("%s;%s/?.%s", package.cpath, love.filesystem.getSource(), ext)
 local steam = require 'luasteam'
 
+for k, v in pairs(steam) do
+    print("luasteam key:", k)
+end
+
+
 -- _._     _,-'""`-._
 -- (,-.`._,'(       |\`-/|
 --     `-.-' \ )-`( , o o)
@@ -43,15 +48,17 @@ for _, funcName in ipairs(drawFunctions) do
     wrapFunction(love.graphics, funcName)
 end
 
-local gs = nil
-local sceneM = nil
-local shaderM = nil
+local gs
+local sceneM
+local shaderM
 local renderM
 
+local steamInitialized
+local achset
 
 function love.load(args)
     
-    steam.init()
+    steamInitialized = steam.init()
 
     math.randomseed(os.time())
 
@@ -98,6 +105,23 @@ function love.update(dt)
     local sleepTime = frameDuration - dt
     if sleepTime > 0 then
         love.timer.sleep(sleepTime)  -- Sleep to cap FPS
+    end
+
+    if steamInitialized and not achset then
+        print("Steam initialized!")
+        steam.userStats.resetAllStats(true)
+        
+        -- Unlock achievements as soon as Steam is ready
+        steam.userStats.setAchievement("ACH_WIN_ONE_GAME")
+        steam.userStats.setAchievement("ACH_TRAVEL_FAR_ACCUM")
+        steam.userStats.setAchievement("ACH_TRAVEL_FAR_SINGLE")
+        steam.userStats.storeStats()
+
+        achset = true
+    end
+
+    if steamInitialized then
+        steam.runCallbacks()
     end
 end
 

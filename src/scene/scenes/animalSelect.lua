@@ -18,13 +18,13 @@ local animalSelect = Scene:new('animalSelect')
 function animalSelect:enter()
 
     self.root = mold.Container:new()
-        :setRoot(love.graphics.getWidth(), love.graphics.getHeight())
+        :setRoot(RM.windowWidth, RM.windowHeight)
         :setJustifyContent("space-evenly")
         :setAlignContent("center")
 
     self.roster = animalSelect:makeRoster()
 
-    local rows = math.ceil(data.animalCount / animalPickerConfig.cols)
+    -- local rows = math.ceil(data.animalCount / animalPickerConfig.cols)
     local cols = animalPickerConfig.cols
 
     local container = self.root:addContainer()
@@ -104,11 +104,17 @@ function animalSelect:makeRoster()
         RM.spriteSize,
         RM.spriteSize
     )
-    -- :setWidth(100)
-    -- :setHeight(100)
+    :setWidth("100px")
+    :setHeight("100px")
 
-    r.onMouseReleased = function()
-        return data.getAnimal(data.animals[math.ceil(math.random() * #data.animals)].key)
+    r.onMouseEnter = function(self)
+        SoundManager:playSound("softclick2")
+        self:playAnimation("attack")
+    end
+
+    r.onMouseReleased = function(self)
+        local random = data.animals[math.ceil(math.random() * #data.animals)].key
+        pick(random)
     end
     
     table.insert(arr, r)
