@@ -2,3 +2,5 @@
 */Thumbs.db
 docs/*
 Thumbs.db
+build/
+lua-runtime/

@@ -135,12 +135,16 @@ function animalSelect:makeRoster()
         anim.species = animal.key
 
         anim.onMouseEnter = function(self)
-            SoundManager:playSound("softclick2")
+            -- SoundManager:playSound("softclick2")
             self:playAnimation("attack")
+            -- SoundManager:playSound("pclick3")
+            SoundManager:playSound("clicktech2")
+
         end
 
         anim.onMouseReleased = function(self)
             pick(self.species)
+            SoundManager:playSound("pclick4")
         end
 
         table.insert(arr, anim)

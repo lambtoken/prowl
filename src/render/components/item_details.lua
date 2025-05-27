@@ -22,12 +22,16 @@ local function item_details(name)
 
     -- item description or passive descriptions missing rn
 
-    if #item.stats > 0 then
-        c:addChild(new_stats(item.stats))
+    if item.stats then
+        if #item.stats > 0 then
+            c:addChild(new_stats(item.stats))
+        end
     end
 
-    for _, p in ipairs(item.pattern) do
-        c:addChild(new_pattern(p))
+    if item.pattern then
+        for _, p in ipairs(item.pattern) do
+            c:addChild(new_pattern(p))
+        end
     end
 
     c:resize()

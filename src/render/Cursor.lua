@@ -82,7 +82,8 @@ end
 function Cursor:mousepressed(xx, yy, click)
     if click == 1 then
         local x, y = love.mouse.getPosition()
-        soundM:playSound('click10')
+        -- soundM:playSound('click10')
+        soundM:playSound('pclick5')
         self.cursorShrink = self.shrinkRatio
         self.clickTween = tween.new(self.shrinkTime, self, {cursorShrink = self.shrinkRatio}, "inQuint")
         self.ps:setPosition(x, y)

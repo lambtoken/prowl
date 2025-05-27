@@ -68,6 +68,7 @@ function InputManager:mousepressed(x, y, btn)
         local tileAnimal = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY, 'animal')[1]
         
         if tileAnimal then
+            SoundManager:playSound("clicktech3")
             sceneManager.currentScene.animalStats:loadAnimal(tileAnimal)
         end
 
@@ -111,11 +112,13 @@ function InputManager:mousemoved(x, y)
     local tile = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY)
 
     -- Check if we moved to a new tile AND there are entities on that tile
-    if (self.hoveredTileX ~= self.lastHoveredTileX or self.hoveredTileY ~= self.lastHoveredTileY) and #tile > 0 then
+    if (self.hoveredTileX ~= self.lastHoveredTileX or self.hoveredTileY ~= self.lastHoveredTileY) then -- and #tile > 0 then
         if not self.selectedAnimal then
-            SoundManager:playSound("softclick2")
+            -- SoundManager:playSound("softclick2")
+            SoundManager:playSound("pclick5")
         elseif sceneManager.currentScene.pattern.isInsideMovePattern then
-            SoundManager:playSound("softclick3")
+            SoundManager:playSound("softclick2")
+            -- SoundManager:playSound("softclick3")
         end
     end
     
@@ -130,7 +133,6 @@ function InputManager:getHoveredTileCoordinates()
     local x, y = self.camera:worldCoords(virtualX, virtualY, 0, 0, RM.windowWidth, RM.windowHeight)
     local tileX = math.floor(x / RM.tileSize)
     local tileY = math.floor(y / RM.tileSize)
-    print(screenX, virtualX, x, tileX)
     return tileX, tileY
 end
 

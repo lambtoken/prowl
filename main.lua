@@ -12,7 +12,7 @@ local ext = ({
     OSX = "dylib"
 })[platform] or "so"
 
-package.cpath = string.format("%s;%s/?.%s", package.cpath, love.filesystem.getSource(), ext)
+package.cpath = string.format("%s;%s/?.%s;%s/?.%s", package.cpath, love.filesystem.getSource(), ext, love.filesystem.getSourceBaseDirectory(), ext)
 local steam = require 'luasteam'
 
 for k, v in pairs(steam) do
@@ -93,6 +93,7 @@ local frameDuration = 1 / fpsCap
 
 function love.update(dt)
     -- dt = dt * 10
+
     if not gs.isPaused then
         require("libs/lovebird").update()
         sceneM:update(dt)
@@ -102,16 +103,15 @@ function love.update(dt)
 
     music.update(dt)
 
-    local sleepTime = frameDuration - dt
-    if sleepTime > 0 then
-        love.timer.sleep(sleepTime)  -- Sleep to cap FPS
-    end
+    -- local sleepTime = frameDuration - dt
+    -- if sleepTime > 0 then
+    --     love.timer.sleep(sleepTime)  -- Sleep to cap FPS
+    -- end
 
     if steamInitialized and not achset then
         print("Steam initialized!")
         steam.userStats.resetAllStats(true)
         
-        -- Unlock achievements as soon as Steam is ready
         steam.userStats.setAchievement("ACH_WIN_ONE_GAME")
         steam.userStats.setAchievement("ACH_TRAVEL_FAR_ACCUM")
         steam.userStats.setAchievement("ACH_TRAVEL_FAR_SINGLE")
@@ -128,8 +128,8 @@ end
 function love.draw()
     sceneM:draw()
     renderM:draw()
-    -- love.graphics.setFont(getFont('basis33', 30))
-    -- love.graphics.print(love.timer.getFPS(), 0, 0)
+    love.graphics.setFont(getFont('basis33', 30))
+    love.graphics.print(love.timer.getFPS(), 0, 0)
 end
 
 function love.mousemoved(x, y)

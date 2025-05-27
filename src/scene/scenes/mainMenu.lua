@@ -1,5 +1,6 @@
 local Scene = require 'src.scene.scene'
 local SceneManager = require('src.scene.SceneManager'):getInstance()
+local soundM = require('src.sound.SoundManager'):getInstance()
 local RM = require ('src.render.RenderManager'):getInstance()
 local gs = require('src.state.GameState'):getInstance()
 local mold = require('libs.mold')
@@ -114,6 +115,7 @@ function mainMenu:enter()
 
     function new_game_btn.onMouseReleased()
         SceneManager:switchScene('animalSelect')
+        soundM:playSound('clicktech2')
     end
 
     local options_btn = buttons:addChild(mold.Button("Options"))

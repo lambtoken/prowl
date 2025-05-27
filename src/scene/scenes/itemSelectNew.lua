@@ -1,5 +1,6 @@
 local Scene = require 'src.scene.scene'
 local RM = require ('src.render.RenderManager'):getInstance()
+local soundManager = require("src.sound.SoundManager"):getInstance()
 local GS = require ('src.state.GameState'):getInstance()
 local Item = require 'src.render.ui.ItemSelectItem'
 local getRandomItems = require 'src.generation.functions.getRandomItems'
@@ -59,6 +60,8 @@ function itemSelect:enter()
 
         item.onMouseEnter = function(s)
             s:playAnimation("attack")
+            SoundManager:playSound("pclick5")
+            -- soundManager:playSound("ppop")
             self:previewItem(i)
             self.root:addChild(self.test)
         end

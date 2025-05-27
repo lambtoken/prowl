@@ -15,6 +15,23 @@ local soundTable = {
     heal = {type = 'heal', file = 'heal.wav'},
     breaking = {type = 'effect', file = 'break.wav'},
 
+    clicktech1 = {type = 'click', file = '01Pclicktech1.wav'},
+    clicktech2 = {type = 'click', file = '01Pclicktech2.wav'},
+    clicktech3 = {type = 'click', file = '01Pclicktech3.wav'},
+    clicktech4 = {type = 'click', file = '01Pclicktech4.wav'},
+    pclick1 = {type = 'click', file = '01Pclick1.wav'},
+    pclick2 = {type = 'click', file = '01Pclick2.wav'},
+    pclick3 = {type = 'click', file = '01Pclick3.wav', volume = 0.5},
+    pclick4 = {type = 'click', file = '01Pclick4.wav'},
+    pclick5 = {type = 'click', file = '01Pclick5.wav'},
+    pclick6 = {type = 'click', file = '01Pclick6.wav'},
+    pclick7 = {type = 'click', file = '01Pclick7.wav'},
+
+    pdmg1 = {type = 'click', file = '01Pdmg1.wav', volume = 0.6},
+    pdmg2 = {type = 'click', file = '01Pdmg2.wav', volume = 0.6},
+    pdmg3 = {type = 'click', file = '01Pdmg3.wav', volume = 0.5},
+    ppop = {type = 'click', file = '01Ppop.wav', volume = 0.8},
+
     click1 = {type = 'click', file = 'click1.wav'},
     click2 = {type = 'click', file = 'click2.wav'},
     click3 = {type = 'click', file = 'click3.mp3'},

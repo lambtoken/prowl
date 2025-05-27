@@ -9,4 +9,5 @@ function love.conf(t)
     t.window.minwidth = 640
     t.window.minheight = 480
     t.console = true
+    t.window.vsync = 1
 end

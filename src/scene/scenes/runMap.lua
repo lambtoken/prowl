@@ -3,6 +3,7 @@ local getFont = require 'src.render.getFont'
 local adventureConfig = require 'src.run.stageConfig'
 local RM = require ('src.render.RenderManager'):getInstance()
 local sceneM = require('src.scene.SceneManager'):getInstance()
+local SoundManager = require('src.sound.SoundManager'):getInstance()
 local gs = require('src.state.GameState'):getInstance()
 local spriteTable = require 'src.render.spriteTable'
 local hearts = require 'src.render.runHearts'
@@ -32,6 +33,7 @@ function runMap:mousepressed(x, y, button, istouch, presses)
                 if true then --nodeContains(node.from, gs.run.currentNodeCoords) then
                     gs.currentMatchNode = node
                     sceneM:switchScene('match')
+                    SoundManager:playSound("pclick1")
                 end
             end
         end
@@ -81,21 +83,27 @@ function runMap:update(dt)
 end
 
 function runMap:mousemoved(x, y)
+    local previousNode = adventureConfig.hoveredNode
+    adventureConfig.hoveredNode = nil
+
     for i, col in ipairs(gs.run.stages[self.stage].nodes) do
         for j, node in ipairs(col) do
-            if j == 1 and i == 1 then
-            end
-
             if node.screenX < x and node.screenX + adventureConfig.nodeIconSize > x and
-                node.screenY < y and node.screenY + adventureConfig.nodeIconSize > y then
+               node.screenY < y and node.screenY + adventureConfig.nodeIconSize > y then
+
+                if previousNode ~= node then
+                    SoundManager:playSound("pclick2")
+                end
+
                 adventureConfig.hoveredNode = node
-                goto continue
-            else
-                adventureConfig.hoveredNode = nil
+                return
             end
         end
     end
-    ::continue::
+
+    if previousNode then
+        -- SoundManager:playSound("pclick3")
+    end
 end
 
 local c = love.graphics.newCanvas()
