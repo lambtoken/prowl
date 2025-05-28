@@ -7,32 +7,43 @@ local function item_details(name)
     local item = items[name]
 
     local c = mold.Container:new()
-    c:setDirection("row")
     c:setWidth("auto")
     c:setHeight("auto")
+    c:setPosition("absolute")
+    c:setPos(100, 100)
     c.bgColor = {0, 0, 0, 1}
 
-    local name = mold.TextBox:new(item.name)
-        :setSize(20)
-        :debug()
+    local container = mold.Container:new()
+    container:setWidth("auto")
+    container:setHeight("auto")
+    container.bgColor = {0, 0, 0, 1}
+    container:setDirection("row")
 
-    name.color = {1, 1, 1, 1}
+    if item and item.name then
+        local name = mold.TextBox:new(item.name)
+            :setSize(20)
+            :debug()
     
-    -- c:addChild(name)
+        name.color = {1, 1, 1, 1}
+        
+        c:addChild(name)        
+    end
 
     -- item description or passive descriptions missing rn
 
-    if item.stats then
+    if item and item.stats then
         if #item.stats > 0 then
-            c:addChild(new_stats(item.stats))
+            container:addChild(new_stats(item.stats))
         end
     end
 
-    if item.pattern then
+    if item and item.pattern then
         for _, p in ipairs(item.pattern) do
-            c:addChild(new_pattern(p))
+            container:addChild(new_pattern(p))
         end
     end
+
+    c:addChild(container)
 
     c:resize()
     return c

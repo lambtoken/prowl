@@ -10,7 +10,6 @@ local function item(item_name)
     p.onMousePressed = function(self)
         gs.run:giveItemAndProgress(self.item_name)
         soundManager:playSound("pdmg" .. tostring(math.random(1, 3)))
-
     end
     
     p.onMouseEntered = function(self)

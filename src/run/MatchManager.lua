@@ -27,6 +27,7 @@ local stageMobLevels = require('src.generation.stageMobLevels')
 -- local stageMarkAmount = require('src.generation.stageMarkAmount')
 local matchMarkRates = require('src.generation.matchMarkRates')
 local rng = require "src.utility.rng"
+local stageBoardSize = require "src.generation.stageBoardSize"
 
 local MatchManager = class("MatchManager")
 
@@ -50,6 +51,8 @@ function MatchManager:initialize()
 end
 
 function MatchManager:init()
+    self.width = stageBoardSize[gs.run and gs.run.currentStage] or 6
+    self.height = stageBoardSize[gs.run and gs.run.currentStage] or 6
     self.rng = rng:new(self.seed)
     self.rng:addGenerator("combat")
     self.rng:addGenerator("terrainGen")

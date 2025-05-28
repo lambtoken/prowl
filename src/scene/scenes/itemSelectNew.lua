@@ -1,7 +1,7 @@
 local Scene = require 'src.scene.scene'
 local RM = require ('src.render.RenderManager'):getInstance()
-local soundManager = require("src.sound.SoundManager"):getInstance()
 local GS = require ('src.state.GameState'):getInstance()
+local SceneManager = require ('src.scene.SceneManager'):getInstance()
 local Item = require 'src.render.ui.ItemSelectItem'
 local getRandomItems = require 'src.generation.functions.getRandomItems'
 local checkerShader = love.graphics.newShader(require('src.render.shaders.checker_shader'))
@@ -44,15 +44,14 @@ function itemSelect:enter()
     self.items = {} 
     self.hoverItemId = nil
     
-    local generated_items = getRandomItems(math.random(1, 3), nItems) -- just names
+    self.generated_items = getRandomItems(math.random(1, 3), nItems) -- just names
 
     -- generated_items[1] = 'mixer'
 
-    self.test = item_details(generated_items[1])
-    print(generated_items[1])
+
     -- racing flag
 
-    for _, i in ipairs(generated_items) do
+    for _, i in ipairs(self.generated_items) do
         local item = item_box(i)
             :setWidth("20%")
             :setScaleBy("width")
@@ -60,15 +59,17 @@ function itemSelect:enter()
 
         item.onMouseEnter = function(s)
             s:playAnimation("attack")
-            SoundManager:playSound("pclick5")
-            -- soundManager:playSound("ppop")
+            -- SoundManager:playSound("pclick5")
+            SoundManager:playSound("ppop")
             self:previewItem(i)
             self.root:addChild(self.test)
+            SceneManager.cursor:setVisibility(false)
         end
 
         item.onMouseExited = function(s)
             self:removeItem()
             self.root:removeChild(self.test)
+            SceneManager.cursor:setVisibility(true)
         end
 
         table.insert(self.items, item)
@@ -140,7 +141,7 @@ end
 function itemSelect:previewItem(item_name)
     -- equip item
     self.hoverItemId = gs.match.itemSystem:giveItem(self.current_animal, item_name).id
-
+    self.test = item_details(item_name)
     -- recalc
     gs.match.statsSystem:calculateAnimalStats(self.current_animal)
 
@@ -160,6 +161,13 @@ function itemSelect:update(dt)
     checkerShader:send("time", love.timer.getTime())
 
     self.root:update(dt)
+    if self.test then
+        -- brute forced rn but it works
+        -- will need a different way for mouse follow so we dont override transform
+        local x, y = love.mouse.getPosition()
+        self.test.transform.translateX = x
+        self.test.transform.translateY = y
+    end
 end
 
 function itemSelect:draw()
