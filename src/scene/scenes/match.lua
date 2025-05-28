@@ -89,8 +89,8 @@ function match:enter()
     self.matchEvents:on("screenShake", function() self.isShaking = true end)
 
     self.particleSystem = ParticleSystem:new()
-    self.matchEvents:on("createParticle", function(type, x, y, arg1)
-        self.particleSystem:play(type, x, y, arg1)
+    self.matchEvents:on("createParticle", function(type, x, y, arg1, mode)
+        self.particleSystem:play(type, x, y, arg1, mode)
     end)
 
     self.paused = false

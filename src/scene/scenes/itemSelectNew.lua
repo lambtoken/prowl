@@ -63,12 +63,14 @@ function itemSelect:enter()
             SoundManager:playSound("ppop")
             self:previewItem(i)
             self.root:addChild(self.test)
+            self.root:resize()
             SceneManager.cursor:setVisibility(false)
         end
 
         item.onMouseExited = function(s)
             self:removeItem()
             self.root:removeChild(self.test)
+            self.root:resize() -- i need a more efficient way to handle absolute elements
             SceneManager.cursor:setVisibility(true)
         end
 
@@ -183,6 +185,7 @@ function itemSelect:exit()
     if self.hoverItemId then
         gs.match.itemSystem:unequipItemById(self.current_animal, self.hoverItemId)
     end
+    SceneManager.cursor:setVisibility(true)
 end
 
 function itemSelect:mousemoved(x, y)

@@ -6,7 +6,8 @@ local keyBindings = {
     cameraLeft = 'a',
     cameraRight = 'd',
     mouseToggle = 'tab',
-    quit = 'escape'
+    fullscreen = 'f10',
+    quit = 'escape',
 }
 
 return keyBindings

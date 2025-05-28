@@ -36,8 +36,10 @@ function SceneManager:initialize()
     self.mouseX = 0 -- unused?
     self.mouseY = 0
     self.globalKeyBindings = {}
+    self.fullScreen = false
 
     self.globalKeyBindings['`'] = function() love.event.quit('restart') end
+    self.globalKeyBindings['f11'] = function() love.window.setFullscreen( not self.fullScreen ) self.fullScreen = not self.fullScreen end
 end
 
 function SceneManager:add(scene, name)

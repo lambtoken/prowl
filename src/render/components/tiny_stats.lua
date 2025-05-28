@@ -22,8 +22,6 @@ local function new_stat(stat)
         perc = "%"
     end
 
-    print(sign, target, value, perc)
-
     return mold.TextBox:new(sign .. target .. value .. perc)
         :setSize(stat_size)
         :setColor({1, 1, 1, 1})
@@ -35,7 +33,6 @@ local function new_stats(stats)
     local s = mold.Container:new()
     s.bgColor = {0, 0, 0, 1}
 
-    -- s:setWidth("200px")
     s:setHeight("auto")
     s:setWidth("auto")
     s:debug()

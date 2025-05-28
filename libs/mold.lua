@@ -1468,7 +1468,7 @@ function Container:draw()
         if child._debug then
             love.graphics.setColor(unpack(child._debugColor))
             love.graphics.rectangle("line", -child.cPivotX, -child.cPivotY, child.cw, child.ch)
-            love.graphics.rectangle("line", -child.cPivotX - child.cMargin.left, -child.cPivotY - child.cMargin.top, child.mw, child.mh)
+            -- love.graphics.rectangle("line", -child.cPivotX - child.cMargin.left, -child.cPivotY - child.cMargin.top, child.mw, child.mh)
         end
 
         -- love.graphics.setScissor(self.scissorX, self.scissorY, self.scissorW, self.scissorH)

@@ -10,8 +10,8 @@ local function item_details(name)
     c:setWidth("auto")
     c:setHeight("auto")
     c:setPosition("absolute")
-    c:setPos(100, 100)
     c.bgColor = {0, 0, 0, 1}
+    c:debug()
 
     local container = mold.Container:new()
     container:setWidth("auto")
@@ -22,11 +22,10 @@ local function item_details(name)
     if item and item.name then
         local name = mold.TextBox:new(item.name)
             :setSize(20)
+            :setColor({1, 1, 1, 1})
             :debug()
     
-        name.color = {1, 1, 1, 1}
-        
-        c:addChild(name)        
+        c:addChild(name)
     end
 
     -- item description or passive descriptions missing rn
