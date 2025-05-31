@@ -6,8 +6,8 @@ local instance = nil
 
 function SoundManager:new()
     local o = {
-        maxInstances = 4,
-        cooldownTicks = 5,
+        maxInstances = 20,
+        cooldownTicks = 30,
         playingSounds = {}
     }
     setmetatable(o, self)

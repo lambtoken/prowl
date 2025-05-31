@@ -98,8 +98,6 @@ function RenderManager:resize(w, h)
     self.virtualWidth = w
     self.virtualHeight = h
     self.scale = math.min(self.virtualWidth / self.windowWidth, self.virtualHeight / self.windowHeight)
-    -- self.scale = math.floor(self.scale + 0)
-    print(self.scale)
     self.offsetX = math.floor((self.virtualWidth - self.windowWidth * self.scale) / 2)
     self.offsetY = math.floor((self.virtualHeight - self.windowHeight * self.scale) / 2)
 

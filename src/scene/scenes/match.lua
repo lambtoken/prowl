@@ -194,10 +194,6 @@ function match:draw()
     love.graphics.push()
     love.graphics.translate(self.shakeOffsetX, self.shakeOffsetY)
 
-    if self.inputManager.selectedAnimal then
-        self.pattern:preparePatterns()
-    end
-
     self.camera:attach(0, 0, RM.windowWidth, RM.windowHeight, true)
     self.match:draw()
     self.particleSystem:draw()

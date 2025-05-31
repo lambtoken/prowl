@@ -2,15 +2,16 @@ local fontPaths = require 'src.render.fontPaths'
 
 local fonts = {}
 
-function getFont(name, size)
-    assert(name and size, "Missing some arguments!")
-    if not fonts[name] then
-        fonts[name] = {}
-        fonts[name][size] = love.graphics.newFont(fontPaths[name], size)
-    end
+local function getFont(name, size)
+    assert(name and size, "Missing font name or size")
+
+    fonts[name] = fonts[name] or {}
 
     if not fonts[name][size] then
-        fonts[name][size] = love.graphics.newFont(fontPaths[name], size)
+        local path = fontPaths[name]
+        assert(path, ("Font path not found for name: %s"):format(name))
+        local font = love.graphics.newFont(path, size)
+        fonts[name][size] = font
     end
 
     return fonts[name][size]

@@ -22,7 +22,7 @@ local function new_stat(stat)
         perc = "%"
     end
 
-    return mold.TextBox:new(sign .. target .. value .. perc)
+    return mold.TextBox:new(sign .. value .. perc .. " " .. target)
         :setSize(stat_size)
         :setColor({1, 1, 1, 1})
         -- :debug()
@@ -31,11 +31,11 @@ end
 local function new_stats(stats)
 
     local s = mold.Container:new()
-    s.bgColor = {0, 0, 0, 1}
 
     s:setHeight("auto")
     s:setWidth("auto")
-    s:debug()
+    s:setMargin("10px", "right")
+    -- s:debug()
 
     for _, value in ipairs(stats) do
         assert(type(value) == "table", "Stat is not a table!")

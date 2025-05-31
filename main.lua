@@ -85,7 +85,7 @@ function love.load(args)
 
     require "src.render.effectSprites"
 
-    love.window.setVSync(-1)
+    -- love.window.setVSync(-1)
 end
 
 local fpsCap = 60

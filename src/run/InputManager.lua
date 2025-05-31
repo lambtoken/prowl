@@ -82,7 +82,11 @@ function InputManager:mousepressed(x, y, btn)
             self.selectedAnimal.state.pickedUp = true
             self.hangingPiece:resetAngularVelocity()
             self.hangingPiece:setAnimalSprite(self.selectedAnimal.metadata.species)
-            self.patternDisplay:loadAnimal(self.selectedAnimal) 
+            self.patternDisplay:loadAnimal(self.selectedAnimal)
+           
+            if sceneManager.currentScene.pattern then
+                sceneManager.currentScene.pattern:preparePatterns()
+            end
         else
             self.drag = true
             self.dragX, self.dragY = self.camera:worldCoords(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)

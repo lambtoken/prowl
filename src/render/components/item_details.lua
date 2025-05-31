@@ -10,20 +10,20 @@ local function item_details(name)
     c:setWidth("auto")
     c:setHeight("auto")
     c:setPosition("absolute")
-    c.bgColor = {0, 0, 0, 1}
-    c:debug()
+    c.bgColor = {0, 0, 0, 0.75}
+    -- c:debug()
 
     local container = mold.Container:new()
     container:setWidth("auto")
     container:setHeight("auto")
-    container.bgColor = {0, 0, 0, 1}
-    container:setDirection("row")
+    -- container.bgColor = {0, 0, 0, 1}
+    -- container:setDirection("row")
 
     if item and item.name then
         local name = mold.TextBox:new(item.name)
             :setSize(20)
             :setColor({1, 1, 1, 1})
-            :debug()
+            -- :debug()
     
         c:addChild(name)
     end

@@ -55,7 +55,7 @@ local function generate_pattern(pattern, pattern_type)
                 elseif pattern_type == "extend" then
                     c = mold.QuadBox:new(RM.image, quads.dir[y][x][1], quads.dir[y][x][2], SPRITE_SIZE, SPRITE_SIZE)
                 elseif pattern_type == "swap" then
-
+                    
                 end
             else
                 c = mold.Container:new()
