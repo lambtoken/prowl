@@ -133,6 +133,12 @@ local rates = {
             {name = 'meadow_rock_3', rate = 10, limit = 0},
         },
     },
+    cave = {
+        normal = {
+            {name = 'crack', rate = 3, limit = 1},
+            {name = 'spikes', rate = 10, limit = 0},
+        },
+    },
 }
 
 return rates

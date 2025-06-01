@@ -21,13 +21,23 @@ function Tile:new(name, type, steppable)
 end
 
 function Tile:initialize()
-    self.quad = love.graphics.newQuad(
-        spriteTable[self.name][1] * RM.spriteSize, 
-        spriteTable[self.name][2] * RM.spriteSize, 
-        RM.spriteSize, 
-        RM.spriteSize, 
-        RM.image
-    )
+    if spriteTable[self.name] then
+        self.quad = love.graphics.newQuad(
+            spriteTable[self.name][1] * RM.spriteSize, 
+            spriteTable[self.name][2] * RM.spriteSize, 
+            RM.spriteSize, 
+            RM.spriteSize, 
+            RM.image
+        )
+    else
+        self.quad = love.graphics.newQuad(
+            spriteTable['chicken'][1] * RM.spriteSize, 
+            spriteTable['chicken'][2] * RM.spriteSize, 
+            RM.spriteSize, 
+            RM.spriteSize, 
+            RM.image
+        )
+    end
 end
 
 

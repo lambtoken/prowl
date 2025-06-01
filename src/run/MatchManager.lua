@@ -419,7 +419,18 @@ function MatchManager:generateEnemies()
 
     local amount = amountMin + math.ceil(math.random() * (amountMax - amountMin))
     
-    pickLimited(matchMobRates[self.matchNode.place][self.matchNode.variant], amount, species)
+    local place
+    local variant
+
+    if not matchMobRates[self.matchNode.place] then
+        place = 'forest'
+        variant = 'normal'
+    else
+        place = self.matchNode.place
+        variant = self.matchNode.variant
+    end
+
+    pickLimited(matchMobRates[place][variant], amount, species)
 
     local enemies = {}
 
@@ -567,6 +578,10 @@ function MatchManager:generateObjects()
 
     local objectNames = {}
 
+    if not matchObjectRates[self.matchNode.place] or not matchObjectRates[self.matchNode.place][self.matchNode.variant] then
+        return
+    end
+
     pickLimited(matchObjectRates[self.matchNode.place][self.matchNode.variant], stageObjectAmount[1][1] + math.random(stageObjectAmount[1][2] - stageObjectAmount[1][1]), objectNames)
 
     for _, name in ipairs(objectNames) do
@@ -636,13 +651,18 @@ function MatchManager:checkForWinner()
         self.winnerId = aliveTeams[1]
         self.states:set_state("result")
     end
+
+    -- if #aliveTeams == 0 then
+    --     self.winnerId = 10000
+    --     self.states:set_state("result")
+    -- end
 end
 
 
 function MatchManager:removeEntitiesFromTheWorld()
     for _, entity in ipairs(self.ecs:getEntities()) do
         self.ecs:removeEntity(entity)
-        print("removing: " .. entity.metadata.type, (entity.metadata.species or ""))
+        -- print("removing: " .. entity.metadata.type, (entity.metadata.species or ""))
         -- entity.__world = nil
         -- entity = nil
     end

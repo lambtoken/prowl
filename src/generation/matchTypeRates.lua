@@ -57,9 +57,9 @@ local rates = {
         {name = "normal", rate = 30}, 
     },
 
-    -- cave = {
-    --     {name = "normal", rate = 30}, 
-    -- },
+    cave = {
+        {name = "normal", rate = 30}, 
+    },
     
 }
 

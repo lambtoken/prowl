@@ -1,5 +1,6 @@
 local Team = require 'src.run.Team'
 local fsm = require 'libs.batteries.state_machine'
+local mobs = require 'src.generation.mobs'
 local EventManager = require('src.state.events'):getInstance()
 
 local teamManager = {}
@@ -49,8 +50,9 @@ function teamManager:new(currentMatch)
 
                 for _, animal in ipairs(team.members) do
                     if animal.metadata.teamId == s.instance.turnTeamId then
-                        if animal.passive and animal.passive.onStandBy then
-                            animal.passive.onStandBy(s.instance.match, animal)
+                        local animalData = mobs[animal.metadata.species]
+                        if animalData and animalData.passive and animalData.passive.onStandBy then
+                            animalData.passive.onStandBy(s.instance.match, animal)
                         end
                     end
                 end

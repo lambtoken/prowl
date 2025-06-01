@@ -290,4 +290,24 @@ function terrain.meadow.normal(width, height)
     return board
 end
 
+terrain.cave = {}
+
+function terrain.cave.normal(width, height)
+
+    local board = {}
+    board.terrain = {}
+    board.decoration = {}
+
+    for i = 1, height do
+        board.terrain[i] = {}
+        for j = 1, width do
+            board.terrain[i][j] = Tile:new('cave_floor', 'ground', true)
+            if math.random() > 0.8 then board.terrain[i][j] = Tile:new('cave_floor_stones', 'ground', true) end
+            if math.random() > 0.9 then board.terrain[i][j] = Tile:new('cave_floor_mossy', 'ground', true) end
+        end
+    end
+
+    return board
+end
+
 return terrain

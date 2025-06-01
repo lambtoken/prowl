@@ -126,6 +126,16 @@ local rates = {
         }
     },
 
+    cave = {
+        normal = {
+            {name = 'bat', rate = 20, limit = 0},
+            {name = 'lizard', rate = 20, limit = 0},
+            {name = 'snail', rate = 20, limit = 0},
+            {name = 'spider', rate = 20, limit = 0},            
+        }
+    },
+
+
     -- BOSS ROOMS
     dragon = {
         normal = {

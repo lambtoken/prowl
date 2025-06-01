@@ -1,4 +1,5 @@
 local tween = require "libs.tween"
+local getFont = require "src.render.getFont"
 local RM = require ("src.render.RenderManager"):getInstance()
 local GameState = require ("src.state.GameState"):getInstance()
 

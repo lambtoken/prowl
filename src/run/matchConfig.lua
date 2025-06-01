@@ -1,5 +1,5 @@
 local config = {
-    places = {'dungeon', 'forest', 'glacial', 'desert', 'plains', 'swamp', 'beach', 'savannah', 'meadow'},
+    places = {'dungeon', 'forest', 'glacial', 'desert', 'plains', 'swamp', 'beach', 'savannah', 'meadow', 'cave'},
     variants = {'normal'},
 
     botTeams = {

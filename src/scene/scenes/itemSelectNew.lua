@@ -206,5 +206,3 @@ function itemSelect:resize(w, h)
 end
 
 return itemSelect
-
--- onClick adds those items to the players first animal in the team

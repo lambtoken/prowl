@@ -176,6 +176,21 @@ local data = {
             unlocked = false
         },
         {
+            key = 'penguin',
+            name = 'penguin',
+            unlocked = false
+        },
+        {
+            key = 'lizard',
+            name = 'lizard',
+            unlocked = false
+        },
+        {
+            key = 'snail',
+            name = 'snail',
+            unlocked = false
+        },
+        {
             key = 'apple',
             name = 'apple',
             unlocked = true

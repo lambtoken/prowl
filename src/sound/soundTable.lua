@@ -31,6 +31,8 @@ local soundTable = {
     pdmg2 = {type = 'click', file = '01Pdmg2.wav', volume = 0.6},
     pdmg3 = {type = 'click', file = '01Pdmg3.wav', volume = 0.5},
     ppop = {type = 'click', file = '01Ppop.wav', volume = 0.8},
+    pm3 = {type = 'ui', file = '01Pm3.wav', volume = 0.7},
+    pm7 = {type = 'ui', file = '01Pm7.wav', volume = 0.7},
 
     click1 = {type = 'click', file = 'click1.wav'},
     click2 = {type = 'click', file = 'click2.wav'},

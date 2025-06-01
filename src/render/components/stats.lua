@@ -1,6 +1,6 @@
 local mold = require "libs.mold"
 
-local stat_size = 20
+local stat_size = 35
 
 local function new_stat(stat, value)
     local s = mold.TextBox(stat .. ':' .. value)
@@ -8,7 +8,6 @@ local function new_stat(stat, value)
         -- :setWidth("auto")
         :setSize(stat_size)
         :setColor({1, 1, 1, 1})
-        :debug()
 
     return s
 end
@@ -26,7 +25,7 @@ local function new_stats(entity)
 
     s:setWidth("200px")
     s:setHeight("200px")
-    s:debug()
+    -- s:debug()
 
     local atk, def, crit, hp, ls
 

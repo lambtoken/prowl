@@ -42,6 +42,8 @@ local spriteTable = {
     magpie = {18, 0},
     zebra = {17, 1},
     monkey = {18, 1},
+    lizard = {19, 1},
+    snail = {20, 1},
 
     --bosses
     dragon = {31, 0},
@@ -117,6 +119,9 @@ local spriteTable = {
     meadow_grass_patchy = {1, 48},
     meadow_grass_flowers = {2, 48},
     meadow_mossy = {3, 48},
+    cave_floor = {0, 52},
+    cave_floor_stones = {1, 52},
+    cave_floor_mossy = {2, 52},
     grass_dark = {1, 16},
     sand = {15, 17},
     sand_checkers = {16, 17},
@@ -312,6 +317,7 @@ local spriteTable = {
     meadow_node = {34, 24},
     savannah_node = {34, 23},
     beach_node = {35, 23},
+    cave_node = {36, 23},
     jungle_node = {32, 24},
     field_node = {33, 24},
     arena_node = {29, 24},

@@ -1106,6 +1106,73 @@ local mobs = {
             {0, 0, 0, 0, 0}
         }
     },
+    lizard = {
+        name = 'lizard',
+        sprite = 'lizard',
+        stats = {
+            atk = 2,
+            def = 2,
+            maxHp = 3,
+            moves = DEFAULT.moves,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck
+        },
+        stepsOn = DEFAULT.stepsOn,
+
+        movePattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        },
+
+        passive = {
+            onStandBy = function(matchState, entity) 
+                print(123)
+                matchState.combatSystem:heal(entity, 1)
+            end
+        }
+    },
+    snail = {
+        name = 'snail',
+        sprite = 'snail',
+        stats = {
+            atk = 2,
+            def = 4,
+            maxHp = 3,
+            moves = DEFAULT.moves,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck
+        },
+        stepsOn = DEFAULT.stepsOn,
+
+        movePattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        }
+    },
     zebra = 
     {
         name = 'zebra',

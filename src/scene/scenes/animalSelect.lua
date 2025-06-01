@@ -156,6 +156,7 @@ end
 
 function animalSelect:keypressed(key)
     if key == 'escape' then
+        SoundManager:playSound("pm3")
         sceneM:switchScene('mainMenu')
     end
 end
