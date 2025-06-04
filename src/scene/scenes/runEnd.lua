@@ -2,6 +2,7 @@ local Scene = require 'src.scene.scene'
 local getFont = require 'src.render.getFont'
 local sceneM = require('src.scene.SceneManager'):getInstance()
 local gs = require('src.state.GameState'):getInstance()
+local SoundManager = require('src.sound.SoundManager'):getInstance()
 
 local wonText = "You won!"
 local lossText = "You lost."
@@ -23,6 +24,7 @@ end
 
 function uiTest:keypressed(key)
     if key == 'escape' then
+        SoundManager:playSound("pm7")
         sceneM:switchScene('mainMenu')
         gs:removeRun()
     end

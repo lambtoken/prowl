@@ -317,6 +317,10 @@ end
 
 
 function combatSystem:heal(entity, amount)
+    if not entity.state.alive then
+        return
+    end
+
     if entity.stats.current.hp < entity.stats.current.maxHp then
         entity.stats.current.hp = math.min(entity.stats.current.hp + amount, entity.stats.current.maxHp)
         EventManager:emit("createParticle", "heal", entity.position.screenX, entity.position.screenY, amount * 4, "burst")

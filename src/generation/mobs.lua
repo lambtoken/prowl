@@ -1138,8 +1138,9 @@ local mobs = {
 
         passive = {
             onStandBy = function(matchState, entity) 
-                print(123)
-                matchState.combatSystem:heal(entity, 1)
+                if math.random() > 0.5 then
+                    matchState.combatSystem:heal(entity, 1)
+                end
             end
         }
     },

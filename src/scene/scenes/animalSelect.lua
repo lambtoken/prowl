@@ -1,17 +1,17 @@
 local Scene = require 'src.scene.scene'
 local getFont = require 'src.render.getFont'
-local gray_shader = require 'src.render.shaders.gray_shader'
 local Run = require 'src.run.Run'
-local data = require 'src.data'
 local sceneM = require('src.scene.SceneManager'):getInstance()
 local gs = require('src.state.GameState'):getInstance()
 local animalPickerConfig = require 'src.render.ui.animalPickerConfig'
 local spriteTable = require 'src.render.spriteTable'
 local RM = require ('src.render.RenderManager'):getInstance()
 local data = require 'src.data'
+local mobs = require 'src.generation.mobs'
 local pretty = require 'libs.batteries.pretty'
 local mold = require 'libs.mold'
 local SoundManager = require ('src.sound.SoundManager'):getInstance()
+local animal_details = require 'src.render.components.animal_details'
 
 local animalSelect = Scene:new('animalSelect')
 
@@ -57,6 +57,15 @@ function animalSelect:enter()
         container.children[#container.children]:addChild(a)
     end
 
+    self.details = nil
+
+    self.detailsBySpecies = {}
+
+    for _, animal in ipairs(data.animals) do
+        local species = animal.key
+        self.detailsBySpecies[species] = animal_details(mobs[species])
+    end
+
     self.root:resize()
 end
 
@@ -65,6 +74,9 @@ function animalSelect:update(dt)
 end
 
 function animalSelect:mousemoved(x, y)
+    if self.details then
+        self.details:setPos(x, y)
+    end
     self.root:mouseMoved(x, y)
 end
 
@@ -134,17 +146,33 @@ function animalSelect:makeRoster()
 
         anim.species = animal.key
 
-        anim.onMouseEnter = function(self)
+        anim.onMouseEnter = function(s)
             -- SoundManager:playSound("softclick2")
-            self:playAnimation("attack")
+            s:playAnimation("attack")
             -- SoundManager:playSound("pclick3")
             SoundManager:playSound("clicktech2")
-
+            self.details = self.detailsBySpecies[anim.species]
+            self.root:addChild(self.details)
+            self.root:resize()
         end
-
-        anim.onMouseReleased = function(self)
-            pick(self.species)
+        
+        anim.onMouseExited = function(s)
+            self.root:removeChild(self.details)
+            if self.details then
+                self.root:removeChild(self.details)
+                self.details = nil
+                self.root:resize()
+            end
+        end
+        
+        anim.onMouseReleased = function(s)
+            pick(s.species)
             SoundManager:playSound("pclick4")
+            if self.details then
+                self.root:removeChild(self.details)
+                self.details = nil
+                self.root:resize()
+            end
         end
 
         table.insert(arr, anim)

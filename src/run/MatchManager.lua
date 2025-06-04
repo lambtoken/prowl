@@ -115,7 +115,7 @@ function MatchManager:init_state_machine()
                             SceneManager:switchScene("runMap")
                         else
                             gs.run:setOutcome()
-                            SceneManager:switchScene("uiTest")
+                            SceneManager:switchScene("runEnd")
                         end
                     end
                     

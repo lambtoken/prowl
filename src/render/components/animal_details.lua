@@ -1,10 +1,14 @@
 local mold = require "libs.mold"
-local stats = require "src.render.components.stats"
-local generate_pattern = require "src.render.components.generate_pattern"
+local animal_stats = require "src.render.components.animal_stats"
+local animal_pattern = require "src.render.components.animal_pattern"
 
--- animal details
+return function(animalData)
+    local c = mold.Container:new()
+    c:setWidth("auto")
+    c:setHeight("auto")
+    c:setPosition("absolute")
 
--- name
--- effect description
--- stats
--- pattern
+    c:addChild(animal_stats(animalData))
+    c:addChild(animal_pattern(animalData))
+    return c
+end

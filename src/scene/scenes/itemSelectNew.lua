@@ -15,8 +15,6 @@ local item_details = require "src.render.components.item_details"
 
 local gs = require("src.state.GameState"):getInstance()
 
-local itemMargin = 100
-local itemSize = 200
 local nItems = 3
 
 local itemSelect = Scene:new('itemSelectNew')
@@ -152,7 +150,7 @@ function itemSelect:previewItem(item_name)
 end
 
 function itemSelect:removeItem()
-    print(self.hoverItemId)
+    -- print(self.hoverItemId)
     gs.match.itemSystem:unequipItemById(self.current_animal, self.hoverItemId)
     gs.match.statsSystem:calculateAnimalStats(self.current_animal)
     self:buildUI(true)

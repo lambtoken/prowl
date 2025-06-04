@@ -103,10 +103,10 @@ function love.update(dt)
 
     music.update(dt)
 
-    -- local sleepTime = frameDuration - dt
-    -- if sleepTime > 0 then
-    --     love.timer.sleep(sleepTime)  -- Sleep to cap FPS
-    -- end
+    local sleepTime = frameDuration - dt
+    if sleepTime > 0 then
+        love.timer.sleep(sleepTime)  -- Sleep to cap FPS
+    end
 
     if steamInitialized and not achset then
         print("Steam initialized!")
