@@ -3,4 +3,4 @@
 docs/*
 Thumbs.db
 build/
-lua-runtime/
+love-runtime/

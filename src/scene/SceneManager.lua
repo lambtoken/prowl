@@ -3,6 +3,7 @@ local renderManager = require ('src.render.RenderManager'):getInstance()
 local mouse = require 'src.input.mouse'
 local Cursor = require 'src.render.Cursor'
 local cheatCodeListener = require 'src.input.cheatCodeListener'
+local console = require "src.input.console"
 
 local SceneManager = {}
 SceneManager.__index = SceneManager
@@ -40,6 +41,7 @@ function SceneManager:initialize()
 
     self.globalKeyBindings['`'] = function() love.event.quit('restart') end
     self.globalKeyBindings['f11'] = function() love.window.setFullscreen( not self.fullScreen ) self.fullScreen = not self.fullScreen end
+    console:load_commands()
 end
 
 function SceneManager:add(scene, name)
@@ -88,6 +90,7 @@ function SceneManager:draw()
     end
     
 
+    console:draw()
     self.cursor:draw()
 end
 
@@ -122,6 +125,7 @@ function SceneManager:update(dt)
         end
     end
     
+    console:update(dt)
     self.cursor:update(dt)
 end
 
@@ -194,6 +198,7 @@ end
 function SceneManager:keypressed(key, scancode, isrepeat)
 
     cheatCodeListener.keypressed(key)
+    console:keypressed(key)
 
     if self.globalKeyBindings[key] then
         self.globalKeyBindings[key]()

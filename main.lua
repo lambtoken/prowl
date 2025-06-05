@@ -5,19 +5,19 @@ local music = require 'src.sound.music'
 local getFont = require 'src.render.getFont'
 local MatchManager = require 'src.run.MatchManager'
 
-local platform = love.system.getOS()
-local ext = ({
-    Windows = "dll",
-    Linux = "so",
-    OSX = "dylib"
-})[platform] or "so"
+-- local platform = love.system.getOS()
+-- local ext = ({
+--     Windows = "dll",
+--     Linux = "so",
+--     OSX = "dylib"
+-- })[platform] or "so"
 
-package.cpath = string.format("%s;%s/?.%s;%s/?.%s", package.cpath, love.filesystem.getSource(), ext, love.filesystem.getSourceBaseDirectory(), ext)
-local steam = require 'luasteam'
+-- package.cpath = string.format("%s;%s/?.%s;%s/?.%s", package.cpath, love.filesystem.getSource(), ext, love.filesystem.getSourceBaseDirectory(), ext)
+-- local steam = require 'luasteam'
 
-for k, v in pairs(steam) do
-    print("luasteam key:", k)
-end
+-- for k, v in pairs(steam) do
+--     print("luasteam key:", k)
+-- end
 
 
 -- _._     _,-'""`-._
@@ -58,7 +58,7 @@ local achset
 
 function love.load(args)
     
-    steamInitialized = steam.init()
+    -- steamInitialized = steam.init()
 
     math.randomseed(os.time())
 
@@ -103,26 +103,26 @@ function love.update(dt)
 
     music.update(dt)
 
-    local sleepTime = frameDuration - dt
-    if sleepTime > 0 then
-        love.timer.sleep(sleepTime)  -- Sleep to cap FPS
-    end
+    -- local sleepTime = frameDuration - dt
+    -- if sleepTime > 0 then
+    --     love.timer.sleep(sleepTime)  -- Sleep to cap FPS
+    -- end
 
-    if steamInitialized and not achset then
-        print("Steam initialized!")
-        steam.userStats.resetAllStats(true)
+    -- if steamInitialized and not achset then
+    --     print("Steam initialized!")
+    --     steam.userStats.resetAllStats(true)
         
-        steam.userStats.setAchievement("ACH_WIN_ONE_GAME")
-        steam.userStats.setAchievement("ACH_TRAVEL_FAR_ACCUM")
-        steam.userStats.setAchievement("ACH_TRAVEL_FAR_SINGLE")
-        steam.userStats.storeStats()
+    --     steam.userStats.setAchievement("ACH_WIN_ONE_GAME")
+    --     steam.userStats.setAchievement("ACH_TRAVEL_FAR_ACCUM")
+    --     steam.userStats.setAchievement("ACH_TRAVEL_FAR_SINGLE")
+    --     steam.userStats.storeStats()
 
-        achset = true
-    end
+    --     achset = true
+    -- end
 
-    if steamInitialized then
-        steam.runCallbacks()
-    end
+    -- if steamInitialized then
+    --     steam.runCallbacks()
+    -- end
 end
 
 function love.draw()
