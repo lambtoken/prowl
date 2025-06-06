@@ -16,7 +16,7 @@ function Cursor:new()
         growTime = 0.2,
         shrinkRatio = 0.8,
         cursorShrink = 1,
-        cursorSize = 1.3,
+        cursorSize = 1,
         cursorSprite = 'cursor_fat',
         texture = nil,
         visibility = true

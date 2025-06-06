@@ -486,26 +486,27 @@ local items = {
         passive = {},
         active = {},
     },
-    -- stappler = {
-    --     name = 'stappler',
-    --     type = 'weapon',
-    --     rarity = 'common',
-    --     cooldowns = {
-    --         onAttack = 3,
-    --     },
-    --     startCooldowns = {
-    --         onAttack = 0
-    --     },
-    --     stats = {},
-    --     patern = {},
-    --     passive = {
-    --         onAttack = function(matchState, source, target)
-    --             if target.metadata.type == 'animal' then
-    --                 matchState.statusEffectSystem:giveStatusEffect(target, source, 'stun', 3)
-    --             end
-    --         end,
-    --     }
-    -- },
+    stappler = {
+        name = 'stappler',
+        type = 'weapon',
+        rarity = 'common',
+        cooldowns = {
+            onAttack = 3,
+        },
+        startCooldowns = {
+            onAttack = 0
+        },
+        stats = {},
+        patern = {},
+        passive = {
+            description = "Attacks have 20% chance to stun.",
+            onAttack = function(matchState, source, target)
+                if target.metadata.type == 'animal' and math.random() > 0.8 then
+                    matchState.statusEffectSystem:giveStatusEffect(target, source, 'stun', 2)
+                end
+            end,
+        }
+    },
     crossbow = {
         name = 'crossbow',
         type = 'weapon',
@@ -795,6 +796,54 @@ local items = {
         passive = {},
         active = {},
     },
+    kite = {
+        name = 'kite',
+        type = 'weapon',
+        rarity = 'common',
+        stats = {
+        },
+        pattern = {
+            {'extend', 'atkPattern', {
+                {0, 0, 0},
+                {1, 0, 1},
+                {0, 0, 0},
+            }},
+            {'remove', 'atkPattern', {
+                {1, 1, 1},
+                {0, 0, 0},
+                {1, 1, 1},
+            }}
+        },
+        passive = {},
+        active = {},
+    },
+    water_gun = {
+        name = 'water_gun',
+        type = 'weapon',
+        rarity = 'common',
+        stats = {
+            {'increase', 'atk', 1},
+            {'decrease', 'def', 1},
+        },
+        pattern = {
+            {'add', 'movePattern', {
+                {1, 0, 0, 0, 1},
+                {0, 1, 0, 1, 0},
+                {0, 0, 0, 0, 0},
+                {0, 1, 0, 1, 0},
+                {1, 0, 0, 0, 1},
+            }},
+            {'remove', 'atkPattern', {
+                {0, 1, 1, 1, 0},
+                {1, 0, 0, 0, 1},
+                {1, 0, 0, 0, 1},
+                {1, 0, 0, 0, 1},
+                {0, 1, 1, 1, 0},
+            }}
+        },
+        passive = {},
+        active = {},
+    },
 }
 
 local crownWidth = RM.renderDistanceX + 1
@@ -823,4 +872,3 @@ local crownWidth = RM.renderDistanceX + 1
 
 
 return items
-

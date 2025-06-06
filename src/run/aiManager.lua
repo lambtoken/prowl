@@ -151,9 +151,9 @@ function aiManager:pickMove(moves, difficulty)
     end
 end
 
-function aiManager:getMove(teamID)
+function aiManager:getMoves(teamID, amount)
     local allMoves = {}
-    
+
     for _, e in ipairs(self.match.teamManager.teams[teamID].members) do
         if e.state.alive and self.match.stateSystem:hasActions(e) then
             for _, move in ipairs(self:rateMoves(e)) do
@@ -167,12 +167,61 @@ function aiManager:getMove(teamID)
     end)
 
     if #allMoves == 0 then
-        return nil
+        return {}
     end
 
-    local pickedMove = self:pickMove(allMoves, "hard")
+    local picked = {}
+    local usedEntities = {}
 
-    return pickedMove
+    for i = 1, amount do
+        local pickedMove = nil
+
+        for j = #allMoves, 1, -1 do
+            local move = allMoves[j]
+            local alreadyUsed = usedEntities[move.entity]
+
+            local overlaps = false
+            for _, p in ipairs(picked) do
+                if p.x == move.x and p.y == move.y then
+                    overlaps = true
+                    break
+                end
+            end
+
+            if not alreadyUsed and not overlaps then
+                local entityMoves = {}
+                for _, m in ipairs(allMoves) do
+                    if m.entity == move.entity then
+                        local overlap = false
+                        for _, p in ipairs(picked) do
+                            if p.x == m.x and p.y == m.y then
+                                overlap = true
+                                break
+                            end
+                        end
+                        if not overlap then
+                            table.insert(entityMoves, m)
+                        end
+                    end
+                end
+
+                if #entityMoves > 0 then
+                    pickedMove = self:pickMove(entityMoves, "hard")
+                    usedEntities[move.entity] = true
+                    break
+                end
+            end
+        end
+
+        if pickedMove then
+            table.insert(picked, pickedMove)
+        else
+            break
+        end
+    end
+
+    return picked
 end
+
 
 return aiManager

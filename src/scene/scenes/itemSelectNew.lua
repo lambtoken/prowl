@@ -44,7 +44,7 @@ function itemSelect:enter()
     
     self.generated_items = getRandomItems(math.random(1, 3), nItems) -- just names
 
-    -- generated_items[1] = 'mixer'
+    -- self.generated_items[1] = math.random() > 0.5 and 'water_gun' or 'kite'
 
 
     -- racing flag

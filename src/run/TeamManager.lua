@@ -19,6 +19,7 @@ function teamManager:new(currentMatch)
     o.busy = false
     o.timer = nil
     o.time = 0.02
+    o.moveQueue = {}
     o.lastActiveMob = nil
     o.states = fsm({
         start_phase = {
@@ -96,6 +97,11 @@ function teamManager:new(currentMatch)
             instance = o,
 
             enter = function(s)
+                if s.instance.teams[s.instance.turnTeamId].agentType == "bot" then
+                    local currentTeam = s.instance.teams[s.instance.turnTeamId]
+                    local amount = math.ceil(#currentTeam.members / 3)
+                    s.instance.moveQueue = s.instance.match.aiManager:getMoves(s.instance.turnTeamId, amount)
+                end
                 s.instance.busy = false
             end,
             
@@ -121,12 +127,14 @@ function teamManager:new(currentMatch)
                     local currentTeam = s.instance.teams[s.instance.turnTeamId]
                     if #currentTeam.members == 0 or 
                     not s.instance:teamHasActions() and
+                    #s.instance.moveQueue == 0 and
                     s.instance.lastActiveMob and not s.instance.match:hasMovesLeft(s.instance.lastActiveMob) then
                         s.instance.states:set_state("end_phase")
                     else
                         -- handling bots
                         if s.instance.teams[s.instance.turnTeamId].agentType == "bot" then
-                            local move = s.instance.match.aiManager:getMove(s.instance.turnTeamId)
+                            print(#s.instance.moveQueue)
+                            local move = table.remove(s.instance.moveQueue)
                             if move then
                                 s.instance.match.moveSystem:move(move.entity, "walk", move.x, move.y, true)
                                 s.instance:setLastActiveMob(move.entity)
