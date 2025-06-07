@@ -362,10 +362,6 @@ local spriteTable = {
     invisibility = {30, 24},
     playing_dead = {31, 24},
     
-    
-    
-
-
     heart = {14, 19},
     heart_empty = {13, 19},
 
@@ -398,7 +394,8 @@ local spriteTable = {
     team_current2 = {28, 27},
     
     question_mark = {29, 26},
-
+    atk_zone = {24, 28},
+    move_zone = {25, 28},
     moveMark = {20, 23},
     attackMark = {21, 23},
     hit = {13, 20},

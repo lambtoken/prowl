@@ -97,10 +97,12 @@ function teamManager:new(currentMatch)
             instance = o,
 
             enter = function(s)
-                if s.instance.teams[s.instance.turnTeamId].agentType == "bot" then
-                    local currentTeam = s.instance.teams[s.instance.turnTeamId]
-                    local amount = math.ceil(#currentTeam.members / 3)
-                    s.instance.moveQueue = s.instance.match.aiManager:getMoves(s.instance.turnTeamId, amount)
+                local nextTeamId = (s.instance.turnTeamId % #s.instance.teams) + 1
+                local nextTeam = s.instance.teams[nextTeamId]
+                if nextTeam and nextTeam.agentType == "bot" then
+                    local amount = math.ceil(#nextTeam.members / 2)
+                    s.instance.moveQueue = s.instance.match.aiManager:getMoves(nextTeamId, amount)
+                    s.instance.movesId = nextTeamId
                 end
                 s.instance.busy = false
             end,
@@ -126,23 +128,33 @@ function teamManager:new(currentMatch)
                     -- skip if team is empty or has no moveso
                     local currentTeam = s.instance.teams[s.instance.turnTeamId]
                     if #currentTeam.members == 0 or 
-                    not s.instance:teamHasActions() and
-                    #s.instance.moveQueue == 0 and
-                    s.instance.lastActiveMob and not s.instance.match:hasMovesLeft(s.instance.lastActiveMob) then
+                        not s.instance:teamHasActions() and
+                        s.instance.lastActiveMob and not s.instance.match:hasMovesLeft(s.instance.lastActiveMob) then
                         s.instance.states:set_state("end_phase")
                     else
                         -- handling bots
-                        if s.instance.teams[s.instance.turnTeamId].agentType == "bot" then
-                            print(#s.instance.moveQueue)
-                            local move = table.remove(s.instance.moveQueue)
-                            if move then
-                                s.instance.match.moveSystem:move(move.entity, "walk", move.x, move.y, true)
-                                s.instance:setLastActiveMob(move.entity)
-                                s.instance.busy = true
-                            else
+                        if s.instance.movesId == s.instance.turnTeamId then
+
+                            while #s.instance.moveQueue > 0 do
+                                local move = s.instance.moveQueue[#s.instance.moveQueue]
+                                
+                                if not move or not move.entity.state.alive or
+                                    not s.instance.match:isSteppable(move.x, move.y, move.entity)
+                                then
+                                    table.remove(s.instance.moveQueue) -- discard invalid move
+                                else
+                                    table.remove(s.instance.moveQueue) -- consume valid move
+                                    s.instance.match.moveSystem:move(move.entity, "walk", move.x, move.y, true)
+                                    s.instance:setLastActiveMob(move.entity)
+                                    s.instance.busy = true
+                                end
+                            end
+
+                            if #s.instance.moveQueue == 0 and not s.instance.busy then
                                 s.instance.states:set_state("end_phase")
                             end
                         end
+
                     end
                 end
             end,

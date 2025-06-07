@@ -20,7 +20,7 @@ local items = {
         name = 'stick',
         type = 'weapon',
         rarity = 'common',
-        stats = {{'increase', 'atk', 1}},
+        stats = {{'increase', 'atk', 2}},
         passive = {},
         active = {},
     },
@@ -29,7 +29,7 @@ local items = {
         type = 'weapon',
         rarity = 'common',
         stats = {
-            {'increase', 'atk', 1},
+            {'increase', 'atk', 2},
         },
         pattern = {
             {'add', 'atkPattern', {
@@ -116,7 +116,7 @@ local items = {
         name = 'saddle', --horse techno!!!
         type = 'protection',
         rarity = 'epic',
-        stats = {},
+        stats = {{'increase', 'maxHp', 1}},
         pattern = {
             {'add', 'movePattern', {
                 {0, 1, 0, 1, 0},
@@ -154,7 +154,6 @@ local items = {
         rarity = 'rare',
         stats = {
             {'increase', 'atk', 1},
-            -- {'onHit', 'poison', 1, 20}
         },
         cooldowns = {
             onAttack = 3
@@ -164,10 +163,11 @@ local items = {
         },
         pattern = {},
         passive = {
-            description = "Attacks apply poison damage over time.",
+            description = "Attacks have 20% chance to apply poison damage for 3 turns.",
             onAttack = function(matchState, entity, target)
-                -- Apply poison DoT for 3 turns
-                matchState.damageOverTimeSystem:giveDotEffect(target, entity, "poison", 3)
+                if math.random() < 0.2 then
+                    matchState.damageOverTimeSystem:giveDotEffect(target, entity, "poison", 3)
+                end
             end
         },
         active = {},
@@ -177,7 +177,7 @@ local items = {
         type = 'weapon',
         rarity = 'rare',
         stats = {
-            {'increase', 'atk', 1}
+            {'increase', 'atk', 2}
         },
         pattern = {},
         passive = {
@@ -193,6 +193,7 @@ local items = {
         type = 'weapon',
         rarity = 'rare',
         stats = {
+            {'increase', 'atk', 1},
             {'increase', 'crit', 0.2}
         },
         pattern = {},
@@ -238,7 +239,7 @@ local items = {
         rarity = 'common',
         stats = {
             {'increase', 'def', 2},
-            {'increase', 'maxHp', 1}
+            {'increase', 'maxHp', 2}
         },
         pattern = {},
         passive = {},
@@ -319,7 +320,9 @@ local items = {
         name = 'laser pointer',
         type = 'weapon',
         rarity = 'rare',
-        stats = {},
+        stats = {
+            {'increase', 'atk', 1},
+        },
         pattern = {
             {'extend', 'atkPattern', {
                 {0, 1, 0},
@@ -351,6 +354,7 @@ local items = {
         type = 'weapon',
         rarity = 'common',
         stats = {
+            {'increase', 'atk', 1},
             {'increase', 'crit', 0.1},
         },
         pattern = {},
@@ -418,7 +422,7 @@ local items = {
         name = 'trident',
         type = 'weapon',
         rarity = 'epic',
-        stats = {{'increase', 'atk', 1},},
+        stats = {{'increase', 'atk', 2}},
         pattern = {
             {'extend', 'atkPattern', {
                 {1, 1, 1},
@@ -435,7 +439,7 @@ local items = {
         name = 'knuckle duster',
         type = 'weapon',
         rarity = 'common',
-        stats = {},
+        stats = {{'increase', 'atk', 1}},
         pattern = {},
         passive = {
             description = "Moving over enemies causes them to take 1 damage.",
@@ -450,7 +454,7 @@ local items = {
         type = 'weapon',
         rarity = 'common',
         stats = {
-            {'increase', 'atk', '1'}
+            {'increase', 'atk', '2'}
         },
         pattern = {},
         passive = {
@@ -528,7 +532,10 @@ local items = {
         name = 'boxing gloves',
         type = 'weapon',
         rarity = 'common',
-        stats = {{'increase', 'critDamage', 0.25}},
+        stats = {
+            {'increase', 'critDamage', 0.25},
+            {'increase', 'crit', 0.1},
+        },
         pattern = {},
         passive = {
             description = "Critical strikes taunt. Taunted enemy attacks for a small percent of it's ATK.",
@@ -542,7 +549,10 @@ local items = {
         name = 'spike collar',
         type = 'weapon',
         rarity = 'common',
-        stats = {},
+        stats = {
+            {'increase', 'def', 2},
+            {'increase', 'maxHp', 2}
+        },
         pattern = {},
         passive = {
             description = "When attacked, deal 1 dmg back.",
@@ -587,7 +597,9 @@ local items = {
         name = "cactus pot",
         type = "misc",
         rarity = "common",
-        stats = {},
+        stats = {
+            {"increase", "maxHp", 1}
+        },
         pattern = {},
         passive = {
             description = "Touching enemies deals 1 damage.",
@@ -604,7 +616,9 @@ local items = {
         name = "rusty knife",
         type = "weapon",
         rarity = "common",
-        stats = {},
+        stats = {
+            {"increase", "atk", 1}
+        },
         pattern = {},
         passive = {
             description = "Attaking has a 20% chance to poison the enemy.",
@@ -622,7 +636,9 @@ local items = {
         name = "razor",
         type = "weapon",
         rarity = "common",
-        stats = {},
+        stats = {
+            {"increase", "atk", 1}
+        },
         pattern = {},
         passive = {
             description = "Attaking has a 20% chance to bleed the enemy.",
@@ -725,8 +741,6 @@ local items = {
                     return
                 end
 
-                print(distance, item)
-
                 local itemId = item.id
 
                 if distance <= 1 then
@@ -748,7 +762,7 @@ local items = {
         },
         cooldowns = {
             onMove = 2,
-            onStandBy = 0
+            onStandBy = 1
         },
         startCooldowns = {
             onMove = 0
@@ -768,7 +782,7 @@ local items = {
                 local targets = matchState.moveSystem:getTouching(entity.position.x, entity.position.y, "animal")
 
                 for index, target in ipairs(targets) do
-                    if target ~= entity then
+                    if target ~= entity and target.metadata.teamId ~= entity.metadata.teamId then
                         matchState.combatSystem:hit(target, 2)
                         success = true
                     end
@@ -776,6 +790,7 @@ local items = {
 
                 if success then
                     matchState.statusEffectSystem:giveStatusEffect(entity, entity, "disarm", 1)
+                    matchState.statusEffectSystem:applyAllStatusEffects()
                     item.data.moved = true
                 end
             end
@@ -789,7 +804,7 @@ local items = {
         stats = {
             {'increase', 'atk', 1},
             {'increase', 'def', 1},
-            {'increase', 'crit', 0.05},
+            {'increase', 'crit', 0.1},
             {'increase', 'maxHp', 1}
         },
         pattern = {},
@@ -801,6 +816,7 @@ local items = {
         type = 'weapon',
         rarity = 'common',
         stats = {
+            {'increaseP', 'maxHp', 0.1}
         },
         pattern = {
             {'extend', 'atkPattern', {
@@ -822,8 +838,8 @@ local items = {
         type = 'weapon',
         rarity = 'common',
         stats = {
-            {'increase', 'atk', 1},
-            {'decrease', 'def', 1},
+            {'increase', 'atk', 2},
+            {'decrease', 'def', 2},
         },
         pattern = {
             {'add', 'movePattern', {

@@ -16,6 +16,7 @@ local gray_shader = require "src.render.shaders.gray_shader"
 local gs = require("src.state.GameState"):getInstance()
 local Hearts = require "src.render.matchHearts"
 local animalStats = require "src.render.animalStats"
+local dangerZone = require "src.render.match.dangerZone"
 local pretty = require "libs.batteries.pretty"
 
 local match = Scene:new('match')
@@ -193,9 +194,10 @@ function match:draw()
     
     love.graphics.push()
     love.graphics.translate(self.shakeOffsetX, self.shakeOffsetY)
-
+    
     self.camera:attach(0, 0, RM.windowWidth, RM.windowHeight, true)
     self.match:draw()
+    dangerZone(self.match.teamManager.moveQueue)
     self.particleSystem:draw()
     self.TextBubbleManager:draw()
     
@@ -226,6 +228,7 @@ function match:draw()
         -- love.graphics.setScissor()
     end
     
+
     self.camera:detach()
     
     love.graphics.pop()
