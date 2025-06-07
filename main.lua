@@ -94,6 +94,8 @@ local frameDuration = 1 / fpsCap
 function love.update(dt)
     -- dt = dt * 10
 
+    dt = dt * gs.settings.speed
+
     if not gs.isPaused then
         require("libs/lovebird").update()
         sceneM:update(dt)

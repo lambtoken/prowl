@@ -206,7 +206,7 @@ function aiManager:getMoves(teamID, amount)
                 end
 
                 if #entityMoves > 0 then
-                    pickedMove = self:pickMove(entityMoves, "hard")
+                    pickedMove = self:pickMove(entityMoves, "medium")
                     usedEntities[move.entity] = true
                     break
                 end

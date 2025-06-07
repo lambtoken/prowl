@@ -37,6 +37,7 @@ function GameState:initialize()
         particles = true,
         particlesOnClick = true,
         screenShake = true,
+        speed = 1
     }
     self.achievements = {}
     self:setSeed(os.time())

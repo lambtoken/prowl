@@ -1,3 +1,4 @@
+local GameState = require("src.state.GameState"):getInstance()
 local console = {
     visible = false,
     height = 200,
@@ -105,6 +106,16 @@ end
 function console:load_commands()
     console:register("clear", function() self.history = {} end)
     console:register("hello", function() return "Hi there!" end)
+    console:register("speed", function(sp)
+        local num = tonumber(sp)
+        if type(num) ~= "number" then
+            table.insert(self.history, "Game speed must be a number!")
+            return nil
+        end
+        GameState.settings.speed = sp 
+        return "Gamespeed set to " .. sp 
+
+    end)
     console:register("add", function(a, b)
         local numa = tonumber(a)
         local numb = tonumber(b)

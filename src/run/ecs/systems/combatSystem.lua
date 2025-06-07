@@ -14,17 +14,18 @@ local combatSystem = Concord.system({pool = {"position"}})
 
 -- helper function for calculating miss chance based on def value
 local function defMissChance(attacker, target)
-    local base = 0.1
     local atk = attacker.stats.current.atk
     local def = target.stats.current.def
 
-    if atk == def then
-        return base
-    elseif atk < def then
-        return base + ((def - atk) / 5 / (1 + math.abs(def - atk)) / 2)
-    else
+    if atk >= def then
         return 0
     end
+
+    local diff = def - atk
+    local max_miss = 0.9  -- upper limit
+    local scale = 0.1     -- growth rate (smaller = slower growth)
+
+    return max_miss * (1 - math.exp(-scale * diff))
 end
 
 function combatSystem:init()
@@ -71,6 +72,12 @@ function combatSystem:init()
                             EventManager:emit("onMiss", entity, target)
                             EventManager:emit("onDodge", target, entity)
                         end
+
+                        local m = defMissChance(entity, target)
+
+                        print("def miss ", m)
+
+                        missed = missed or math.random() <= m
             
                         if not missed then
                             succesfulAttack = true
