@@ -171,39 +171,37 @@ local shaders = {
             {name = "quadInfo", default = {0.0, 0.0, 1.0, 1.0}}
         },
         code = [[
-            extern float time;
-            extern float amount;
-            extern float frequency;
-            extern float speed;
-            extern vec4 quadInfo;
+        extern float time;
+        extern float amount;
+        extern float frequency;
+        extern float speed;
+        extern vec4 quadInfo;
 
-            vec2 quadClamp(vec2 coords, vec4 quadInfo) {
-                float minX = quadInfo.x;
-                float minY = quadInfo.y;
-                float maxX = quadInfo.x + quadInfo.z;
-                float maxY = quadInfo.y + quadInfo.w;
-                
-                return vec2(
-                    clamp(coords.x, minX, maxX),
-                    clamp(coords.y, minY, maxY)
-                );
-            }
+        vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords) {
 
-            vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords) {
-                vec2 normalizedCoords = (tex_coords - quadInfo.xy) / quadInfo.zw;
-                
-                vec2 wobble = vec2(
-                    normalizedCoords.x + sin(time * speed + normalizedCoords.y * frequency) * amount,
-                    normalizedCoords.y + cos(time * speed + normalizedCoords.x * frequency) * amount
-                );
-                
-                wobble = clamp(wobble, 0.0, 1.0);
-                
-                wobble = quadInfo.xy + wobble * quadInfo.zw;
-                
-                return Texel(tex, wobble) * color;
+            // Calculate normalized coordinates within the quad
+            vec2 normalizedCoords = (tex_coords - quadInfo.xy) / quadInfo.zw;
+            
+            // Calculate wobble amount but don't apply it yet
+            vec2 wobbleOffset = vec2(
+                sin(time * speed + normalizedCoords.y * frequency) * amount,
+                cos(time * speed + normalizedCoords.x * frequency) * amount
+            );
+            
+            // Calculate potential new coordinates
+            vec2 wobbledNormalized = normalizedCoords + wobbleOffset;
+            
+            // Only apply wobble if it keeps us inside the quad
+            if (wobbledNormalized.x >= 0.0 && wobbledNormalized.x <= 1.0 &&
+                wobbledNormalized.y >= 0.0 && wobbledNormalized.y <= 1.0) {
+                vec2 wobbledCoords = quadInfo.xy + wobbledNormalized * quadInfo.zw;
+                return Texel(tex, wobbledCoords) * color;
             }
-        ]]
+            
+            // If wobble would take us outside, use original coordinate
+            return Texel(tex, tex_coords) * color;
+        }
+    ]]
     }
 }
 

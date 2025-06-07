@@ -36,7 +36,7 @@ return function(moves)
                 if cell == 1 then
                     local atk_y = value.y + i - math.ceil(#atk_pattern / 2)
                     local atk_x = value.x + j - math.ceil(#row / 2)
-                    if atk_y > 0 and atk_y <= GameState.match.height and atk_x > 0 and atk_x <= GameState.match.width then
+                    if atk_y >= 0 and atk_y < GameState.match.height and atk_x >= 0 and atk_x < GameState.match.width then
                         love.graphics.draw(RM.image, danger_quad, atk_x * RM.tileSize, atk_y * RM.tileSize, 0, RM.increaseFactor)     
                     end
                 end

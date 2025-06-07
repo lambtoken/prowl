@@ -51,7 +51,7 @@ function RenderManager:init()
     self.shakeDuration = 0.3
     self.shakeTimer = 0
     self.isShaking = false
-    self.shakeMagnitude = 4
+    self.shakeMagnitude = 10
 
     self.renderDistanceX = 16
     self.renderDistanceY = 16
