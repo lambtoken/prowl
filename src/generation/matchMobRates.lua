@@ -97,6 +97,7 @@ local rates = {
         normal = {
             {name = 'crocodile', rate = 10, limit = 1},
             {name = 'turtle', rate = 10, limit = 0},
+            {name = 'frog', rate = 10, limit = 0},
             {name = 'axolotl', rate = 10, limit = 0},
         }
     },
@@ -105,6 +106,7 @@ local rates = {
         normal = {
             {name = 'crab', rate = 10, limit = 0},
             {name = 'turtle', rate = 10, limit = 0},
+            {name = 'seagull', rate = 10, limit = 0},
         }
     },
 

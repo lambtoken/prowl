@@ -183,7 +183,7 @@ function RenderManager:draw()
     -- self:setCanvas(self.bgCanvas)
     -- love.graphics.clear(0, 0, 0, 0)
 
-    -- Draw to main canvas
+    -- -- Draw to main canvas
     -- self:setCanvas(self.mainCanvas)
     -- love.graphics.setColor(1, 1, 1, 1)
     

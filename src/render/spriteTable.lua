@@ -44,6 +44,8 @@ local spriteTable = {
     monkey = {18, 1},
     lizard = {19, 1},
     snail = {20, 1},
+    seagull = {21, 1},
+    frog = {21, 0},
 
     --bosses
     dragon = {31, 0},

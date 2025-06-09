@@ -1205,6 +1205,70 @@ local mobs = {
             {0, 0, 0, 0, 0}
         }
     },
+    seagull = 
+    {
+        name = 'seagull',
+        sprite = 'seagull',
+        stats = {
+            atk = 2,
+            def = 1,
+            maxHp = 6,
+            moves = DEFAULT.moves,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck
+        },
+        stepsOn = { "ground", "fence" },
+
+        movePattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {1, 1, 0, 1, 1},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        }
+    },
+    frog = 
+    {
+        name = 'frog',
+        sprite = 'frog',
+        stats = {
+            atk = 2,
+            def = 2,
+            maxHp = 3,
+            moves = DEFAULT.moves,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck
+        },
+        stepsOn = { "ground" },
+
+        movePattern = {
+            {0, 0, 0, 1, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 1, 0, 0, 0},
+            {1, 0, 1, 0, 1, 0, 1},
+            {0, 0, 0, 1, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 1, 0, 0, 0},
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        }
+    },
     dragon = 
     {
         name = 'dragon',
@@ -1291,11 +1355,11 @@ local mobs = {
             {0, 0, 0, 0, 0}
         },
         atkPattern = {
-            {0, 0, 0, 0, 0},
+            {1, 0, 0, 0, 1},
             {0, 1, 1, 1, 0},
             {0, 1, 0, 1, 0},
             {0, 1, 1, 1, 0},
-            {0, 0, 0, 0, 0}
+            {1, 0, 0, 0, 1}
         }
     },
     wyvern =
