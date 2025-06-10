@@ -87,7 +87,7 @@ function animalSelect:mousereleased(x, y, button)
     self.root:mouseReleased(x, y, button)
 end
 
-function pick(species)
+function animalSelect:pick(species)
     if not gs.run then
 
         local newRun = Run:new(species)
@@ -124,9 +124,9 @@ function animalSelect:makeRoster()
         self:playAnimation("attack")
     end
 
-    r.onMouseReleased = function(self)
+    r.onMouseReleased = function(s)
         local random = data.animals[math.ceil(math.random() * #data.animals)].key
-        pick(random)
+        self:pick(random)
     end
     
     table.insert(arr, r)
@@ -152,6 +152,7 @@ function animalSelect:makeRoster()
             -- SoundManager:playSound("pclick3")
             SoundManager:playSound("clicktech2")
             self.details = self.detailsBySpecies[anim.species]
+            self.details:setPos(50, 120) -- hack. i dont like it. need to fix mold
             self.root:addChild(self.details)
             self.root:resize()
         end
@@ -166,7 +167,7 @@ function animalSelect:makeRoster()
         end
         
         anim.onMouseReleased = function(s)
-            pick(s.species)
+            self:pick(s.species)
             SoundManager:playSound("pclick4")
             if self.details then
                 self.root:removeChild(self.details)

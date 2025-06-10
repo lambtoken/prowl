@@ -161,13 +161,13 @@ function itemSelect:update(dt)
     checkerShader:send("time", love.timer.getTime())
 
     self.root:update(dt)
-    if self.test then
-        -- brute forced rn but it works
-        -- will need a different way for mouse follow so we dont override transform
-        local x, y = love.mouse.getPosition()
-        self.test.transform.translateX = x
-        self.test.transform.translateY = y
-    end
+    -- if self.test then
+    --     -- brute forced rn but it works
+    --     -- will need a different way for mouse follow so we dont override transform
+    --     local x, y = love.mouse.getPosition()
+    --     self.test.transform.translateX = x
+    --     self.test.transform.translateY = y
+    -- end
 end
 
 function itemSelect:draw()
@@ -188,6 +188,15 @@ end
 
 function itemSelect:mousemoved(x, y)
     self.root:mouseMoved(x, y)
+    if self.test then
+        -- brute forced rn but it works
+        -- will need a different way for mouse follow so we dont override transform
+        -- local x, y = love.mouse.getPosition()
+        self.test.transform.translateX = x
+        self.test.transform.translateY = y
+        -- self.test:setPos(x, y)
+        -- self.root:resize()
+    end
 end
 
 function itemSelect:mousepressed(x, y, btn)

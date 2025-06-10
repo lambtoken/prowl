@@ -1,6 +1,6 @@
 local mold = require "libs.mold"
 
-local stat_size = 20
+local stat_size = 30
 
 local function new_stat(stat, value)
     local s = mold.TextBox(stat .. ':' .. value)
@@ -23,7 +23,7 @@ local function new_stats(entityData)
     row1:setWidth("50%")
     row2:setWidth("50%")
 
-    s:debug()
+    -- s:debug()
 
     local atk, def, crit, hp, ls
 

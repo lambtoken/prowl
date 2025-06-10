@@ -1148,6 +1148,11 @@ function Container:_setPos(child, x, y, props)
         child['c' .. props['cross_pos']] = child['s' .. props['cross_pos']] + child.cMargin[props['cross_start_margin']]
         -- oh God why am I adding margin in here
     end
+
+    if child.position == POSITION_TYPES.ABSOLUTE then
+        child['c' .. props['main_pos']] = child['s' .. props['main_pos']]
+        child['c' .. props['cross_pos']] = child['s' .. props['cross_pos']]
+    end
 end
 
 function Container:flattenChildren()
