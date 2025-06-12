@@ -860,6 +860,17 @@ local items = {
         passive = {},
         active = {},
     },
+    tire = {
+        name = 'tire',
+        type = 'armor',
+        rarity = 'rare',
+        stats = {
+            {'increase', 'maxHp', 4},
+        },
+        pattern = {},
+        passive = {},
+        active = {},
+    },
 }
 
 local crownWidth = RM.renderDistanceX + 1
