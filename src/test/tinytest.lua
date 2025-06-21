@@ -9,7 +9,7 @@ function tinytest.new()
     run = function(self)
       local passed, failed = 0, 0
       for _, t in ipairs(self.tests) do
-        local ok, err = pcall(t.fn)
+        local ok, err = xpcall(t.fn, debug.traceback)
         if ok then
           print("✔ " .. t.name)
           passed = passed + 1

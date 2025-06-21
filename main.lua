@@ -62,13 +62,6 @@ function love.load(args)
 
     math.randomseed(os.time())
 
-    for index, value in ipairs(args) do
-        if value == "test" then
-            print("TESTING")
-            love.event.quit(0)
-        end
-    end
-
     gs = GameState:getInstance()
     gs.match = MatchManager:new()
     gs:setSeed(os.time())
@@ -81,10 +74,17 @@ function love.load(args)
     renderM = RenderManager:getInstance()
 
     --soundM = SoundManager:getInstance()
-    music.load()
-
+    
     require "src.render.effectSprites"
-
+    
+    for index, value in ipairs(args) do
+        if value == "test" then
+            require("src.test.run_all")()
+            love.event.quit(0)
+        end
+    end
+    
+    music.load()
     -- love.window.setVSync(-1)
 end
 
