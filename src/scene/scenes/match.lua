@@ -197,7 +197,7 @@ function match:draw()
     
     self.camera:attach(0, 0, RM.windowWidth, RM.windowHeight, true)
     self.match:draw()
-    -- dangerZone(self.match.teamManager.moveQueue)
+    dangerZone(self.match.teamManager.moveQueue)
     self.particleSystem:draw()
     self.TextBubbleManager:draw()
     
