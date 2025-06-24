@@ -53,12 +53,39 @@ function aiManager:ratingFormula(attacker, attackerX, attackerY, target)
 end
 
 
-function aiManager:rateMoves(entity)
-    
-    local allPossibleMoves = {}
+-- Helper: get all possible positions the player can move to next turn
+function aiManager:getPossiblePlayerPositions()
+    -- Assume player is always team 1, first member
+    local playerTeam = self.match.teamManager.teams[1]
+    if not playerTeam or #playerTeam.members == 0 then return {} end
+    local player = playerTeam.members[1]
+    if not player or not player.state.alive then return {} end
+    local movePattern = player.stats.currentPatterns.movePattern
+    local positions = {}
+    for m_y, m_row in ipairs(movePattern) do
+        for m_x, move in ipairs(m_row) do
+            if move == 1 then
+                local px = player.position.x + m_x - math.ceil(#movePattern[1] / 2)
+                local py = player.position.y + m_y - math.ceil(#movePattern / 2)
+                if self.match:isSteppable(px, py, player) then
+                    table.insert(positions, {x = px, y = py})
+                end
+            end
+        end
+    end
+    -- Always include current position as a fallback
+    table.insert(positions, {x = player.position.x, y = player.position.y})
+    return positions
+end
 
+function aiManager:rateMoves(entity)
+    local allPossibleMoves = {}
     local movePattern = entity.stats.currentPatterns.movePattern
     local attackPattern = entity.stats.currentPatterns.atkPattern
+
+    -- Get predicted player positions
+    local predictedPlayerPositions = self:getPossiblePlayerPositions()
+    local playerTeamId = 1
 
     for m_y, m_row in ipairs(movePattern) do
         for m_x, move in ipairs(m_row) do
@@ -71,12 +98,29 @@ function aiManager:rateMoves(entity)
                             if atk == 1 then
                                 local targetX = steppableX + a_x - math.ceil(#attackPattern[1] / 2)
                                 local targetY = steppableY + a_y - math.ceil(#attackPattern / 2)
+                                -- Check if this attack position matches any predicted player position
+                                local willHitPlayer = false
+                                for _, pos in ipairs(predictedPlayerPositions) do
+                                    if pos.x == targetX and pos.y == targetY then
+                                        willHitPlayer = true
+                                        break
+                                    end
+                                end
                                 local targets = self.match.moveSystem:findByCoordinates(targetX, targetY)
                                 for _, t in ipairs(targets) do
                                     if t.metadata.type == 'animal' and entity.metadata.teamId ~= t.metadata.teamId then
                                         local score = self:ratingFormula(entity, steppableX, steppableY, t)
+                                        -- Boost score if this move can hit a predicted player position
+                                        if willHitPlayer and t.metadata.teamId == playerTeamId then
+                                            score = score + 1000 -- Large bonus to prioritize hitting where player can go
+                                        end
                                         table.insert(allPossibleMoves, {entity = entity, target = t, score = score, x = steppableX, y = steppableY})
                                     end
+                                end
+                                -- If no target but can hit predicted player position, add a move anyway
+                                if willHitPlayer then
+                                    local score = self:ratingFormula(entity, steppableX, steppableY, nil) + 900
+                                    table.insert(allPossibleMoves, {entity = entity, target = nil, score = score, x = steppableX, y = steppableY})
                                 end
                             end
                         end
