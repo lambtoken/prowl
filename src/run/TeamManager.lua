@@ -2,6 +2,7 @@ local Team = require 'src.run.Team'
 local fsm = require 'libs.batteries.state_machine'
 local mobs = require 'src.generation.mobs'
 local EventManager = require('src.state.events'):getInstance()
+local pretty = require 'libs.batteries.pretty'
 
 local teamManager = {}
 teamManager.__index = teamManager
@@ -42,6 +43,9 @@ function teamManager:new(currentMatch)
             instance = o,
 
             enter = function(s) 
+
+                EventManager:emit("standByPhase", s.instance.turnTeamId)
+
                 s.instance.match.statusEffectSystem:onStandBy(s.instance.turnTeamId)
                 s.instance.match.statusEffectSystem:applyAllStatusEffects()
                 s.instance.match.damageOverTimeSystem:onStandBy(s.instance.turnTeamId)
@@ -97,11 +101,14 @@ function teamManager:new(currentMatch)
             instance = o,
 
             enter = function(s)
+
+                EventManager:emit("mainPhase", s.instance.turnTeamId)
+
                 local nextTeamId = (s.instance.turnTeamId % #s.instance.teams) + 1
                 local nextTeam = s.instance.teams[nextTeamId]
                 if nextTeam and nextTeam.agentType == "bot" then
                     local amount = math.ceil(#nextTeam.members / 2)
-                    s.instance.moveQueue = s.instance.match.aiManager:getMoves(nextTeamId, amount)
+                    s.instance.moveQueue = s.instance.match.aiManager:getMainAndAltMoves(nextTeamId, amount)
                     s.instance.movesId = nextTeamId
                 end
                 s.instance.busy = false
@@ -138,15 +145,24 @@ function teamManager:new(currentMatch)
                             while #s.instance.moveQueue > 0 do
                                 local move = s.instance.moveQueue[#s.instance.moveQueue]
                                 
-                                if not move or not move.entity.state.alive or
-                                    not s.instance.match:isSteppable(move.x, move.y, move.entity)
+                                if not move or not move.main.entity.state.alive or
+                                    not s.instance.match:isSteppable(move.main.x, move.main.y, move.main.entity)
+                                    and not s.instance.match:isSteppable(move.alt.x, move.alt.y, move.alt.entity)
                                 then
+                                    print("NAAAAH MAN\n")
                                     table.remove(s.instance.moveQueue) -- discard invalid move
                                 else
                                     table.remove(s.instance.moveQueue) -- consume valid move
-                                    s.instance.match.moveSystem:move(move.entity, "walk", move.x, move.y, true)
-                                    s.instance:setLastActiveMob(move.entity)
-                                    s.instance.busy = true
+                                    pretty.print("Moving " .. move.main.entity.metadata.species .. " to " .. move.main.x .. "," .. move.main.y)
+                                    if s.instance.match:isSteppable(move.main.x, move.main.y, move.main.entity) then
+                                        s.instance.match.moveSystem:move(move.main.entity, "walk", move.main.x, move.main.y, true)
+                                        s.instance:setLastActiveMob(move.main.entity)
+                                        s.instance.busy = true
+                                    elseif s.instance.match:isSteppable(move.alt.x, move.alt.y, move.alt.entity) then
+                                        s.instance.match.moveSystem:move(move.alt.entity, "walk", move.alt.x, move.alt.y, true)
+                                        s.instance:setLastActiveMob(move.alt.entity)
+                                        s.instance.busy = true
+                                    end
                                 end
                             end
 
@@ -170,6 +186,8 @@ function teamManager:new(currentMatch)
 
             enter = function(s) 
 
+                EventManager:emit("endPhase", s.instance.turnTeamId)
+
                 local team = s.instance.teams[s.instance.turnTeamId]
 
                 for _, animal in ipairs(team.members) do
@@ -191,6 +209,12 @@ function teamManager:new(currentMatch)
                     if team.restCounter > 1 then
                         team.rest = true
                         team.restCounter = 0
+                        -- Replenish energy for all animals on this team
+                        for _, animal in ipairs(team.members) do
+                            if animal.stats and animal.stats.energy then
+                                animal.stats.energy = animal.stats.maxEnergy or animal.stats.energy
+                            end
+                        end
                     end
                 end
 

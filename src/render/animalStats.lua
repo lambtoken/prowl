@@ -80,13 +80,19 @@ function animalStats:draw()
     local maxHp = self.animalRef.stats.current.maxHp
     local crit = self.animalRef.stats.current.crit
     local ls = self.animalRef.stats.current.lifeSteal
+    local energy = self.animalRef.stats.energy or 1
+    local maxEnergy = self.animalRef.stats.energy or 1
+    local energyBarWidth = self.hpBarWidth
+    local energyBarHeight = 12
+    local currentEnergyBarWidth = energyBarWidth * energy / maxEnergy
+    local hpBarY = self.screenY + self.margin + self.portraitSize - self.hpBarHeight + math.sin(self.animationTime) * self.animationAmplitude
+    local energyBarY = hpBarY + self.hpBarHeight + 8
 
     love.graphics.setColor(1, 1, 1)
 
     love.graphics.draw(RM.image, self.portraitQuad, self.screenX + self.margin, self.screenY + self.margin, 0, self.portraitScaleFactor, self.portraitScaleFactor)
 
     local currentHpBarWidth = self.hpBarWidth * hp / maxHp
-    local hpBarY = self.screenY + self.margin + self.portraitSize - self.hpBarHeight + math.sin(self.animationTime) * self.animationAmplitude
 
     love.graphics.setColor(0.5, 0.5, 0.5)
     love.graphics.rectangle("fill", self.screenX + self.portraitSize + 2 * self.margin, hpBarY, self.hpBarWidth, self.hpBarHeight)
@@ -147,6 +153,17 @@ function animalStats:draw()
             end
         end
     end
+
+    -- Draw energy bar background
+    love.graphics.setColor(0.2, 0.2, 0.4)
+    love.graphics.rectangle("fill", self.screenX + self.portraitSize + 2 * self.margin, energyBarY, energyBarWidth, energyBarHeight)
+    -- Draw energy bar foreground
+    love.graphics.setColor(0.3, 0.7, 1)
+    love.graphics.rectangle("fill", self.screenX + self.portraitSize + 2 * self.margin, energyBarY, currentEnergyBarWidth, energyBarHeight)
+    -- Draw energy text
+    love.graphics.setColor(1, 1, 1)
+    local energyText = "energy: " .. energy .. "/" .. maxEnergy
+    love.graphics.print(energyText, self.screenX + self.portraitSize + 2 * self.margin + energyBarWidth / 2 - self.font:getWidth(energyText) / 2, energyBarY)
 
     self.statusBar:draw()
 end

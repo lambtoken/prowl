@@ -45,7 +45,7 @@ function Run:setSeed(seed)
 end
 
 function Run:addAnimal(species)
-    table.insert(self.team, EntityFactory:createAnimal(species))
+    table.insert(self.team, EntityFactory:createAnimal(species, 0, 0, 1))
 end
 
 function Run:decreaseHealth()

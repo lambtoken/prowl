@@ -268,5 +268,43 @@ function aiManager:getMoves(teamID, amount)
     return picked
 end
 
+-- Returns a table: { [entity] = { main = move, alt = move } }
+function aiManager:getMainAndAltMoves(teamID, amount)
+    local entityMoves = {}
+    for _, e in ipairs(self.match.teamManager.teams[teamID].members) do
+        if e.state.alive and self.match.stateSystem:hasActions(e) then
+            local moves = self:rateMoves(e)
+            -- Sort moves by score descending, then by x, then by y for determinism
+            table.sort(moves, function(a, b)
+                if a.score ~= b.score then return a.score > b.score end
+                if a.x ~= b.x then return a.x < b.x end
+                return a.y < b.y
+            end)
+            if #moves > 0 then
+                table.insert(entityMoves, { main = moves[1], alt = moves[2] or moves[1] })
+            end
+        end
+    end
+
+    local pickedMoves = {}
+
+    for i = 1, amount do
+        if #entityMoves == 0 then break end
+
+        -- Pick a random entity move
+        local index = math.random(#entityMoves)
+        local movePair = entityMoves[index]
+        table.remove(entityMoves, index)
+
+        -- If we already have a main move for this entity, use the alt as the main
+        if pickedMoves[movePair.main.entity] then
+            pickedMoves[movePair.main.entity].alt = movePair.alt
+        else
+            pickedMoves[movePair.main.entity] = { main = movePair.main, alt = movePair.alt }
+        end
+    end
+
+    return entityMoves
+end
 
 return aiManager

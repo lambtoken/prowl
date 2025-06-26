@@ -83,7 +83,7 @@ local rates = {
             {name = 'apple', rate = 10, limit = 3},
             {name = 'small_pillar', rate = 2, limit = 0},
             {name = 'crack', rate = 3, limit = 1},
-            {name = 'spikes', rate = 10, limit = 0},
+            {name = 'spikes', rate = 20, limit = 0},
             {name = 'gold_apple', rate = 1, limit = 1}
         },
     },
@@ -103,7 +103,7 @@ local rates = {
             { name = 'apple',        rate = 10, limit = 3 },
             { name = 'small_pillar', rate = 2,  limit = 0 },
             { name = 'crack',        rate = 3,  limit = 1 },
-            { name = 'spikes',       rate = 10, limit = 0 },
+            { name = 'spikes',       rate = 30, limit = 0 },
             {name = 'gold_apple', rate = 5, limit = 1}
         },
     },
