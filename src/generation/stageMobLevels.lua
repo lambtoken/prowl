@@ -1,56 +1,4 @@
-local stageMobLevels = {
-    -- Stage 1
-    {
-        -- Match 1
-        {levelUpChance = 0, negativeChance = 1, minLevel = 2, maxLevel = 2},
-        -- Match 2
-        {levelUpChance = 0, negativeChance = 0.8, minLevel = 2, maxLevel = 2},
-        -- Match 3
-        {levelUpChance = 0, negativeChance = 0.7, minLevel = 2, maxLevel = 2},
-        -- Match 4
-        {levelUpChance = 0.1, negativeChance = 0.5, minLevel = 2, maxLevel = 3},
-        -- Match 5
-        {levelUpChance = 0.2, negativeChance = 0.3, minLevel = 2, maxLevel = 3},
-        -- Match 6
-        {levelUpChance = 0.3, negativeChance = 0.2, minLevel = 2, maxLevel = 4},
-        -- Match 7 (boss)
-        {levelUpChance = 0.4, negativeChance = 0.1, minLevel = 2, maxLevel = 4},
-    },
-    -- Stage 2  
-    {
-        -- Match 1
-        {levelUpChance = 0.5, negativeChance = 0, minLevel = 3, maxLevel = 4},
-        -- Match 2
-        {levelUpChance = 0.5, negativeChance = 0, minLevel = 3, maxLevel = 4},
-        -- Match 3
-        {levelUpChance = 0.6, negativeChance = 0, minLevel = 3, maxLevel = 4},
-        -- Match 4
-        {levelUpChance = 0.6, negativeChance = 0, minLevel = 3, maxLevel = 5},
-        -- Match 5
-        {levelUpChance = 0.7, negativeChance = 0, minLevel = 3, maxLevel = 5},
-        -- Match 6
-        {levelUpChance = 0.7, negativeChance = 0, minLevel = 3, maxLevel = 5},
-        -- Match 7 (boss)
-        {levelUpChance = 0.8, negativeChance = 0, minLevel = 3, maxLevel = 5},
-    },
-    -- Stage 3
-    {
-        -- Match 1
-        {levelUpChance = 0.8, negativeChance = 0, minLevel = 4, maxLevel = 6},
-        -- Match 2
-        {levelUpChance = 0.8, negativeChance = 0, minLevel = 4, maxLevel = 6},
-        -- Match 3
-        {levelUpChance = 0.9, negativeChance = 0, minLevel = 4, maxLevel = 6},
-        -- Match 4
-        {levelUpChance = 1, negativeChance = 0, minLevel = 4, maxLevel = 7},
-        -- Match 5
-        {levelUpChance = 1, negativeChance = 0, minLevel = 5, maxLevel = 7},
-        -- Match 6
-        {levelUpChance = 1, negativeChance = 0, minLevel = 5, maxLevel = 7},
-        -- Match 7 (boss)
-        {levelUpChance = 1, negativeChance = 0, minLevel = 5, maxLevel = 8},
-    }
-}
+local stageMobLevels = nil
 
 -- Interpolate between anchor configs (tables with multiple fields)
 local function interpolateConfigAnchors(anchorConfigs, maxLevel)
@@ -69,6 +17,7 @@ local function interpolateConfigAnchors(anchorConfigs, maxLevel)
             for k, v in pairs(a.config) do
                 if type(v) == 'number' and type(b.config[k]) == 'number' then
                     interp[k] = v + (b.config[k] - v) * t
+                    interp[k] = math.floor(interp[k] + 0.5) -- round to nearest integer
                 else
                     interp[k] = v -- fallback: just copy
                 end
@@ -77,7 +26,7 @@ local function interpolateConfigAnchors(anchorConfigs, maxLevel)
         end
     end
     result[anchors[#anchors].level] = anchors[#anchors].config
-    -- Fill up to maxLevel if needed
+
     if maxLevel and anchors[#anchors].level < maxLevel then
         for lvl = anchors[#anchors].level + 1, maxLevel do
             result[lvl] = anchors[#anchors].config
@@ -102,15 +51,15 @@ end
 local anchors = {
     {
         [1] = {levelUpChance=0, negativeChance=1, minLevel=2, maxLevel=2},
-        [5] = {levelUpChance=1, negativeChance=0, minLevel=4, maxLevel=7}
+        [5] = {levelUpChance=1, negativeChance=0, minLevel=4, maxLevel=5}
     },
     {
-        [1] = {levelUpChance=0.5, negativeChance=0, minLevel=7, maxLevel=11},
-        [5] = {levelUpChance=1, negativeChance=0, minLevel=9, maxLevel=14}
+        [1] = {levelUpChance=0.5, negativeChance=0, minLevel=5, maxLevel=7},
+        [5] = {levelUpChance=1, negativeChance=0, minLevel=9, maxLevel=10}
     },
     {
-        [1] = {levelUpChance=0.8, negativeChance=0, minLevel=10, maxLevel=16},
-        [5] = {levelUpChance=1, negativeChance=0, minLevel=15, maxLevel=18}
+        [1] = {levelUpChance=0.8, negativeChance=0, minLevel=9, maxLevel=11},
+        [5] = {levelUpChance=1, negativeChance=0, minLevel=11, maxLevel=13}
     }
 }
 

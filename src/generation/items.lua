@@ -815,9 +815,7 @@ local items = {
         name = 'kite',
         type = 'weapon',
         rarity = 'common',
-        stats = {
-            {'increaseP', 'maxHp', 0.1}
-        },
+        stats = {},
         pattern = {
             {'extend', 'atkPattern', {
                 {0, 0, 0},
@@ -862,10 +860,20 @@ local items = {
     },
     tire = {
         name = 'tire',
-        type = 'armor',
-        rarity = 'rare',
+        type = 'protection',
+        rarity = 'common',
+        stats = {{'increase', 'maxHp', 3}},
+        pattern = {},
+        passive = {},
+        active = {},
+    },
+    log = {
+        name = 'log',
+        type = 'protection',
+        rarity = 'common',
         stats = {
             {'increase', 'maxHp', 4},
+            {'decrease', 'atk', 1},
         },
         pattern = {},
         passive = {},

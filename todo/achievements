@@ -44,12 +44,13 @@ other cases
 - your atk pattern rotates by 90 every turn
 - Your attack hits one turn after it's declared.
 - Your attack returns to you next turn — if you’re in its path, you take damage.
-- You must move through enemies to deal full damage.
+- You must move through enemies to deal full damage. Passing Pain
 - You must move every turn, or take damage. No idling. Staying in the same spot you take dmg. [ADRENALINE]
 - Every tile you touch becomes impassable for 2 turns.
 - Kill takes you to spawn tile
-- One of your items becomes cursed each floor. You don’t know which. ? what does this mean?
-- Small chance that you drop items
+- One of your items becomes cursed each floor. You don’t know which. ? what does this mean? reverses stats and pattern?
+
+- Small chance that you drop items - Clumsy Grip
 - Deal double damage, take double damage
 - timeout - After killing an enemy, you're rooted for 1 turn.
 - every 10 turns enemy gets an additional unit
@@ -78,7 +79,7 @@ Every action is mirrored across the map’s center axis — a "ghost" version of
 (Perfect for tricky prediction and trap setting.)
 We can just do attacks
 - WRAP - move from one edge to the other
-- TWICE
+- Double Time
 player turn - enemy turn
 player turn - player turn - enemy turn - enemy turn
 - Energy Leak
@@ -164,3 +165,106 @@ leave a heal behind (apple)
 
 
 1 random item is disabled per match
+
+
+
+
+
+☢️ 2️⃣ Irradiated Blood
+
+Effect:
+– Whenever a unit (player or enemy) is damaged, the tile they were on becomes contaminated.
+– Contaminated tiles deal damage over time to anything standing on them.
+– The contamination fades after X turns unless refreshed by new bloodshed.
+
+💡 Aggressive play spreads the hazard. The battlefield “bleeds” danger.
+
+
+☢️ 3️⃣ Mutagenic Flux
+
+Effect:
+– All units slowly mutate:
+  + Every 4 turns, their move and attack pattern randomly mutates (e.g. swap from Rook to Bishop pattern).
+– Mutations are unpredictable but temporary — shifting again after a few turns.
+
+💡 Radioactivity scrambles your “DNA,” adding chaos to combat styles.
+
+
+
+🔪 CURSE: Razor Wake -- cool mechanic
+
+Effect:
+– Every time you move, you leave behind a trail of spinning blades.
+– After 1 turn, the blades launch backward along your path, damaging anything they pass through — including you.
+– Can create self-hazardous zones if you move carelessly.
+
+Playstyle:
+– Forces precise planning of movement. Punishes backtracking or clustering.
+
+
+
+🎯 2. Targeted
+
+One random enemy is always hunting you specifically — ignores other behavior patterns and obstacles.
+
+
+
+🫥 3. No Feedback
+
+You no longer see damage numbers, HP bars, or tile effects — everything is hidden.
+(Makes play more about inference than direct feedback.)
+
+
+🔥 10. Burnout
+
+moving in same direction twice in a row stuns your
+
+
+-mad chef
+kill spawns a knife that goes in a random direction looping on the board. we can use stop motion mechanic for this or real time
+
+
+💀 1️⃣ Grim Countdown
+
+After every X turns, you take unavoidable damage — like a ticking clock.
+👉 You’re living on borrowed time, no matter your perks.
+
+
+delicious stew / good season
+start with bunch of healing items spawned on your side of the field
+
+
+pace/bandage
+your rest also heals you some hp 1-2-3 depending on the stage
+
+
+
+
+nexus
+enemy starts with a crystal core
+you gotta destroy it first before you can kill any enemy. you can still deal them damage but they cannot get lower than 1 hp
+
+
+
+
+meditation
+resting provides your with a garanteed crit next attack
+
+
+
+get bandage|meditation|[   ] - achievement -> self care??
+
+
+
+rubber ducky
+spawns a rubber ducky on your side. it has some hp. cant move. cant attack. good for agro
+
+
+
+computer mouse as item
+fire a cursor
+
+
+
+2 new biomes
+space
