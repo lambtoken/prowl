@@ -64,22 +64,22 @@ function EntityFactory:applyDefault(entity, comp)
 
 
             -- negative level might be a way to balance the early matches
-            -- if entity.stats.level == -1 then
-            --     for key, value in pairs(entity.stats.base) do
-            --         if key == "atk" or key == "def" or key == "maxHp" then
+            if level == -1 then
+                for key, value in pairs(entity.stats.base) do
+                    if key == "atk" or key == "def" or key == "maxHp" then
                         
-            --             local value = math.floor(value / 2 )
+                        local value = math.floor(value / 2 )
                         
-            --             if key == "def" then
-            --                 value = math.max(0, value)
-            --             else
-            --                 value = math.max(1, value)  
-            --             end
+                        if key == "def" then
+                            value = math.max(0, value)
+                        else
+                            value = math.max(1, value)  
+                        end
 
-            --             entity.stats.base[key] = value
-            --         end
-            --     end
-            -- end
+                        entity.stats.base[key] = value
+                    end
+                end
+            end
 
             -- we need a better and more balanced way to scale the stats
             

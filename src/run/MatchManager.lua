@@ -504,6 +504,10 @@ function MatchManager:generateFlowers()
         pickLimited(data.rates, amount, species)
 
         for _, value in ipairs(species) do
+            if #positions == 0 then
+                break
+            end
+
             local pos = math.random(#positions)
             self:newFlower(value, positions[pos][1], positions[pos][2])
             table.remove(positions, pos)
@@ -592,7 +596,14 @@ function MatchManager:generateObjects()
     if not matchObjectRates[self.matchNode.place] or not matchObjectRates[self.matchNode.place][self.matchNode.variant] then
         return
     end
-    pickLimited(matchObjectRates[self.matchNode.place][self.matchNode.variant], stageObjectAmount[3][1] + math.random(stageObjectAmount[3][2] - stageObjectAmount[3][1]), objectNames)
+    
+    local stage = gs.run and gs.run.currentStage or 3
+    local minAmount = stageObjectAmount[stage][1]
+    local maxAmount = stageObjectAmount[stage][2]
+    local amount = minAmount + math.random(maxAmount - minAmount)
+    pickLimited(matchObjectRates[self.matchNode.place][self.matchNode.variant], amount, objectNames)
+
+    print("THE LENGTH OF OBJECT NAMES IS: " .. #objectNames)
 
     -- Place objects one by one, allowing adjacency, but check connectivity
     local placed = {}
@@ -615,6 +626,7 @@ function MatchManager:generateObjects()
         end
         return goals
     end
+
     local available_positions = {unpack(all_positions)}
     for i, name in ipairs(objectNames) do
         if #available_positions == 0 then break end
@@ -649,11 +661,12 @@ function MatchManager:generateMarks()
     end
     
     for _, name in ipairs(markNames) do
-        if #poissonSamples > 0 then
-            local pos = math.random(#poissonSamples)
-            self:newMark(name, poissonSamples[pos][1], poissonSamples[pos][2])
-            table.remove(poissonSamples, pos)
+        if #poissonSamples == 0 then
+            break
         end
+        local pos = math.random(#poissonSamples)
+        self:newMark(name, poissonSamples[pos][1], poissonSamples[pos][2])
+        table.remove(poissonSamples, pos)
     end
 end
 
