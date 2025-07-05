@@ -174,6 +174,32 @@ function moveSystem:findByCoordinates(x, y, type)
     return entities
 end
 
+function moveSystem:findByType(type)
+    
+    local entities = {}
+    
+    for _, entity in ipairs(self.pool) do
+        if entity.metadata and entity.metadata.type == type and entity.state and entity.state.alive then
+            table.insert(entities, entity)
+        end
+    end
+
+    return entities
+end
+
+function moveSystem:findBySubType(subType)
+    
+    local entities = {}
+    
+    for _, entity in ipairs(self.pool) do
+        if entity.metadata and entity.metadata.subType == subType and entity.state and entity.state.alive then
+            table.insert(entities, entity)
+        end
+    end
+
+    return entities
+end
+
 
 function moveSystem:findInSquare(x, y, width, type)
 
