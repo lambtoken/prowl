@@ -1,3 +1,5 @@
+local ER = require 'src.generation.effectRegistry'
+
 local DEFAULT = {
     moves = 1,
     crit = 0,
@@ -35,12 +37,7 @@ local mobs = {
             {1, 0, 1},
             {0, 1, 0},
         },
-        passive = {
-            {
-                trigger = "onStep",
-                effect = function(matchState) end
-            }
-        }
+        passive = {}
     },
     axolotl = 
     {
@@ -220,14 +217,7 @@ local mobs = {
             {1, 0, 1},
             {0, 1, 0}
         },
-        passive = {
-            onAttack = function(matchState, source, target) 
-                matchState.crowdControlSystem:applyCC(target, "knockback", source)
-            end
-
-            -- do i need to register these "register this!"
-            -- or do i check for each animal passives effects and s#!t 
-        }
+        passive = ER.staggering
     },
     bat = 
     {
@@ -355,11 +345,7 @@ local mobs = {
             {0, 0, 1, 0, 0},
             {0, 0, 0, 0, 0}
         },
-        passive = {
-            onHover = function(matchState, target, source)
-                matchState.crowdControlSystem:applyCC(target, "displace", source)
-            end
-        }
+        passive = ER.toro
     },
     rabbit = 
     {
@@ -1067,13 +1053,7 @@ local mobs = {
             {0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0}
         },
-        passive = {
-            onTouched = function(matchState, entity, source)
-                if entity.metadata.teamId ~= source.metadata.teamId then
-                    matchState.combatSystem:hit(source, 1)
-                end
-            end
-        }
+        passive = ER.dont_touch_this
     },
     ram = 
     {
@@ -1171,13 +1151,7 @@ local mobs = {
             {0, 0, 0, 0, 0}
         },
 
-        passive = {
-            onStandBy = function(matchState, entity) 
-                if math.random() > 0.5 then
-                    matchState.combatSystem:heal(entity, 1)
-                end
-            end
-        }
+        passive = ER.shed_and_heal
     },
     snail = {
         name = 'snail',
