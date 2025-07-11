@@ -2,6 +2,7 @@ local Team = require 'src.run.Team'
 local fsm = require 'libs.batteries.state_machine'
 local mobs = require 'src.generation.mobs'
 local EventManager = require('src.state.events'):getInstance()
+local pretty = require 'libs.batteries.pretty'
 
 local teamManager = {}
 teamManager.__index = teamManager
@@ -42,6 +43,9 @@ function teamManager:new(currentMatch)
             instance = o,
 
             enter = function(s) 
+
+                EventManager:emit("standByPhase", s.instance.turnTeamId)
+
                 s.instance.match.statusEffectSystem:onStandBy(s.instance.turnTeamId)
                 s.instance.match.statusEffectSystem:applyAllStatusEffects()
                 s.instance.match.damageOverTimeSystem:onStandBy(s.instance.turnTeamId)
@@ -158,6 +162,8 @@ function teamManager:new(currentMatch)
 
             enter = function(s) 
 
+                EventManager:emit("endPhase", s.instance.turnTeamId)
+
                 local team = s.instance.teams[s.instance.turnTeamId]
 
                 for _, animal in ipairs(team.members) do
@@ -179,6 +185,12 @@ function teamManager:new(currentMatch)
                     if team.restCounter > 1 then
                         team.rest = true
                         team.restCounter = 0
+                        -- Replenish energy for all animals on this team
+                        for _, animal in ipairs(team.members) do
+                            if animal.stats and animal.stats.energy then
+                                animal.stats.energy = animal.stats.maxEnergy or animal.stats.energy
+                            end
+                        end
                     end
                 end
 

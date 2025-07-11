@@ -28,6 +28,7 @@ local stageMobLevels = require('src.generation.stageMobLevels')
 local matchMarkRates = require('src.generation.matchMarkRates')
 local rng = require "src.utility.rng"
 local stageBoardSize = require "src.generation.stageBoardSize"
+local pathfind_utils = require "src.run.pathfind_utils"
 
 local MatchManager = class("MatchManager")
 
@@ -574,25 +575,65 @@ end
 
 
 function MatchManager:generateObjects()
-    local poissonSamples = self:poissonDisk()   
+    -- Get all possible positions
+    local width, height = self.width, self.height
+    local all_positions = {}
+    for x = 0, width - 1 do
+        for y = 0, height - 1 do
+            -- Only allow empty tiles (no mobs/objects)
+            if #self.moveSystem:findByCoordinates(x, y) == 0 then
+                table.insert(all_positions, {x, y})
+            end
+        end
+    end
 
     local objectNames = {}
 
     if not matchObjectRates[self.matchNode.place] or not matchObjectRates[self.matchNode.place][self.matchNode.variant] then
         return
     end
+    pickLimited(matchObjectRates[self.matchNode.place][self.matchNode.variant], stageObjectAmount[3][1] + math.random(stageObjectAmount[3][2] - stageObjectAmount[3][1]), objectNames)
 
-    pickLimited(matchObjectRates[self.matchNode.place][self.matchNode.variant], stageObjectAmount[1][1] + math.random(stageObjectAmount[1][2] - stageObjectAmount[1][1]), objectNames)
-
-    for _, name in ipairs(objectNames) do
-        if #poissonSamples > 0 then
-            local pos = math.random(#poissonSamples)
-            self:newObject(name, poissonSamples[pos][1], poissonSamples[pos][2])
-            table.remove(poissonSamples, pos)
+    -- Place objects one by one, allowing adjacency, but check connectivity
+    local placed = {}
+    local blocked = {}
+    for _, pos in ipairs(all_positions) do
+        blocked[pos[1]] = blocked[pos[1]] or {}
+        blocked[pos[1]][pos[2]] = false
+    end
+    -- Assume (0,0) is always a valid start for connectivity
+    local start = {0, 0}
+    -- All non-blocked positions are goals
+    local function get_goals()
+        local goals = {}
+        for x = 0, width - 1 do
+            for y = 0, height - 1 do
+                if not (blocked[x] and blocked[x][y]) then
+                    table.insert(goals, {x, y})
+                end
+            end
+        end
+        return goals
+    end
+    local available_positions = {unpack(all_positions)}
+    for i, name in ipairs(objectNames) do
+        if #available_positions == 0 then break end
+        local idx = math.random(#available_positions)
+        local pos = available_positions[idx]
+        -- Tentatively block this position
+        blocked[pos[1]][pos[2]] = true
+        -- Check if board is still fully connected
+        if pathfind_utils.is_fully_connected(start, get_goals(), blocked, width, height) then
+            self:newObject(name, pos[1], pos[2])
+            table.insert(placed, pos)
+            table.remove(available_positions, idx)
+        else
+            -- Undo block, try another position
+            blocked[pos[1]][pos[2]] = false
+            table.remove(available_positions, idx)
+            i = i - 1 -- retry with next available
         end
     end
-
-    -- self.ecs:emit('update', 0.01)
     self.ecs:__flush()
 end
 
@@ -689,7 +730,7 @@ end
 function MatchManager:positionPlayer()
     local positions = self:getSpawnPositions('bottom')
 
-    local pos = positions[math.ceil(math.random() * #positions)]
+    local pos = positions[math.ceil(math.random() * #positions)] or {0, 0}
     self.moveSystem:setPosition(self.teamManager.teams[1].members[1], pos[1], pos[2])
     -- self.ecs:emit('update', 0.01)
     self.ecs:__flush()

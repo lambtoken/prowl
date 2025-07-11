@@ -18,6 +18,7 @@ local Hearts = require "src.render.matchHearts"
 local animalStats = require "src.render.animalStats"
 local dangerZone = require "src.render.match.dangerZone"
 local pretty = require "libs.batteries.pretty"
+local slidingText = require "src.render.slidingText"
 
 local match = Scene:new('match')
 
@@ -100,7 +101,7 @@ function match:enter()
     self.match:generateObjects()
     self.match:generateEnemies()
     self.match:generateFlowers()
-    --self.match:generateMarks()
+    self.match:generateMarks()
 
     self.match:preparePlayer()
     self.match:positionPlayer()
@@ -108,8 +109,24 @@ function match:enter()
     self.hearts = Hearts:new(gs.run.team[1])
 
     self.match.teamManager.states:set_state("start_phase")
-
     -- self.ddd = self.match.ecs:serialize()
+
+    -- hook up sliding text to matchmanager events
+    self.slidingText = slidingText:new()
+
+    self.match.eventManager:on("standByPhase", function(teamId)
+        self.slidingText:slide("Stand By", RM.teamColors[teamId])
+    end)
+    self.match.eventManager:on("endPhase", function(teamId)
+        self.slidingText:slide("End Turn", RM.teamColors[teamId])
+    end)
+    self.match.eventManager:on("mainPhase", function(teamId)
+        print("Main Phase for team", teamId)
+        print("ColorR: " .. RM.teamColors[teamId][1] .. 
+              " ColorG: " .. RM.teamColors[teamId][2] .. 
+              " ColorB: " .. RM.teamColors[teamId][3])
+        self.slidingText:slide("Main Phase", RM.teamColors[teamId])
+    end)
 end
 
 function match:update(dt) 
@@ -144,6 +161,8 @@ function match:update(dt)
                 self.shakeOffsetY = 0
             end
         end
+
+        self.slidingText:update(dt)
     end
 end 
 
@@ -197,7 +216,7 @@ function match:draw()
     
     self.camera:attach(0, 0, RM.windowWidth, RM.windowHeight, true)
     self.match:draw()
-    dangerZone(self.match.teamManager.moveQueue)
+    -- dangerZone(self.match.teamManager.moveQueue, self.inputManager.hoveredTileX, self.inputManager.hoveredTileY)
     self.particleSystem:draw()
     self.TextBubbleManager:draw()
     
@@ -261,6 +280,8 @@ function match:draw()
             RM.windowHeight / 2 - pausedFont:getHeight() / 2
         )
     end
+
+    self.slidingText:draw()
 
 end
 

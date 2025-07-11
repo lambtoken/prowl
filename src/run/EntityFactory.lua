@@ -37,40 +37,60 @@ function EntityFactory:applyDefault(entity, comp)
             
             entity.stats.base = tablex.deep_copy(animalData[entity.metadata.species].stats)
 
-            local scalings = {
-                atk = 1.5,
-                def = 1,
-                maxHp = 2
+            -- local scalings = {
+            --     atk = 1.5,
+            --     def = 1,
+            --     maxHp = 2
+            -- }
+
+            local statGrowth = {
+                atk = { flat = 1, every = 3 },     -- +1 atk every 2 levels
+                def = { flat = 1, every = 4 },     -- +1 def every 3 levels
+                maxHp = { flat = 2, every = 1 },   -- +2 hp every level
             }
 
-            -- negative level might be a way to balance the early matches
-            if entity.stats.level == -1 then
-                for key, value in pairs(entity.stats.base) do
-                    if key == "atk" or key == "def" or key == "maxHp" then
-                        
-                        local value = math.floor(value / 2 )
-                        
-                        if key == "def" then
-                            value = math.max(0, value)
-                        else
-                            value = math.max(1, value)  
-                        end
 
-                        entity.stats.base[key] = value
+            local level = entity.stats.level
+
+            if level > 1 then
+                for key, base in pairs(entity.stats.base) do
+                    local growth = statGrowth[key]
+                    if growth then
+                        local amount = math.floor((level - 1) / growth.every) * growth.flat
+                        entity.stats.base[key] = base + amount
                     end
                 end
             end
+
+
+            -- negative level might be a way to balance the early matches
+            -- if entity.stats.level == -1 then
+            --     for key, value in pairs(entity.stats.base) do
+            --         if key == "atk" or key == "def" or key == "maxHp" then
+                        
+            --             local value = math.floor(value / 2 )
+                        
+            --             if key == "def" then
+            --                 value = math.max(0, value)
+            --             else
+            --                 value = math.max(1, value)  
+            --             end
+
+            --             entity.stats.base[key] = value
+            --         end
+            --     end
+            -- end
 
             -- we need a better and more balanced way to scale the stats
             
-            if entity.stats.level > 1 then
-                for key, value in pairs(entity.stats.base) do
-                    if key == "atk" or key == "def" or key == "maxHp" then
-                        entity.stats.base[key] = math.floor(value + scalings[key] ^ (entity.stats.level - 1))
-                        -- entity.stats.base[key] = math.floor((value * 2) / 100) * (entity.stats.level)
-                    end
-                end
-            end
+            -- if entity.stats.level > 1 then
+            --     for key, value in pairs(entity.stats.base) do
+            --         if key == "atk" or key == "def" or key == "maxHp" then
+            --             entity.stats.base[key] = math.floor(value + scalings[key] ^ (entity.stats.level - 1))
+            --             -- entity.stats.base[key] = math.floor((value * 2) / 100) * (entity.stats.level)
+            --         end
+            --     end
+            -- end
 
             entity.stats.base.hp = entity.stats.base.maxHp
             entity.stats.current = tablex.deep_copy(entity.stats.base)

@@ -67,30 +67,32 @@ local quadInfo = {
 }
 
 
-return function(moves)
-    
+return function(enemyMoves, hoveredTileX, hoveredTileY)
     RM:pushShader("wobble")
     RM:sendUniform("time", love.timer.getTime())
     RM:sendUniform("quadInfo", quadInfo)
-    
-    for _, value in ipairs(moves) do
-        local x = value.x * RM.tileSize
-        local y = value.y * RM.tileSize
-        -- love.graphics.draw(RM.image, move_quad, x, y, 0, RM.increaseFactor)
-        
+
+    for _, moves in pairs(enemyMoves) do
+        local move = moves.main
+        if move.x == hoveredTileX and move.y == hoveredTileY then
+            move = moves.alt
+        end
+
+        local entity = moves.main.entity
+
+        local x = move.x * RM.tileSize
+        local y = move.y * RM.tileSize
         love.graphics.setColor(1, 0, 0, 0.8)
-        drawCurvedArrow(value.entity.position.screenX + RM.tileSize / 2, value.entity.position.screenY + RM.tileSize / 2, x + RM.tileSize / 2, y + RM.tileSize / 2)
-        
+        drawCurvedArrow(entity.position.screenX + RM.tileSize / 2, entity.position.screenY + RM.tileSize / 2, x + RM.tileSize / 2, y + RM.tileSize / 2)
         love.graphics.setColor(1, 1, 1, 0.7)
-        local atk_pattern = value.entity.stats.currentPatterns.atkPattern
-        
+        local atk_pattern = entity.stats.currentPatterns.atkPattern
         for i, row in ipairs(atk_pattern) do
             for j, cell in ipairs(row) do
                 if cell == 1 then
-                    local atk_y = value.y + i - math.ceil(#atk_pattern / 2)
-                    local atk_x = value.x + j - math.ceil(#row / 2)
+                    local atk_y = move.y + i - math.ceil(#atk_pattern / 2)
+                    local atk_x = move.x + j - math.ceil(#row / 2)
                     if atk_y >= 0 and atk_y < GameState.match.height and atk_x >= 0 and atk_x < GameState.match.width then
-                        love.graphics.draw(RM.image, danger_quad, atk_x * RM.tileSize, atk_y * RM.tileSize, 0, RM.increaseFactor)     
+                        love.graphics.draw(RM.image, danger_quad, atk_x * RM.tileSize, atk_y * RM.tileSize, 0, RM.increaseFactor)
                     end
                 end
             end

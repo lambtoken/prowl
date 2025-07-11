@@ -115,6 +115,13 @@ end
 
 
 function moveSystem:move(entity, type, targetX, targetY, attack, cancelPrev)
+    -- Consume 1 energy for basic moves 
+    -- VIBE
+    if type == "walk" and entity.stats and entity.stats.energy then
+        if entity.stats.energy > 0 then
+            entity.stats.energy = entity.stats.energy - 1
+        end
+    end
     
     if type == "walk" then
         on("onMove", gs.match, entity)
