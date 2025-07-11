@@ -271,8 +271,8 @@ function moveSystem:handleTouched(entity)
     -- trigger effects for nearby mobs
     for _, src in ipairs(nearbyEntities) do
         if src.metadata.type == 'animal' then
-            if mobData[src.metadata.species].passive and mobData[src.metadata.species].passive.onTouched then
-                mobData[src.metadata.species].passive.onTouched(gs.match, src, entity)
+            if mobData[src.metadata.name].passive and mobData[src.metadata.name].passive.onTouched then
+                mobData[src.metadata.name].passive.onTouched(gs.match, src, entity)
             end
 
             for index, item in ipairs(src.inventory.items) do
@@ -283,8 +283,8 @@ function moveSystem:handleTouched(entity)
             end
             
         elseif src.metadata.type == 'object' then
-            if objectData[src.metadata.objectName].passive and objectData[src.metadata.objectName].passive.onTouched then
-                objectData[src.metadata.objectName].passive.onTouched(gs.match, src, entity)
+            if objectData[src.metadata.name].passive and objectData[src.metadata.name].passive.onTouched then
+                objectData[src.metadata.name].passive.onTouched(gs.match, src, entity)
             end
         end
     end
@@ -298,11 +298,11 @@ function moveSystem:handleMoved(entity)
     end
 
     if entity.metadata.type == 'animal' then
-        if mobData[entity.metadata.species].passive and mobData[entity.metadata.species].passive.onTouched then
+        if mobData[entity.metadata.name].passive and mobData[entity.metadata.name].passive.onTouched then
             local nearbyEntities = self:getNearbyEntities(entity)
     
             for _, target in ipairs(nearbyEntities) do
-                mobData[entity.metadata.species].passive.onTouched(gs.match, entity, target)
+                mobData[entity.metadata.name].passive.onTouched(gs.match, entity, target)
             end
         end
     
@@ -310,11 +310,11 @@ function moveSystem:handleMoved(entity)
     end
 
     if entity.metadata.type == 'object' then
-        if objectData[entity.metadata.objectName].passive and objectData[entity.metadata.objectName].passive.onTouched then
+        if objectData[entity.metadata.name].passive and objectData[entity.metadata.name].passive.onTouched then
             local nearbyEntities = self:getNearbyEntities(entity)
     
             for _, target in ipairs(nearbyEntities) do
-                objectData[entity.metadata.objectName].passive.onTouched(gs.match, entity, target)
+                objectData[entity.metadata.name].passive.onTouched(gs.match, entity, target)
             end
         end
     
@@ -333,8 +333,8 @@ function moveSystem:handleOnStepped(entity)
 
     if #tileObjects == 1 and tileObjects[1] ~= entity then
         local object = tileObjects[1]
-        if objectData[object.metadata.objectName].passive and objectData[object.metadata.objectName].passive.onStepped then
-            objectData[object.metadata.objectName].passive.onStepped(gs.match, entity, object)
+        if objectData[object.metadata.name].passive and objectData[object.metadata.name].passive.onStepped then
+            objectData[object.metadata.name].passive.onStepped(gs.match, entity, object)
         end
     end
 
@@ -484,7 +484,7 @@ function moveSystem:getAveragePosition(...)
         if entity.metadata and entity.metadata.type == "animal" and entity.state.alive then
             for i = 1, select("#", ...) do
                 local id = select(i, ...)
-                if entity.metadata.teamId ~= id then
+                if entity.team.teamId ~= id then
                     sumX = sumX + entity.position.x
                     sumY = sumY + entity.position.y
                     n = n + 1
@@ -508,7 +508,7 @@ function moveSystem:getNearestEntity(entity, type, teamID)
 
         if otherEntity.metadata and otherEntity.metadata.type == type then
             
-            if teamID and otherEntity.metadata.teamId == teamID then
+            if teamID and otherEntity.team.teamId == teamID then
                 goto continue
             end
 

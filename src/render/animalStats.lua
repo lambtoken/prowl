@@ -51,7 +51,7 @@ end
 function animalStats:loadAnimal(animal)
     self.animalRef = animal
     if animal and animal.metadata.type == 'animal' then
-        local species = animal.metadata.species
+        local species = animal.metadata.name
         self.portraitQuad = love.graphics.newQuad(spriteTable[species][1] * RM.spriteSize, spriteTable[species][2] * RM.spriteSize, RM.spriteSize, RM.spriteSize, RM.image)
         self.portraitScaleFactor = self.portraitSize / RM.spriteSize
         self.statusBar:updateEffectIcons(animal)
@@ -72,7 +72,7 @@ function animalStats:draw()
 
     local i = 0
 
-    local species = self.animalRef.metadata.species
+    local species = self.animalRef.metadata.name
     local level = self.animalRef.stats.level
     local atk = self.animalRef.stats.current.atk
     local def = self.animalRef.stats.current.def

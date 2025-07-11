@@ -66,7 +66,25 @@ local projectiles = {
                 matchState.crowdControlSystem:applyEffect(target, "freeze", 2) -- Freeze for 2 seconds
             end
         end
-    }
+    },
+
+    banana = {
+        speed = DEFAULTS.SPEED,
+        damping = DEFAULTS.DAMPING,
+        moveFunction = defaultMove,
+        onHit = function(matchState, source, target)
+            if target.metadata.type == "animal" then
+                matchState.combatSystem:hit(target, 1)
+                source.collider.disabled = true
+                matchState.animationSystem:playAnimation(source, "trigger_death")
+            end
+        end,
+        onLanding = function(matchState, source, target)
+            -- spawn banana
+            -- destroy self
+            source.position.customMove.active = false
+        end
+    },
 }
 
 return projectiles

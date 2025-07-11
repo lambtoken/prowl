@@ -54,8 +54,8 @@ function teamManager:new(currentMatch)
                 local team = s.instance.teams[s.instance.turnTeamId]
 
                 for _, animal in ipairs(team.members) do
-                    if animal.metadata.teamId == s.instance.turnTeamId then
-                        local animalData = mobs[animal.metadata.species]
+                    if animal.team.teamId == s.instance.turnTeamId then
+                        local animalData = mobs[animal.metadata.name]
                         if animalData and animalData.passive and animalData.passive.onStandBy then
                             animalData.passive.onStandBy(s.instance.match, animal)
                         end
@@ -108,7 +108,7 @@ function teamManager:new(currentMatch)
                 end
                 s.instance.busy = false
             end,
-            
+
             update = function(s, dt)
                 -- run while systems are doing their stuff
                 if s.instance.busy then
@@ -151,10 +151,10 @@ function teamManager:new(currentMatch)
                 end
             end,
 
-            draw = function() 
+            draw = function()
             end,
-            
-            exit = function() 
+
+            exit = function()
             end
         },
         end_phase = {
@@ -167,7 +167,7 @@ function teamManager:new(currentMatch)
                 local team = s.instance.teams[s.instance.turnTeamId]
 
                 for _, animal in ipairs(team.members) do
-                    if animal.metadata.teamId == s.instance.turnTeamId then
+                    if animal.team.teamId == s.instance.turnTeamId then
                         if animal.passive and animal.passive.onEndTurn then
                             animal.passive.onEndTurn(s.instance.match, animal)
                         end
@@ -233,7 +233,7 @@ function teamManager:newTeam(agentType)
 end
 
 function teamManager:addToTeam(id, animal)
-    animal.metadata.teamId = id
+    animal:give("team", id)
     table.insert(self.teams[id].members, animal)
 end
 

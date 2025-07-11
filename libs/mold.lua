@@ -205,6 +205,9 @@ function Box:initialize()
         rotation = 0
     }
 
+    self.anchorX = 0
+    self.anchorY = 0
+
     -- use these if needed
     self.marginBox = nil
     self.paddingBox = nil
@@ -234,6 +237,10 @@ function Box:initialize()
     self:setWidth("100%")
     self:setHeight("100%")
     self:setPos(0, 0)
+
+    -- tables to watch for change
+    self.watching = {}
+    self.dirty = false
 end
 
 function Box:resize() end
@@ -415,6 +422,24 @@ end
 
 function Box:removeAllAnimations()
     self.animations = {}
+end
+
+local function makeObservableTable(orig, onChange)
+    return setmetatable({}, {
+        __index = orig,
+        __newindex = function(_, key, value)
+            if orig[key] ~= value then
+                orig[key] = value
+                onChange(key, value)
+            end
+        end
+    })
+end
+
+function Box:watchTable(tbl)
+    table.insert(makeObservableTable(tbl, function()
+        self.dirty = true
+    end), self.watching)
 end
 
 function Box:debug()
@@ -1465,7 +1490,7 @@ function Container:draw()
 
         love.graphics.scale(child.transform.scaleX, child.transform.scaleY)
         love.graphics.rotate(child.transform.rotation)
-        love.graphics.translate(child.transform.translateX, child.transform.translateY)
+        love.graphics.translate(child.anchorX + child.transform.translateX, child.anchorY + child.transform.translateY)
         -- if child.overflow == OVERFLOW.CLIP then
         --     love.graphics.intersectScissor(child.cx, child.cy, child.cw, child.ch)
         -- end

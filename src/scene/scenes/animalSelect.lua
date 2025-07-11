@@ -177,7 +177,6 @@ function animalSelect:makeRoster()
         end
 
         table.insert(arr, anim)
-        -- data.getAnimal(data.animals[i].key)
     end
     
     return arr

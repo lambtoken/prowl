@@ -46,6 +46,7 @@ local spriteTable = {
     snail = {20, 1},
     seagull = {21, 1},
     frog = {21, 0},
+    poison_frog = {22, 0},
 
     --bosses
     dragon = {31, 0},
@@ -216,6 +217,7 @@ local spriteTable = {
     bow_and_arrow = {15, 6},
     crossbow = {50, 6},
     arrow = {51, 6},
+    banana = {51, 3},
     riffle = {16, 6},
     gun = {17, 6},
     boxing_gloves = {18, 6},

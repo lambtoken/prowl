@@ -3,8 +3,6 @@ local EventManager = require("src.state.events"):getInstance()
 local soundManager = require("src.sound.SoundManager"):getInstance()
 local GameState    = require("src.state.GameState"):getInstance()
 local SceneManager = require("src.scene.SceneManager"):getInstance()
-local mobData = require("src.generation.mobs")
-local objectData = require("src.generation.objects")
 local on = require "src.run.ecs.on"
 
 local stateSystem = Concord.system({pool = {"state"}})
@@ -66,7 +64,7 @@ function stateSystem:onStateEnter(entity, state)
         entity.state.alive = false
         entity.state.interactable = false
         if entity.metadata.type == 'animal' then
-            EventManager:emit("checkTeamStatus", entity.metadata.teamId)
+            EventManager:emit("checkTeamStatus", entity.team.teamId)
             EventManager:emit("onDeath", entity)
             EventManager:emit("onDeathAny", entity)
         end
@@ -104,7 +102,7 @@ end
 
 function stateSystem:teamHasMovesLeft(id)
     for _, entity in ipairs(self.pool) do
-        if entity.metadata.teamId == id then
+        if entity.team and entity.team.teamId == id then
             if entity.state.currentTurnMoves < entity.stats.current.moves then
                 return true
             end

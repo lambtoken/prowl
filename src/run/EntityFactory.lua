@@ -30,12 +30,12 @@ end
 function EntityFactory:applyDefault(entity, comp)
     if comp == "metadata" then
         entity.metadata.id = self.idCounter
-        -- print("setting id", entity.metadata.id, entity.metadata.species)
+        -- print("setting id", entity.metadata.id, entity.metadata.name)
         self.idCounter = self.idCounter + 1
     elseif comp == "stats" then
-        if entity.metadata.type == "animal" and animalData[entity.metadata.species].stats then
+        if entity.metadata.type == "animal" and animalData[entity.metadata.name].stats then
             
-            entity.stats.base = tablex.deep_copy(animalData[entity.metadata.species].stats)
+            entity.stats.base = tablex.deep_copy(animalData[entity.metadata.name].stats)
 
             -- local scalings = {
             --     atk = 1.5,
@@ -44,9 +44,9 @@ function EntityFactory:applyDefault(entity, comp)
             -- }
 
             local statGrowth = {
-                atk = { flat = 1, every = 3 },     -- +1 atk every 2 levels
-                def = { flat = 1, every = 4 },     -- +1 def every 3 levels
-                maxHp = { flat = 2, every = 1 },   -- +2 hp every level
+                atk = { flat = 1, every = 3 },
+                def = { flat = 1, every = 4 },
+                maxHp = { flat = 2, every = 1 },
             }
 
 
@@ -95,12 +95,12 @@ function EntityFactory:applyDefault(entity, comp)
             entity.stats.base.hp = entity.stats.base.maxHp
             entity.stats.current = tablex.deep_copy(entity.stats.base)
             entity.stats.basePatterns = {
-                movePattern = tablex.deep_copy(animalData[entity.metadata.species].movePattern),
-                atkPattern = tablex.deep_copy(animalData[entity.metadata.species].atkPattern)
+                movePattern = tablex.deep_copy(animalData[entity.metadata.name].movePattern),
+                atkPattern = tablex.deep_copy(animalData[entity.metadata.name].atkPattern)
             }
             entity.stats.currentPatterns = {
-                movePattern = tablex.deep_copy(animalData[entity.metadata.species].movePattern),
-                atkPattern = tablex.deep_copy(animalData[entity.metadata.species].atkPattern)
+                movePattern = tablex.deep_copy(animalData[entity.metadata.name].movePattern),
+                atkPattern = tablex.deep_copy(animalData[entity.metadata.name].atkPattern)
             }
         end
     elseif comp == "status" then
@@ -108,8 +108,8 @@ function EntityFactory:applyDefault(entity, comp)
 
         local default = tablex.deep_copy(defaults)
 
-        if entity.metadata.type == "animal" and animalData[entity.metadata.species].status then
-            for key, value in pairs(animalData[entity.metadata.species].status) do
+        if entity.metadata.type == "animal" and animalData[entity.metadata.name].status then
+            for key, value in pairs(animalData[entity.metadata.name].status) do
                 default[key] = value
             end
         elseif entity.metadata.type == "flower" then
@@ -118,8 +118,8 @@ function EntityFactory:applyDefault(entity, comp)
         elseif entity.metadata.type == "mark" then
             default.isTargetable = false
             default.isDisplaceable = false
-        elseif entity.metadata.type == "object" and objectData[entity.metadata.objectName].status then
-            for key, value in pairs(objectData[entity.metadata.objectName].status) do
+        elseif entity.metadata.type == "object" and objectData[entity.metadata.name].status then
+            for key, value in pairs(objectData[entity.metadata.name].status) do
                 default[key] = value
             end            
         end
@@ -128,10 +128,10 @@ function EntityFactory:applyDefault(entity, comp)
 
     elseif comp == "position" then
 
-        if entity.metadata.type == "animal" and animalData[entity.metadata.species].stepsOn then
+        if entity.metadata.type == "animal" and animalData[entity.metadata.name].stepsOn then
             entity.position.isSteppable = false
-            if animalData[entity.metadata.species].stepsOn then
-                entity.position.stepsOn = tablex.deep_copy(animalData[entity.metadata.species].stepsOn)
+            if animalData[entity.metadata.name].stepsOn then
+                entity.position.stepsOn = tablex.deep_copy(animalData[entity.metadata.name].stepsOn)
             end
         elseif entity.metadata.type == "flower" then
             entity.position.isSteppable = true
@@ -143,10 +143,10 @@ function EntityFactory:applyDefault(entity, comp)
             entity.position.customMove = projectileData[entity.metadata.projectileType].moveFunction
             entity.position.isSteppable = false
             entity.position.stepsOn = { "ground" }
-        elseif entity.metadata.type == "object" and objectData[entity.metadata.objectName].stepsOn then
-            entity.position.isSteppable = objectData[entity.metadata.objectName].steppable or false
-            if objectData[entity.metadata.objectName].stepsOn then
-                entity.position.stepsOn = tablex.deep_copy(objectData[entity.metadata.objectName].stepsOn)
+        elseif entity.metadata.type == "object" and objectData[entity.metadata.name].stepsOn then
+            entity.position.isSteppable = objectData[entity.metadata.name].steppable or false
+            if objectData[entity.metadata.name].stepsOn then
+                entity.position.stepsOn = tablex.deep_copy(objectData[entity.metadata.name].stepsOn)
             end
         end
     elseif comp == "collider" then
@@ -210,7 +210,7 @@ function EntityFactory:createObject(name, x, y)
     assert(objectData[name], "Object does not exist!")
     
     local entity = Concord.entity()
-        :give('metadata')
+        :give('metadata', name)
         :give('position', x, y)
         :give('renderable', objectData[name].sprite)
         :give('state')
@@ -219,9 +219,9 @@ function EntityFactory:createObject(name, x, y)
         :give('timers')
         :give('collider')
         :give('shader')
+        :give('team', 0)
 
     entity.metadata.type = 'object'
-    entity.metadata.objectName = name
     self:applyDefault(entity, 'status')
     self:applyDefault(entity, 'position')
     self:applyDefault(entity, 'collider')
@@ -241,10 +241,11 @@ function EntityFactory:createFlower(name, x, y)
         :give('timers')
         :give('crowdControl')
         :give('shader')
+        :give('team', 0)
 
     entity.metadata.type = 'flower'
     entity.metadata.subType = 'flower'
-    entity.metadata.objectName = name
+    entity.metadata.name = name
     self:applyDefault(entity, 'status')
     self:applyDefault(entity, 'position')
 
@@ -261,6 +262,7 @@ function EntityFactory:createMark(name, x, y)
         :give('state')
         :give('status')
         :give('shader')
+        :give('team', 0)
 
     table.insert(entity.shader.shaders, {name = "wobble", uniforms = {}})
     
@@ -286,6 +288,7 @@ function EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId)
         :give('collider')
         :give('state')
         :give('shader')
+        :give('team', 0)
 
     entity.metadata.type = 'projectile'
     entity.metadata.projectileType = type
@@ -323,9 +326,9 @@ function EntityFactory:reinitializeEntityComponents(entity, ignore)
             if name == "position" then
                 constructorArgs = { entity.position.x, entity.position.y }
             elseif name == "renderable" then
-                constructorArgs = { entity.metadata.species }
+                constructorArgs = { entity.metadata.name }
             elseif name == "metadata" then
-                constructorArgs = { entity.metadata.name or entity.metadata.species }
+                constructorArgs = { entity.metadata.name or entity.metadata.name }
             end
 
             local componentDef = Concord.components[name]

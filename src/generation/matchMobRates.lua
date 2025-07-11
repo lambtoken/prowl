@@ -98,6 +98,7 @@ local rates = {
             {name = 'crocodile', rate = 10, limit = 1},
             {name = 'turtle', rate = 10, limit = 0},
             {name = 'frog', rate = 10, limit = 0},
+            {name = 'poison_frog', rate = 5, limit = 0},
             {name = 'axolotl', rate = 10, limit = 0},
         }
     },

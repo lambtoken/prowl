@@ -19,7 +19,6 @@ local MatchManager = require 'src.run.MatchManager'
 --     print("luasteam key:", k)
 -- end
 
-
 -- _._     _,-'""`-._
 -- (,-.`._,'(       |\`-/|
 --     `-.-' \ )-`( , o o)
@@ -28,7 +27,6 @@ local MatchManager = require 'src.run.MatchManager'
 local function wrapFunction(module, funcName)
     local oldFunc = module[funcName]
     module[funcName] = function(...)
-
         return oldFunc(...)
     end
 end
@@ -59,7 +57,6 @@ local achset
 function love.load(args)
     
     -- steamInitialized = steam.init()
-
     math.randomseed(os.time())
 
     gs = GameState:getInstance()
@@ -73,27 +70,10 @@ function love.load(args)
 
     renderM = RenderManager:getInstance()
 
-    --soundM = SoundManager:getInstance()
-    
-    require "src.render.effectSprites"
-    
-    for index, value in ipairs(args) do
-        if value == "test" then
-            require("src.test.run_all")()
-            love.event.quit(0)
-        end
-    end
-    
     music.load()
-    -- love.window.setVSync(-1)
 end
 
-local fpsCap = 60
-local frameDuration = 1 / fpsCap
-
 function love.update(dt)
-    -- dt = dt * 10
-
     dt = dt * gs.settings.speed
 
     if not gs.isPaused then
@@ -102,29 +82,7 @@ function love.update(dt)
     end
 
     renderM:update(dt)
-
     music.update(dt)
-
-    -- local sleepTime = frameDuration - dt
-    -- if sleepTime > 0 then
-    --     love.timer.sleep(sleepTime)  -- Sleep to cap FPS
-    -- end
-
-    -- if steamInitialized and not achset then
-    --     print("Steam initialized!")
-    --     steam.userStats.resetAllStats(true)
-        
-    --     steam.userStats.setAchievement("ACH_WIN_ONE_GAME")
-    --     steam.userStats.setAchievement("ACH_TRAVEL_FAR_ACCUM")
-    --     steam.userStats.setAchievement("ACH_TRAVEL_FAR_SINGLE")
-    --     steam.userStats.storeStats()
-
-    --     achset = true
-    -- end
-
-    -- if steamInitialized then
-    --     steam.runCallbacks()
-    -- end
 end
 
 function love.draw()

@@ -7,7 +7,7 @@ local function on(callback, matchState, entity, ...)
     local itemArgPos = nil
     
     if entity.metadata.type == 'animal' then
-        local animal = mobData[entity.metadata.species]
+        local animal = mobData[entity.metadata.name]
         if animal.passive and animal.passive[callback] then
             -- Pass all arguments as they are
             animal.passive[callback](matchState, entity, ...)
@@ -35,7 +35,7 @@ local function on(callback, matchState, entity, ...)
     end
 
     if entity.metadata.type == 'object' then
-        local object = objectData[entity.metadata.objectName]
+        local object = objectData[entity.metadata.name]
         if object.passive and object.passive[callback] then
             object.passive[callback](matchState, entity, ...)
         end

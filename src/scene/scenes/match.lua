@@ -1,14 +1,11 @@
 local Scene = require 'src.scene.scene'
 local getFont = require 'src.render.getFont'
 local RM = require ('src.render.RenderManager'):getInstance()
-local sceneM = require('src.scene.SceneManager'):getInstance()
 local Camera = require 'libs.hump_camera'
 local button = require 'src.render.ui.button'
 local turnTracker = require 'src.render.ui.match.turnTracker'
-local mouse = require 'src.input.mouse'
 local InputManager = require 'src.run.InputManager'
 local HangingPiece = require 'src.render.ui.match.HangingPiece'
-local EventManager = require("src.state.events"):getInstance()
 local Pattern = require "src.render.ui.match.Pattern"
 local TextBubbleManager = require "src.render.ui.match.TextBubbleManager"
 local ParticleSystem = require "src.render.ParticleManager"
@@ -19,10 +16,17 @@ local animalStats = require "src.render.animalStats"
 local dangerZone = require "src.render.match.dangerZone"
 local pretty = require "libs.batteries.pretty"
 local slidingText = require "src.render.slidingText"
+local newEntityTooltip = require "src.render.components.entity_tooltip"
+local mold = require "libs.mold"
 
 local match = Scene:new('match')
 
 function match:enter()
+    self.root = mold.Container:new():setRoot(RM.windowWidth, RM.windowHeight)
+        :setAlignContent("center")
+        :setJustifyContent("center")
+    self.root:resize()
+    
     -- gs.match = MatchManager:new(gs.currentMatchNode)
     self.match = gs.match
     -- self.match:reset()
@@ -114,6 +118,8 @@ function match:enter()
     -- hook up sliding text to matchmanager events
     self.slidingText = slidingText:new()
 
+    self.tooltip = nil
+
     self.match.eventManager:on("standByPhase", function(teamId)
         self.slidingText:slide("Stand By", RM.teamColors[teamId])
     end)
@@ -175,6 +181,11 @@ function match:mousemoved(x, y)
         self.teamOutline = true
     else
         self.teamOutline = false
+    end
+    
+    if self.tooltip then
+        self.tooltip.anchorX = x
+        self.tooltip.anchorY = y
     end
 end
 
@@ -283,6 +294,7 @@ function match:draw()
 
     self.slidingText:draw()
 
+    self.root:draw()
 end
 
 function match:exit() 
@@ -305,6 +317,20 @@ function match:keypressed(key)
         self.match.winnerId = 2
         self.match.states:set_state("result")
     end
+end
+
+function match:createTooltip(entity)
+    self.tooltip = newEntityTooltip(entity)
+    self.root:addChild(self.tooltip)
+    self.root:resize()
+end
+
+function match:removeTooltip()
+    if self.tooltip then
+        self.root:removeChild(self.tooltip)
+        self.tooltip = nil
+    end
+    self.root:resize()
 end
 
 return match

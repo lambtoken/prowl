@@ -36,12 +36,12 @@ function aiManager:ratingFormula(attacker, attackerX, attackerY, target)
     local lsWeight = ls > 0 and (2 - attackerHp / attackerMaxHp) or 1
     local lethalBonus = targetHp / 10
     
-    local averagePosX, averagePosY = self.match.moveSystem:getAveragePosition(attacker.metadata.teamId)
+    local averagePosX, averagePosY = self.match.moveSystem:getAveragePosition(attacker.team.teamId)
     local targetX = target and target.position.x or averagePosX
     local targetY = target and target.position.y or averagePosY
 
     local distanceToTarget = math.sqrt((targetX - attackerX) ^ 2 + (targetY - attackerY) ^ 2)
-    --print(distanceToTarget, attacker.metadata.species)
+    --print(distanceToTarget, attacker.metadata.name)
     --print("avg: ", averagePosX, averagePosY)
     local distanceModifier = 1 / distanceToTarget
     
@@ -108,10 +108,10 @@ function aiManager:rateMoves(entity)
                                 end
                                 local targets = self.match.moveSystem:findByCoordinates(targetX, targetY)
                                 for _, t in ipairs(targets) do
-                                    if t.metadata.type == 'animal' and entity.metadata.teamId ~= t.metadata.teamId then
+                                    if t.metadata.type == 'animal' and entity.team.teamId ~= t.team.teamId then
                                         local score = self:ratingFormula(entity, steppableX, steppableY, t)
                                         -- Boost score if this move can hit a predicted player position
-                                        if willHitPlayer and t.metadata.teamId == playerTeamId then
+                                        if willHitPlayer and t.team.teamId == playerTeamId then
                                             score = score + 1000 -- Large bonus to prioritize hitting where player can go
                                         end
                                         table.insert(allPossibleMoves, {entity = entity, target = t, score = score, x = steppableX, y = steppableY})
@@ -153,7 +153,7 @@ function aiManager:pickMove(moves, difficulty)
     assert(#moves > 0, "Provided empty table for moves!")
 
     if difficulty == "easy" then
-        local random = math.random() < 0.2
+        local random = math.random() < 0.4
 
         if random then
             return moves[math.random(#moves)]
@@ -188,7 +188,7 @@ function aiManager:pickMove(moves, difficulty)
         -- print("left index: ", leftIndex)
 
         -- for index, value in ipairs(portion) do
-        --     print(value.score, value.x, value.y, value.entity.metadata.species)
+        --     print(value.score, value.x, value.y, value.entity.metadata.name)
         -- end
 
         return portion[math.random(#portion)]
@@ -207,10 +207,6 @@ function aiManager:getMoves(teamID, amount)
         end
     end
 
-    table.sort(allMoves, function(a, b)
-        return a.score < b.score
-    end)
-
     if #allMoves == 0 then
         return {}
     end
@@ -219,47 +215,21 @@ function aiManager:getMoves(teamID, amount)
     local usedEntities = {}
 
     for i = 1, amount do
-        local pickedMove = nil
+        -- Instead of sorting + filtering, just pick from allMoves
 
-        for j = #allMoves, 1, -1 do
-            local move = allMoves[j]
-            local alreadyUsed = usedEntities[move.entity]
+        local randomMove = #allMoves > 0 and self:pickMove(allMoves, "medium") or nil
 
-            local overlaps = false
-            for _, p in ipairs(picked) do
-                if p.x == move.x and p.y == move.y then
-                    overlaps = true
-                    break
+        if randomMove then
+            table.insert(picked, randomMove)
+            usedEntities[randomMove.entity] = true
+
+            -- Optionally remove moves by the same entity or overlapping positions
+            for j = #allMoves, 1, -1 do
+                if allMoves[j].entity == randomMove.entity or
+                   (allMoves[j].x == randomMove.x and allMoves[j].y == randomMove.y) then
+                    table.remove(allMoves, j)
                 end
             end
-
-            if not alreadyUsed and not overlaps then
-                local entityMoves = {}
-                for _, m in ipairs(allMoves) do
-                    if m.entity == move.entity then
-                        local overlap = false
-                        for _, p in ipairs(picked) do
-                            if p.x == m.x and p.y == m.y then
-                                overlap = true
-                                break
-                            end
-                        end
-                        if not overlap then
-                            table.insert(entityMoves, m)
-                        end
-                    end
-                end
-
-                if #entityMoves > 0 then
-                    pickedMove = self:pickMove(entityMoves, "hard")
-                    usedEntities[move.entity] = true
-                    break
-                end
-            end
-        end
-
-        if pickedMove then
-            table.insert(picked, pickedMove)
         else
             break
         end
@@ -269,42 +239,82 @@ function aiManager:getMoves(teamID, amount)
 end
 
 -- Returns a table: { [entity] = { main = move, alt = move } }
-function aiManager:getMainAndAltMoves(teamID, amount)
+function aiManager:getMainAndAltMoves(teamID, amount, difficulty)
+    difficulty = difficulty or "easy" -- default to medium if not specified
     local entityMoves = {}
+    
+    -- First, collect all possible moves for each entity
     for _, e in ipairs(self.match.teamManager.teams[teamID].members) do
         if e.state.alive and self.match.stateSystem:hasActions(e) then
             local moves = self:rateMoves(e)
-            -- Sort moves by score descending, then by x, then by y for determinism
-            table.sort(moves, function(a, b)
-                if a.score ~= b.score then return a.score > b.score end
-                if a.x ~= b.x then return a.x < b.x end
-                return a.y < b.y
-            end)
             if #moves > 0 then
-                table.insert(entityMoves, { main = moves[1], alt = moves[2] or moves[1] })
+                -- Sort moves by score descending for easier processing
+                table.sort(moves, function(a, b)
+                    if a.score ~= b.score then return a.score > b.score end
+                    if a.x ~= b.x then return a.x < b.x end
+                    return a.y < b.y
+                end)
+                
+                -- Use pickMove to select main and alt moves based on difficulty
+                local mainMove = self:pickMove(moves, difficulty)
+                
+                -- For alt move, remove the main move and pick again
+                local altMoves = {}
+                for _, move in ipairs(moves) do
+                    if move.x ~= mainMove.x or move.y ~= mainMove.y then
+                        table.insert(altMoves, move)
+                    end
+                end
+                
+                local altMove = #altMoves > 0 and self:pickMove(altMoves, difficulty) or mainMove
+                
+                table.insert(entityMoves, { 
+                    entity = e,
+                    main = mainMove, 
+                    alt = altMove 
+                })
             end
         end
     end
 
+    -- Now select which entities will actually move (up to 'amount')
     local pickedMoves = {}
-
-    for i = 1, amount do
-        if #entityMoves == 0 then break end
-
-        -- Pick a random entity move
-        local index = math.random(#entityMoves)
-        local movePair = entityMoves[index]
-        table.remove(entityMoves, index)
-
-        -- If we already have a main move for this entity, use the alt as the main
-        if pickedMoves[movePair.main.entity] then
-            pickedMoves[movePair.main.entity].alt = movePair.alt
-        else
-            pickedMoves[movePair.main.entity] = { main = movePair.main, alt = movePair.alt }
+    
+    -- Sort entity moves by their main move score (descending)
+    table.sort(entityMoves, function(a, b)
+        return a.main.score > b.main.score
+    end)
+    
+    -- Select top 'amount' moves, avoiding position conflicts
+    local usedPositions = {}
+    for i = 1, math.min(amount, #entityMoves) do
+        -- Try to find a move that doesn't conflict with already picked positions
+        local selected = nil
+        for j, movePair in ipairs(entityMoves) do
+            local posKey = movePair.main.x .. "," .. movePair.main.y
+            if not usedPositions[posKey] then
+                selected = movePair
+                usedPositions[posKey] = true
+                table.remove(entityMoves, j)
+                break
+            end
+        end
+        
+        -- If all moves conflict, just pick the highest scoring one
+        if not selected and #entityMoves > 0 then
+            selected = entityMoves[1]
+            table.remove(entityMoves, 1)
+        end
+        
+        if selected then
+            pickedMoves[selected.entity] = { 
+                main = selected.main, 
+                alt = selected.alt 
+            }
         end
     end
 
-    return entityMoves
+    return pickedMoves
 end
 
 return aiManager

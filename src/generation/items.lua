@@ -367,10 +367,9 @@ local items = {
         rarity = 'rare',
         stats = {
             {'increase', 'atk', 3},
-            {'swap', 'atk', 'maxHp'},
+            {'increase', 'maxHp', 3},
         },
-        pattern = {
-        },
+        pattern = {},
         passive = {},
         active = {},
     },
@@ -519,7 +518,7 @@ local items = {
         pattern = {},
         passive = {
             onStep = function(matchState, source)
-                local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.metadata.teamId)
+                local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.team.teamId)
                 if nearestEntity then
                     SoundManager:playSound("arrow")
                     matchState:newProjectile('arrow', source.position.x, source.position.y, nearestEntity.position.x, nearestEntity.position.y, source.metadata.id)
@@ -604,7 +603,7 @@ local items = {
         passive = {
             description = "Touching enemies deals 1 damage.",
             onTouched = function(matchState, entity, source)
-                if entity.metadata.teamId ~= source.metadata.teamId then
+                if entity.team.teamId ~= source.team.teamId then
                     matchState.combatSystem:hit(source, 1)
                 end
             end
@@ -623,7 +622,7 @@ local items = {
         passive = {
             description = "Attaking has a 20% chance to poison the enemy.",
             onAttack = function(matchState, entity, target)
-                if entity.metadata.teamId ~= target.metadata.teamId then
+                if entity.team.teamId ~= target.team.teamId then
                     if math.random() < 0.2 then
                         matchState.damageOverTimeSystem:giveDotEffect(target, entity, "poison", 2)
                     end
@@ -643,7 +642,7 @@ local items = {
         passive = {
             description = "Attaking has a 20% chance to bleed the enemy.",
             onAttack = function(matchState, entity, target)
-                if entity.metadata.teamId ~= target.metadata.teamId then
+                if entity.team.teamId ~= target.team.teamId then
                     if math.random() < 0.2 then
                         matchState.damageOverTimeSystem:giveDotEffect(target, entity, "bleed", 2)
                     end
@@ -782,7 +781,7 @@ local items = {
                 local targets = matchState.moveSystem:getTouching(entity.position.x, entity.position.y, "animal")
 
                 for index, target in ipairs(targets) do
-                    if target ~= entity and target.metadata.teamId ~= entity.metadata.teamId then
+                    if target ~= entity and target.team.teamId ~= entity.team.teamId then
                         matchState.combatSystem:hit(target, 2)
                         success = true
                     end

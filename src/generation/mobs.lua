@@ -945,16 +945,16 @@ local mobs = {
 
         movePattern = {
             {0, 0, 0, 0, 0},
-            {0, 0, 1, 0, 0},
-            {0, 1, 0, 1, 0},
-            {0, 0, 1, 0, 0},
+            {1, 1, 1, 1, 1},
+            {1, 1, 0, 1, 1},
+            {1, 1, 1, 1, 1},
             {0, 0, 0, 0, 0}
         },
         atkPattern = {
             {0, 0, 0, 0, 0},
-            {1, 1, 1, 1, 1},
-            {1, 1, 0, 1, 1},
-            {1, 1, 1, 1, 1},
+            {0, 1, 1, 1, 0},
+            {0, 1, 0, 1, 0},
+            {0, 1, 1, 1, 0},
             {0, 0, 0, 0, 0}
         }
     },
@@ -976,17 +976,17 @@ local mobs = {
         stepsOn = DEFAULT.stepsOn,
 
         movePattern = {
+            {1, 0, 0, 0, 1},
+            {1, 1, 1, 1, 1},
+            {1, 1, 0, 1, 1},
+            {1, 1, 1, 1, 1},
+            {1, 0, 0, 0, 1}
+        },
+        atkPattern = {
             {0, 0, 0, 0, 0},
             {0, 0, 1, 0, 0},
             {0, 1, 0, 1, 0},
             {0, 0, 1, 0, 0},
-            {0, 0, 0, 0, 0}
-        },
-        atkPattern = {
-            {0, 0, 0, 0, 0},
-            {1, 1, 1, 1, 1},
-            {1, 1, 0, 1, 1},
-            {1, 1, 1, 1, 1},
             {0, 0, 0, 0, 0}
         }
     },
@@ -1282,6 +1282,41 @@ local mobs = {
             {0, 0, 0, 0, 0}
         }
     },
+    poison_frog = 
+    {
+        name = 'poison_frog',
+        sprite = 'poison_frog',
+        stats = {
+            atk = 2,
+            def = 2,
+            maxHp = 2,
+            moves = DEFAULT.moves,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck,
+            energy = 2 -- medium
+        },
+        stepsOn = { "ground" },
+
+        movePattern = {
+            {0, 0, 0, 1, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 1, 0, 0, 0},
+            {1, 0, 1, 0, 1, 0, 1},
+            {0, 0, 0, 1, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 1, 0, 0, 0},
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        },
+        passive = ER.poisonous_on_touch
+    },
     dragon = 
     {
         name = 'dragon',
@@ -1409,6 +1444,66 @@ local mobs = {
             {0, 0, 1, 0, 0},
             {0, 0, 0, 0, 0}
         }
+    },
+    thornmaw = {
+        name = 'wyvern',
+        sprite = 'wyvern',
+        stats = {
+            atk = 2,
+            def = 2,
+            maxHp = 4,
+            moves = 1,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck,
+            energy = 1 -- large, tanky
+        },
+        stepsOn = DEFAULT.stepsOn,
+
+        movePattern = {
+            {0, 0, 0},
+            {0, 1, 0},
+            {0, 0, 0},
+        },
+        atkPattern = {
+            {1, 1, 1},
+            {1, 0, 1},
+            {1, 1, 1},
+        }
+    },
+    monkey = 
+    {
+        name = 'monkey',
+        sprite = 'monkey',
+        stats = {
+            atk = 2,
+            def = 2,
+            maxHp = 3,
+            moves = DEFAULT.moves,
+            crit = DEFAULT.crit,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = DEFAULT.luck,
+            energy = 1 -- large, tanky
+        },
+        stepsOn = DEFAULT.stepsOn,
+
+        movePattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        },
+        atkPattern = {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0}
+        },
+        passive = ER.banananana
     },
     apple =
     {
