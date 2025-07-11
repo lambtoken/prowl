@@ -54,8 +54,8 @@ function teamManager:new(currentMatch)
                 local team = s.instance.teams[s.instance.turnTeamId]
 
                 for _, animal in ipairs(team.members) do
-                    if animal.metadata.teamId == s.instance.turnTeamId then
-                        local animalData = mobs[animal.metadata.species]
+                    if animal.team.teamId == s.instance.turnTeamId then
+                        local animalData = mobs[animal.metadata.name]
                         if animalData and animalData.passive and animalData.passive.onStandBy then
                             animalData.passive.onStandBy(s.instance.match, animal)
                         end
@@ -101,19 +101,14 @@ function teamManager:new(currentMatch)
             instance = o,
 
             enter = function(s)
-
-                EventManager:emit("mainPhase", s.instance.turnTeamId)
-
-                local nextTeamId = (s.instance.turnTeamId % #s.instance.teams) + 1
-                local nextTeam = s.instance.teams[nextTeamId]
-                if nextTeam and nextTeam.agentType == "bot" then
-                    local amount = math.ceil(#nextTeam.members / 2)
-                    s.instance.moveQueue = s.instance.match.aiManager:getMainAndAltMoves(nextTeamId, amount)
-                    s.instance.movesId = nextTeamId
+                if s.instance.teams[s.instance.turnTeamId].agentType == "bot" then
+                    local currentTeam = s.instance.teams[s.instance.turnTeamId]
+                    local amount = math.ceil(#currentTeam.members / 3)
+                    s.instance.moveQueue = s.instance.match.aiManager:getMoves(s.instance.turnTeamId, amount)
                 end
                 s.instance.busy = false
             end,
-            
+
             update = function(s, dt)
                 -- run while systems are doing their stuff
                 if s.instance.busy then
@@ -134,51 +129,32 @@ function teamManager:new(currentMatch)
                 else
                     -- skip if team is empty or has no moveso
                     local currentTeam = s.instance.teams[s.instance.turnTeamId]
-                    if #currentTeam.members == 0 or 
-                        not s.instance:teamHasActions() and
-                        s.instance.lastActiveMob and not s.instance.match:hasMovesLeft(s.instance.lastActiveMob) then
+                    if #currentTeam.members == 0 or
+                    not s.instance:teamHasActions() and
+                    #s.instance.moveQueue == 0 and
+                    s.instance.lastActiveMob and not s.instance.match:hasMovesLeft(s.instance.lastActiveMob) then
                         s.instance.states:set_state("end_phase")
                     else
                         -- handling bots
-                        if s.instance.movesId == s.instance.turnTeamId then
-
-                            while #s.instance.moveQueue > 0 do
-                                local move = s.instance.moveQueue[#s.instance.moveQueue]
-                                
-                                if not move or not move.main.entity.state.alive or
-                                    not s.instance.match:isSteppable(move.main.x, move.main.y, move.main.entity)
-                                    and not s.instance.match:isSteppable(move.alt.x, move.alt.y, move.alt.entity)
-                                then
-                                    print("NAAAAH MAN\n")
-                                    table.remove(s.instance.moveQueue) -- discard invalid move
-                                else
-                                    table.remove(s.instance.moveQueue) -- consume valid move
-                                    pretty.print("Moving " .. move.main.entity.metadata.species .. " to " .. move.main.x .. "," .. move.main.y)
-                                    if s.instance.match:isSteppable(move.main.x, move.main.y, move.main.entity) then
-                                        s.instance.match.moveSystem:move(move.main.entity, "walk", move.main.x, move.main.y, true)
-                                        s.instance:setLastActiveMob(move.main.entity)
-                                        s.instance.busy = true
-                                    elseif s.instance.match:isSteppable(move.alt.x, move.alt.y, move.alt.entity) then
-                                        s.instance.match.moveSystem:move(move.alt.entity, "walk", move.alt.x, move.alt.y, true)
-                                        s.instance:setLastActiveMob(move.alt.entity)
-                                        s.instance.busy = true
-                                    end
-                                end
-                            end
-
-                            if #s.instance.moveQueue == 0 and not s.instance.busy then
+                        if s.instance.teams[s.instance.turnTeamId].agentType == "bot" then
+                            print(#s.instance.moveQueue)
+                            local move = table.remove(s.instance.moveQueue)
+                            if move then
+                                s.instance.match.moveSystem:move(move.entity, "walk", move.x, move.y, true)
+                                s.instance:setLastActiveMob(move.entity)
+                                s.instance.busy = true
+                            else
                                 s.instance.states:set_state("end_phase")
                             end
                         end
-
                     end
                 end
             end,
 
-            draw = function() 
+            draw = function()
             end,
-            
-            exit = function() 
+
+            exit = function()
             end
         },
         end_phase = {
@@ -191,7 +167,7 @@ function teamManager:new(currentMatch)
                 local team = s.instance.teams[s.instance.turnTeamId]
 
                 for _, animal in ipairs(team.members) do
-                    if animal.metadata.teamId == s.instance.turnTeamId then
+                    if animal.team.teamId == s.instance.turnTeamId then
                         if animal.passive and animal.passive.onEndTurn then
                             animal.passive.onEndTurn(s.instance.match, animal)
                         end
@@ -257,7 +233,7 @@ function teamManager:newTeam(agentType)
 end
 
 function teamManager:addToTeam(id, animal)
-    animal.metadata.teamId = id
+    animal:give("team", id)
     table.insert(self.teams[id].members, animal)
 end
 

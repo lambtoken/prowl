@@ -1,3 +1,5 @@
+local soundManager = require("src.sound.SoundManager"):getInstance()
+
 local effects = {
 
     -- MOBS
@@ -22,7 +24,7 @@ local effects = {
         name = 'dont_touch_this',
         description = 'Touching enemies makes them take 1 damage.',
         onTouched = function(matchState, entity, source)
-            if entity.metadata.teamId ~= source.metadata.teamId then
+            if entity.team.teamId ~= source.team.teamId then
                 matchState.combatSystem:hit(source, 1)
             end
         end
@@ -58,10 +60,12 @@ local effects = {
         end
     },
 
+    -- TRAITS
+
     angry_tree = {
         data = {targetId = nil},
         onHit = function(gameState, attacker, target)
-            if attacker.metadata.teamId == 0 then
+            if attacker.team.teamId == 0 then
                 target.effects.angry_tree.targetId = attacker.metadata.id
             end
 
@@ -73,6 +77,199 @@ local effects = {
             end
         end
     },
+
+    -- OBJECTS
+
+    green_apple = {
+        name = "green_apple",
+        onStepped = function(matchState, entity, object)
+            matchState.combatSystem:heal(entity, 1)
+            matchState.stateSystem:changeState(object, "dead")
+            soundManager:playSound("bite")
+        end
+    },
+
+    red_apple = {
+        name = "red_apple",
+        onStepped = function(matchState, entity, object)
+            matchState.combatSystem:heal(entity, 2)
+            matchState.stateSystem:changeState(object, "dead")
+            soundManager:playSound("bite")
+        end
+    },
+
+    golden_apple = {
+        name = "golden_apple",
+        onStepped = function(matchState, entity, object)
+            matchState.combatSystem:heal(entity, 3)
+            matchState.stateSystem:changeState(object, "dead")
+            soundManager:playSound("bite")
+        end
+    },
+
+    trample = {
+        onHovered = function(matchState, object, entity)
+            matchState.animationSystem:playAnimation(object, "hit")
+            matchState.stateSystem:changeState(object, "dying")
+            matchState.animationSystem:playAnimation(object, "death")
+            soundManager:playSound("breaking")
+        end
+    },
+
+    paw_catcher = {
+        onStepped = function(matchState, entity, object)
+            matchState.combatSystem:hit(entity, 2)
+            soundManager:playSound("bear_trap")
+            matchState.stateSystem:changeState(object, "dead")
+        end
+    },
+
+    tiny_snare = {
+        onStepped = function(matchState, entity, object)
+            matchState.combatSystem:hit(entity, 1)
+            matchState.animationSystem:playAnimation(object, "trigger_death")
+            soundManager:playSound("mouse_trap")
+        end
+    },
+
+    frostfang = {
+        onStepped = function(matchState, entity, object)
+            matchState.combatSystem:hit(entity, 1)
+        end
+    },
+
+    tumble = {
+        onAttacked = function(matchState, object, entity)
+            local knockback = matchState.crowdControlSystem:applyCC(object, "knockback", entity)
+            if knockback then 
+                matchState.animationSystem:playAnimation(object, "tumble")
+                return true
+            else
+                local touching = matchState.moveSystem:getTouching(object.position.x, object.position.y)
+                if #touching > 0 then
+                    matchState.animationSystem:playAnimation(object, "trigger")
+                    for index, animal in ipairs(touching) do
+                        if animal ~= entity then
+                            matchState.combatSystem:hit(animal, 1)
+                        end
+                    end
+                    return true
+                end
+            end
+            return false
+        end,
+        onTouched = function(matchState, object, entity)
+            if entity.state.alive then
+                matchState.combatSystem:hit(entity, 1)
+            end
+        end
+    },
+
+    dont_touch_me = {
+        onTouched = function(matchState, object, entity)
+            if entity.state.alive then
+                matchState.combatSystem:hit(entity, 1)
+            end
+        end
+    },
+
+    impale = {
+        onStepped = function(matchState, entity, object)
+            matchState.combatSystem:hit(entity, 1)
+        end
+    },
+
+    boom = {
+        onAttacked = function(matchState, object, entity)
+            matchState.eventManager:emit("registerTimer", object, 1, "explosion", {entity = object, amount = 3})
+            soundManager:playSound("hiss")
+        end
+    },
+
+    get_lucky = {
+        onStepped = function(matchState, entity, object)
+            matchState.buffDebuffSystem:applyEffect(entity, "lucky_clover", object)
+            matchState.stateSystem:changeState(object, "dead")
+            matchState.statsSystem:calculateStats()
+        end
+    },
+
+    jitter = {
+        onStepped = function(matchState, entity, object)
+            matchState.buffDebuffSystem:applyEffect(entity, "coffee", object)
+            matchState.stateSystem:changeState(object, "dead")
+            matchState.statsSystem:calculateStats()
+        end
+    },
+
+    beach_bounce = {
+        onAttacked = function(matchState, object, entity)
+            local knockback = matchState.crowdControlSystem:applyCC(object, "knockback", entity)
+            if knockback then 
+                matchState.animationSystem:playAnimation(object, "tumble")
+                return true
+            end
+            return false
+        end,
+        onStep = function(matchState, object)
+            if object.state.alive then
+                local targets = matchState.moveSystem:getTouching(object.position.x, object.position.y, "animal")
+                for index, target in ipairs(targets) do
+                    matchState.combatSystem:hit(target, 1)
+                end
+            end
+        end
+    },
+
+    poisonous_on_touch = {
+        description = "Enemies touching this entity get poisoned for 1-2 turns.",
+        onTouched = function(matchState, frog, entity)
+            if frog.team and entity.team and frog.team.teamId == entity.team.teamId then
+                return false
+            end
+            
+            if entity.state.alive then
+                matchState.damageOverTimeSystem:giveDotEffect(entity, frog, "poison", math.random(1, 2), true)
+            end
+        end
+    },
+
+    banananana = {
+        onStep = function(matchState, source)
+            local nearbyEnemy = matchState.moveSystem:getNearestEntity(source, 'animal', source.team.teamId)
+
+            if nearbyEnemy then
+                local offsets = {
+                    {1, 0}, {-1, 0}, {0, 1}, {0, -1}
+                }
+
+                local freeTiles = {}
+
+                for _, offset in ipairs(offsets) do
+                    local ox, oy = offset[1], offset[2]
+                    local tx = nearbyEnemy.position.x + ox
+                    local ty = nearbyEnemy.position.y + oy
+
+                    local occupied = matchState.moveSystem:findByCoordinates(tx, ty)
+                    if #occupied == 0 then
+                        table.insert(freeTiles, { tx, ty })
+                    end
+                end
+
+                if #freeTiles > 0 then
+                    local targetTile = freeTiles[math.random(#freeTiles)]
+                    local tx, ty = targetTile[1], targetTile[2]
+
+                    soundManager:playSound("arrow")
+                    matchState:newProjectile('banana',
+                        source.position.x, source.position.y,
+                        tx, ty,
+                        source.metadata.id
+                    )
+                end
+            end
+        end
+    }
 }
 
 return effects

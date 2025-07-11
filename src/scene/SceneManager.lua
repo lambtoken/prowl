@@ -89,7 +89,6 @@ function SceneManager:draw()
         transitions[self.transitionType].onEnter.draw()
     end
     
-
     console:draw()
     self.cursor:draw()
 end
@@ -154,7 +153,6 @@ end
 function SceneManager:mousemoved(x, y, dx, dy)
     x, y = renderManager:mouseToVirtual(x, y)
     mouse.x, mouse.y = x, y
-    -- self.mouseX, self.mouseY = x, y
 
     if self.currentScene and self.currentScene.mousemoved then
         self.currentScene:mousemoved(x, y, dx, dy)

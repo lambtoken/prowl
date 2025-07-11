@@ -603,9 +603,6 @@ function MatchManager:generateObjects()
     local amount = minAmount + math.random(maxAmount - minAmount)
     pickLimited(matchObjectRates[self.matchNode.place][self.matchNode.variant], amount, objectNames)
 
-    print("THE LENGTH OF OBJECT NAMES IS: " .. #objectNames)
-
-    -- Place objects one by one, allowing adjacency, but check connectivity
     local placed = {}
     local blocked = {}
     for _, pos in ipairs(all_positions) do
@@ -716,7 +713,7 @@ end
 function MatchManager:removeEntitiesFromTheWorld()
     for _, entity in ipairs(self.ecs:getEntities()) do
         self.ecs:removeEntity(entity)
-        -- print("removing: " .. entity.metadata.type, (entity.metadata.species or ""))
+        -- print("removing: " .. entity.metadata.type, (entity.metadata.name or ""))
         -- entity.__world = nil
         -- entity = nil
     end

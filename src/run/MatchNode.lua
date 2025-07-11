@@ -25,25 +25,21 @@ function MatchNode:initialize(type, place)
 end
 
 function MatchNode:random()
-
     self.place = matchConfig.places[math.ceil(GameState.run.rng:get("stageGen") * #matchConfig.places)]
     self.variant = pickSimple(variantRates[self.place])
 
     assert(self.variant, "No variants defined for " .. self.place)
     
     self.spriteName = self.place .. '_node'
-
 end
 
 function MatchNode:bossRoom(level)
-
     self.place = bosses[level].name
     self.level = bosses[level].level
     
     self.variant = 'normal'
 
     self.spriteName = self.place
-
 end
 
 return MatchNode

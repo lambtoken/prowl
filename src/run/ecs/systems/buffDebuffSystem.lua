@@ -21,6 +21,8 @@ function buffDebuffSystem:applyEffect(entity, name, source)
 end
 
 function buffDebuffSystem:applyStatEffect(entity, source, stats, duration, sourceItemId)
+    if not entity.buffDebuff then return end
+    
     duration = duration or 1
 
     local effect = {
@@ -85,7 +87,8 @@ end
 
 function buffDebuffSystem:onStandBy(teamId)
     for _, entity in ipairs(self.pool) do
-        if entity.metadata.teamId ~= teamId then
+        if entity.team and entity.team.teamId ~= teamId
+        or not entity.buffDebuff then
             goto continue
         end
 

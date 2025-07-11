@@ -1,6 +1,4 @@
-local pathfind = require("libs.batteries.pathfind")
-
--- Returns true if all points in 'goals' are reachable from 'start' given a set of blocked positions
+-- returns true if all points in 'goals' are reachable from 'start' given a set of blocked positions
 -- blocked: set of [x][y]=true
 -- width, height: board size
 -- neighbours: function(x, y) -> list of {x, y} adjacent positions
@@ -18,6 +16,7 @@ local function is_fully_connected(start, goals, blocked, width, height)
         end
         return nbs
     end
+
     -- BFS from start
     local queue = {start}
     visited[node_key(start[1], start[2])] = true

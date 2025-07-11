@@ -37,7 +37,7 @@ local traits = {
             effect = {
                 onHitAny = function(gameState, attacker, target)
                     -- iterate through all trees and set them to agro
-                    if target.metadata.subType == "tree" and attacker.metadata.teamId == 0 then
+                    if target.metadata.subType == "tree" and attacker.team.teamId == 0 then
                         -- target.metadata.targetId = attacker.metadata.id
                         gameState.aiManager:setAggro(target, attacker)
                     end

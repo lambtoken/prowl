@@ -126,7 +126,7 @@ function TextBubble:newStatusEffect(entity, text, duration)
     }
 
     -- print(entity.metadata.id)
-    -- print(entity.metadata.species)
+    -- print(entity.metadata.name)
     -- print(o.entityId)
 
     o.tweenX = tween.new(o.floatDurationX, o, {x = o.bubbleRangeX}, "inOutQuart")

@@ -1,9 +1,9 @@
 local Concord = require("libs.concord")
 local json = require("libs.json")
 
-local team = Concord.component("team", function(c, type)
-    c.type = type
-    c.id = 1
+-- remember to add agent type per animal so we can have helper animals in player team
+local team = Concord.component("team", function(c, id)
+    c.teamId = id
 end)
 
 function team:serialize()

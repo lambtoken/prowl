@@ -99,7 +99,7 @@ function SlidingText:resize(w, h)
     local fontHeight = font:getHeight()
 
     self.halfTextWidth = getFont("basis33", self.fontSize):getWidth(self.text) / 2
-    self.screenY = h / 2 - fontHeight / 2
+    self.screenY = h / 6 - fontHeight / 2
 end
 
 function SlidingText:slide(text, color)

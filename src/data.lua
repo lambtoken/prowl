@@ -201,6 +201,16 @@ local data = {
             unlocked = false
         },
         {
+            key = 'poison_frog',
+            name = 'poison frog',
+            unlocked = true
+        },
+        {
+            key = 'monkey',
+            name = 'monkey',
+            unlocked = true
+        },
+        {
             key = 'apple',
             name = 'apple',
             unlocked = true
@@ -242,7 +252,7 @@ data.getAnimal = function(name)
         end
     end
 
-    assert(false, "Animal not found!")
+    return nil
 end
 
 data.unlockAllAnimals = function() 

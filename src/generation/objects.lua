@@ -1,4 +1,4 @@
-local soundManager = require("src.sound.SoundManager"):getInstance()
+local ER = require "src.generation.effectRegistry"
 local tablex = require "libs.batteries.tablex"
 
 local DEFAULT = {
@@ -17,13 +17,7 @@ local objects = {
         name = 'apple',
         sprite = 'apple',
         steppable = true,
-        passive = {
-            onStepped = function(matchState, entity, object)
-                matchState.combatSystem:heal(entity, 2)
-                matchState.stateSystem:changeState(object, "dead")
-                soundManager:playSound("bite")
-            end
-        },
+        passive = ER.red_apple,
         status = {
             canTeleport = DEFAULT_STATUS.canTeleport,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -37,13 +31,7 @@ local objects = {
         sprite = 'green_apple',
         type = 'heal',
         steppable = true,
-        passive = {
-            onStepped = function(matchState, entity, object)
-                matchState.combatSystem:heal(entity, 1)
-                matchState.stateSystem:changeState(object, "dead")
-                soundManager:playSound("bite")
-            end
-        },
+        passive = ER.green_apple,
         status = {
             canTeleport = DEFAULT_STATUS.canTeleport,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -59,13 +47,7 @@ local objects = {
         sprite = 'gold_apple',
         type = 'heal',
         steppable = true,
-        passive = {
-            onStepped = function(matchState, entity, object)
-                matchState.combatSystem:heal(entity, 3)
-                matchState.stateSystem:changeState(object, "dead")
-                soundManager:playSound("bite")
-            end
-        },
+        passive = ER.golden_apple,
         status = {
             canTeleport = DEFAULT_STATUS.canTeleport,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -121,20 +103,7 @@ local objects = {
         sprite = 'vase',
         type = 'dumb',
         steppable = false,
-        passive = {
-            -- onAttacked = function(matchState, object, entity)
-            --     matchState.animationSystem:playAnimation(object, "hit")
-            --     matchState.stateSystem:changeState(object, "dying")
-            --     matchState.animationSystem:playAnimation(object, "death")                
-            --     soundManager:playSound("breaking")
-            -- end,
-            onHovered = function(matchState, object, entity)
-                matchState.animationSystem:playAnimation(object, "hit")
-                matchState.stateSystem:changeState(object, "dying")
-                matchState.animationSystem:playAnimation(object, "death")
-                soundManager:playSound("breaking")
-            end
-        },
+        passive = ER.trample,
         status = {
             canTeleport = DEFAULT_STATUS.canTeleport,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -241,13 +210,7 @@ local objects = {
         sprite = 'bear_trap',
         type = 'trap',
         steppable = true,
-        passive = {
-            onStepped = function(matchState, entity, object)
-                matchState.combatSystem:hit(entity, 2)
-                soundManager:playSound("bear_trap")
-                matchState.stateSystem:changeState(object, "dead")
-            end
-        },
+        passive = ER.paw_catcher,
         status = {
             canTeleport = false,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -261,13 +224,7 @@ local objects = {
         sprite = 'mouse_trap',
         type = 'trap',
         steppable = true,
-        passive = {
-            onStepped = function(matchState, entity, object)
-                matchState.combatSystem:hit(entity, 1)
-                matchState.animationSystem:playAnimation(object, "trigger_death")
-                soundManager:playSound("mouse_trap")
-            end
-        },
+        passive = ER.tiny_snare,
         status = {
             canTeleport = false,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -296,11 +253,7 @@ local objects = {
         sprite = 'ice_spike',
         type = 'trap',
         steppable = true,
-        passive = {
-            onStepped = function(matchState, entity, object)
-                matchState.combatSystem:hit(entity, 1)
-            end
-        },
+        passive = ER.frostfang,
         status = {
             canTeleport = false,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -330,32 +283,7 @@ local objects = {
         sprite = 'tumbleweed',
         type = 'idk',
         steppable = false,
-        passive = {
-            onAttacked = function(matchState, object, entity)
-                local knockback = matchState.crowdControlSystem:applyCC(object, "knockback", entity)
-                if knockback then 
-                    matchState.animationSystem:playAnimation(object, "tumble")
-                    return true
-                else
-                    local touching = matchState.moveSystem:getTouching(object.position.x, object.position.y)
-                    if #touching > 0 then
-                        matchState.animationSystem:playAnimation(object, "trigger")
-                        for index, animal in ipairs(touching) do
-                            if animal ~= entity then
-                                matchState.combatSystem:hit(animal, 1)
-                            end
-                        end
-                        return true
-                    end
-                end
-                return false
-            end,
-            onTouched = function(matchState, object, entity)
-                if entity.state.alive then
-                    matchState.combatSystem:hit(entity, 1)
-                end
-            end
-        },
+        passive = ER.tumble,
         status = {
             canTeleport = false,
             isDisplaceable = true,
@@ -370,13 +298,7 @@ local objects = {
         sprite = 'desert_node',
         type = 'plant',
         steppable = false,
-        passive = {
-            onTouched = function(matchState, object, entity)
-                if entity.state.alive then
-                    matchState.combatSystem:hit(entity, 1)
-                end
-            end
-        },
+        passive = ER.dont_touch_me,
         status = {
             canTeleport = false,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -420,11 +342,7 @@ local objects = {
         sprite = 'spikes',
         type = 'trap',
         steppable = true,
-        passive = {
-            onStepped = function(matchState, entity, object)
-                matchState.combatSystem:hit(entity, 1)
-            end
-        },
+        passive = ER.impale,
         status = {
             canTeleport = false,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -456,12 +374,7 @@ local objects = {
         sprite = 'bomb',
         type = 'trap',
         steppable = false,
-        passive = {
-            onAttacked = function(matchState, object, entity)
-                matchState.eventManager:emit("registerTimer", object, 1, "explosion", {entity = object, amount = 3})
-                soundManager:playSound("hiss")
-            end
-        },
+        passive = ER.boom,
         status = {
             canTeleport = false,
             isDisplaceable = true,
@@ -489,13 +402,7 @@ local objects = {
         sprite = 'lucky_clover',
         type = 'consumable',
         steppable = true,
-        passive = {
-            onStepped = function(matchState, entity, object)
-                matchState.buffDebuffSystem:applyEffect(entity, "lucky_clover", object)
-                matchState.stateSystem:changeState(object, "dead")
-                matchState.statsSystem:calculateStats()
-            end
-        },
+        passive = ER.get_lucky,
         status = {
             canTeleport = false,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -509,13 +416,7 @@ local objects = {
         sprite = 'coffee',
         type = 'consumable',
         steppable = true,
-        passive = {
-            onStepped = function(matchState, entity, object)
-                matchState.buffDebuffSystem:applyEffect(entity, "coffee", object)
-                matchState.stateSystem:changeState(object, "dead")
-                matchState.statsSystem:calculateStats()
-            end
-        },
+        passive = ER.jitter,
         status = {
             canTeleport = false,
             isDisplaceable = DEFAULT_STATUS.isDisplaceable,
@@ -529,24 +430,7 @@ local objects = {
         sprite = 'beach_ball',
         type = 'dumb',
         steppable = false,
-        passive = {
-            onAttacked = function(matchState, object, entity)
-                local knockback = matchState.crowdControlSystem:applyCC(object, "knockback", entity)
-                if knockback then 
-                    matchState.animationSystem:playAnimation(object, "tumble")
-                    return true
-                end
-                return false
-            end,
-            onStep = function(matchState, object)
-                if object.state.alive then
-                    local targets = matchState.moveSystem:getTouching(object.position.x, object.position.y, "animal")
-                    for index, target in ipairs(targets) do
-                        matchState.combatSystem:hit(target, 1)
-                    end
-                end
-            end
-        },
+        passive = ER.beach_bounce,
         status = {
             canTeleport = false,
             isDisplaceable = true,

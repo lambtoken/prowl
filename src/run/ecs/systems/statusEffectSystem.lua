@@ -57,7 +57,7 @@ end
 function statusEFfectSystem:onStandBy(teamId)
     for _, entity in ipairs(self.pool) do
 
-        if entity.metadata.teamId ~= teamId then goto continue end
+        if entity.team and entity.team.teamId ~= teamId then goto continue end
 
         for i = #entity.status.effects, 1, -1 do
             local effect = entity.status.effects[i]

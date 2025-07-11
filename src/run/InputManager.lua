@@ -70,18 +70,19 @@ function InputManager:mousepressed(x, y, btn)
         if tileAnimal then
             SoundManager:playSound("clicktech3")
             sceneManager.currentScene.animalStats:loadAnimal(tileAnimal)
+            sceneManager.currentScene:removeTooltip()
         end
 
         if not self.selectedAnimal and tileAnimal 
         and tileAnimal.state.currentTurnMoves < tileAnimal.stats.current.moves
-        and tileAnimal.metadata.teamId == self.match.teamManager.turnTeamId
+        and tileAnimal.team.teamId == self.match.teamManager.turnTeamId
         and not self.match.moveSystem:isMoving(tileAnimal)
         and tileAnimal.state.alive 
         and currentTeam.agentType == 'player' then        
             self.selectedAnimal = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY, 'animal')[1]
             self.selectedAnimal.state.pickedUp = true
             self.hangingPiece:resetAngularVelocity()
-            self.hangingPiece:setAnimalSprite(self.selectedAnimal.metadata.species)
+            self.hangingPiece:setAnimalSprite(self.selectedAnimal.metadata.name)
             self.patternDisplay:loadAnimal(self.selectedAnimal)
            
             if sceneManager.currentScene.pattern then
@@ -100,7 +101,7 @@ function InputManager:mousepressed(x, y, btn)
 end
 
 function InputManager:mousereleased(x, y, btn)
-    -- add picking and releasing like in tft mechanic as well
+    -- TODO: add picking and releasing like in tft mechanic as well
     if btn == 1 then
         self.drag = false
     end
@@ -115,13 +116,19 @@ function InputManager:mousemoved(x, y)
 
     local tile = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY)
 
-    -- Check if we moved to a new tile AND there are entities on that tile
     if (self.hoveredTileX ~= self.lastHoveredTileX or self.hoveredTileY ~= self.lastHoveredTileY) then -- and #tile > 0 then
         if not self.selectedAnimal then
             -- SoundManager:playSound("softclick2")
             SoundManager:playSound("pclick5")
+            if tile and tile[1] then
+                sceneManager.currentScene:removeTooltip()
+                sceneManager.currentScene:createTooltip(tile[1])
+            else
+                sceneManager.currentScene:removeTooltip()
+            end
         elseif sceneManager.currentScene.pattern.isInsideMovePattern then
             SoundManager:playSound("softclick2")
+
             -- SoundManager:playSound("softclick3")
         end
     end

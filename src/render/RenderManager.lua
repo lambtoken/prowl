@@ -1,9 +1,6 @@
 local spriteTable = require "src.render.spriteTable"
 local shaders = require "src.render.shaders.shaders"
 
-local gray = love.graphics.newShader(require "src.render.shaders.gray_shader")
-
-
 local RenderManager = {}
 RenderManager.__index = RenderManager
 
@@ -24,7 +21,7 @@ function RenderManager:init()
     -- window scaling config
     self:updateWindowSize()
     self.spriteSize = 16
-    self.tileSize = 96 -- backup lol
+    self.tileSize = 96
     -- ui scale
     self.increaseFactor = self.tileSize / self.spriteSize
 
@@ -85,10 +82,7 @@ function RenderManager:extractTeamColors()
     return colors
 end
 
-function RenderManager:update(dt)
-    -- Ensure canvas is reset at the start of update
-    -- self:resetCanvas()
-end
+function RenderManager:update(dt) end
 
 function RenderManager:applyShake()
     love.graphics.translate(self.xoffset, self.yoffset)
@@ -177,17 +171,23 @@ function RenderManager:resetCanvas()
 end
 
 function RenderManager:draw()
-    -- Reset any existing canvas state
     love.graphics.setShader()
         
     -- self:setCanvas(self.bgCanvas)
     -- love.graphics.clear(0, 0, 0, 0)
 
-    -- -- Draw to main canvas
+    -- drawing to to main canvas
     -- self:setCanvas(self.mainCanvas)
     -- love.graphics.setColor(1, 1, 1, 1)
     
-    -- Draw main canvas to screen
+    -- should also implement a second canvas for applying additional processing
+    -- it would probably eat some frames but would be worth it
+
+    -- how this would work:
+
+    -- at any time in the drawing pipeline you can draw to temp and apply shaders there
+    -- then you can redraw results to main
+
     love.graphics.setCanvas()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(self.mainCanvas, 0, 0)

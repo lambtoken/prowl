@@ -38,7 +38,7 @@ function combatSystem:init()
 
         EventManager:emit("onStepAny", entity)
 
-        -- print(entity.metadata.species)
+        -- print(entity.metadata.name)
 
         on("onStep", matchState, entity)
         
@@ -58,7 +58,7 @@ function combatSystem:init()
             for _, target in ipairs(entitiesToHit) do
                 missed = false
             
-                local isEnemy = entity.metadata.teamId ~= target.metadata.teamId
+                local isEnemy = entity.team.teamId ~= target.team.teamId
                 local isTargetable = target.status and target.status.current.isTargetable
                 local isAlive = not (target.state and not target.state.alive)
             
@@ -128,7 +128,7 @@ function combatSystem:init()
                     goto continue  -- Skip this target instead of returning
                 end
                     
-                local mob = mobData[entity.metadata.species]
+                local mob = mobData[entity.metadata.name]
                 
                 if mob.passive and mob.passive.onHover then
                     mob.passive.onHover(matchState, target, entity)
@@ -145,7 +145,7 @@ function combatSystem:init()
         end
 
         if entity.metadata.type == 'object' then
-            local object = objectData[entity.metadata.objectName]
+            local object = objectData[entity.metadata.name]
             if object.passive and object.passive.onHover then
                 object.passive.onHover(matchState, entity)
             end
@@ -165,7 +165,7 @@ function combatSystem:init()
                 if target == entity or not target.state.alive then
                     goto continue
                 end
-                local object = objectData[target.metadata.objectName]
+                local object = objectData[target.metadata.name]
                 if object.passive and object.passive.onHovered then
                     object.passive.onHovered(matchState, target, entity)
                 end                
@@ -176,7 +176,7 @@ function combatSystem:init()
                     goto continue
                 end
                 
-                local animal = mobData[target.metadata.species]
+                local animal = mobData[target.metadata.name]
                 if animal.passive and animal.passive.onHovered then
                     animal.passive.onHovered(matchState, target, entity)
                 end

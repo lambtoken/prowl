@@ -119,7 +119,7 @@ function renderSystem:draw()
                 
                 if entity.metadata.type == 'animal' and sceneManager.currentScene.teamOutline then
                     outlineShader:send("outlineSize", textureSize/16 * 0.25)
-                    local r, g, b = unpack(RM.teamColors[entity.metadata.teamId])
+                    local r, g, b = unpack(RM.teamColors[entity.team.teamId])
                     outlineShader:send("outlineColor", {r, g, b, self.pulseAlpha})
                     love.graphics.setShader(outlineShader)
                 end
