@@ -7,12 +7,12 @@ local bosses = {
     -- Stage 2
     {
         name = 'phoenix',
-        level = 20,
+        level = 10,
     },
     -- Stage 3
     {
         name = 'hydra',
-        level = 30,
+        level = 20,
     },
 }
 

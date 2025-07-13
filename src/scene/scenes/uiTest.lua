@@ -18,6 +18,7 @@ function uiTest:enter()
     self.container = mold.Container:new()
         :setWidth("200px")
         :setHeight("200px")
+        :setMode("squish")
         :setDirection("row")
         :debug()
 
@@ -26,11 +27,10 @@ function uiTest:enter()
 
     self.inner = mold.Container:new()
         :setWidth("100px")
-        :setHeight("100px")
+        :setHeight("1000px")
         :setDirection("row")
         :debug()
 
-    self.container.bgColor = {0.2, 0.3, 0.6}
     self.container:addChild(self.inner)
 
     self.text = mold.TextBox:new(test)

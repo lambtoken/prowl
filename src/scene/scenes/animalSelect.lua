@@ -21,18 +21,40 @@ function animalSelect:enter()
         :setRoot(RM.windowWidth, RM.windowHeight)
         :setJustifyContent("space-evenly")
         :setAlignContent("center")
+        :setDirection("row")
 
     self.roster = animalSelect:makeRoster()
 
     -- local rows = math.ceil(data.animalCount / animalPickerConfig.cols)
     local cols = animalPickerConfig.cols
+    
+    self.left_container = mold.Container:new()
+        :setWidth("320px")
+        :setHeight("100%")
+        :setAlignContent("center")
+        :setJustifyContent("center")
+        :setDirection("column")
+        -- :setMode("squish")
+
+    -- self.left_container.bgColor = {0.8, 0.8, 0.8, 1}
+        
+    self.root:addChild(self.left_container)
 
     local container = self.root:addContainer()
         :setWidth("auto")
         :setHeight("auto")
-
-    container.bgColor = {0.8, 0.8, 0.8, 1}
+        -- :setMargin("320px", "left")
+        -- :setPosition("absolute")
         
+    container.bgColor = {0.8, 0.8, 0.8, 1}
+
+    local instructions = mold.TextBox:new("Click an animal to see details on the left.\nPress Enter/Space or Right-click to select.")
+        -- :setSize(20)
+        :setColor({1, 1, 1, 1})
+        -- :setPosition("fixed")
+        -- :setMargin("20px", "top")
+    self.left_container:addChild(instructions)
+
     local function newRow()
         local row = mold.Container:new()
             :setWidth("auto")
@@ -74,29 +96,38 @@ function animalSelect:update(dt)
 end
 
 function animalSelect:mousemoved(x, y)
-    if self.details then
-        self.details:setPos(x, y)
-    end
     self.root:mouseMoved(x, y)
 end
 
 function animalSelect:mousepressed(x, y, button)
     self.root:mousePressed(x, y, button)
     
+    if button == 2 and self.details then
+            local selectedSpecies = nil
+        for species, details in pairs(self.detailsBySpecies) do
+            if details == self.details then
+                selectedSpecies = species
+                break
+            end
+        end
+        if selectedSpecies then
+            self:pick(selectedSpecies)
+        end
+    end
+end
+
 function animalSelect:mousereleased(x, y, button)
     self.root:mouseReleased(x, y, button)
 end
 
 function animalSelect:pick(species)
     if not gs.run then
-
         local newRun = Run:new(species)
-            newRun:setSeed(gs.rng:get("general", 1, 2^53))
-            gs:setRun(newRun)
-        end
-
-        sceneM:switchScene('runMap')
+        newRun:setSeed(gs.rng:get("general", 1, 2^53))
+        gs:setRun(newRun)
     end
+
+    sceneM:switchScene('runMap')
 end
 
 function animalSelect:draw()
@@ -151,29 +182,19 @@ function animalSelect:makeRoster()
             s:playAnimation("attack")
             -- SoundManager:playSound("pclick3")
             SoundManager:playSound("clicktech2")
-            self.details = self.detailsBySpecies[anim.species]
-            self.details:setPos(50, 120) -- hack. i dont like it. need to fix mold
-            self.root:addChild(self.details)
-            self.root:resize()
-        end
-        
-        anim.onMouseExited = function(s)
-            self.root:removeChild(self.details)
-            if self.details then
-                self.root:removeChild(self.details)
-                self.details = nil
-                self.root:resize()
-            end
         end
         
         anim.onMouseReleased = function(s)
-            self:pick(s.species)
-            SoundManager:playSound("pclick4")
+            -- Show animal details on click
             if self.details then
-                self.root:removeChild(self.details)
-                self.details = nil
+                self.left_container:removeChild(self.details)
                 self.root:resize()
             end
+            self.details = self.detailsBySpecies[anim.species]
+            self.left_container:addChild(self.details)
+            self.root:resize()
+            
+            SoundManager:playSound("pclick4")
         end
 
         table.insert(arr, anim)
@@ -186,6 +207,20 @@ function animalSelect:keypressed(key)
     if key == 'escape' then
         SoundManager:playSound("pm3")
         sceneM:switchScene('mainMenu')
+    elseif key == 'return' or key == 'space' then
+        -- Select animal if details are shown
+        if self.details then
+            local selectedSpecies = nil
+            for species, details in pairs(self.detailsBySpecies) do
+                if details == self.details then
+                    selectedSpecies = species
+                    break
+                end
+            end
+            if selectedSpecies then
+                self:pick(selectedSpecies)
+            end
+        end
     end
 end
 

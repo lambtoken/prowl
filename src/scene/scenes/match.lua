@@ -18,6 +18,7 @@ local pretty = require "libs.batteries.pretty"
 local slidingText = require "src.render.slidingText"
 local newEntityTooltip = require "src.render.components.entity_tooltip"
 local mold = require "libs.mold"
+local mouse = require "src.input.mouse"
 
 local match = Scene:new('match')
 
@@ -105,7 +106,7 @@ function match:enter()
     self.match:generateObjects()
     self.match:generateEnemies()
     self.match:generateFlowers()
-    self.match:generateMarks()
+    -- self.match:generateMarks()
 
     self.match:preparePlayer()
     self.match:positionPlayer()
@@ -147,6 +148,7 @@ function match:update(dt)
         end
 
         self.match:update(dt)
+        self.inputManager:update(dt)
         self.hangingPiece:update(dt)
         self.turnTracker:update(dt)
         self.TextBubbleManager:update(dt)
@@ -321,6 +323,11 @@ end
 
 function match:createTooltip(entity)
     self.tooltip = newEntityTooltip(entity)
+    
+    -- Set tooltip position to current mouse position
+    self.tooltip.anchorX = mouse.x
+    self.tooltip.anchorY = mouse.y
+    
     self.root:addChild(self.tooltip)
     self.root:resize()
 end

@@ -17,7 +17,6 @@ local UNIT_TYPES = {
 
 local _UNIT_TYPES = {
     px = UNIT_TYPES.PIXELS,
-    --"%" = UNIT_TYPES.PERCENT,
     auto = UNIT_TYPES.AUTO,
     fr = UNIT_TYPES.FR
 }
@@ -58,7 +57,7 @@ local FLEX_DIRECTION = {
 
 local MODES = {
     NORMAL = "normal",
-    SQUISH = "squish", -- squish everything
+    SQUISH = "squish",
 }
 
 local OVERFLOW = {
@@ -471,6 +470,7 @@ function Container:initialize()
     self.flexDirection = FLEX_DIRECTION.COLUMN
     self.justifyContent = FLEX_JUSTIFY.START
     self.alignContent = FLEX_ALIGN.START
+    self.mode = MODES.NORMAL
     self.scrollPosition = 0
     self.parent = nil
     self.children = {}
@@ -527,6 +527,17 @@ function Container:setAlignContent(str)
     for key, value in pairs(FLEX_ALIGN) do
         if value == str then
             self.alignContent = str
+            return self
+        end
+    end
+
+    error("Invalid argument: " .. str, 1)
+end
+
+function Container:setMode(str)
+    for key, value in pairs(MODES) do
+        if value == str then
+            self.mode = str
             return self
         end
     end
@@ -869,6 +880,69 @@ function Container:_resizeChildren()
         if child.position == POSITION_TYPES.STATIC or child.position == POSITION_TYPES.RELATIVE then
             remainingSpace = remainingSpace - marginbox_main_size_value
         end
+    end
+
+    if self.mode == MODES.SQUISH then
+        local totalChildrenSizeMain = 0
+        local totalChildrenSizeCross = 0
+        local childrenToSquish = {}
+        
+        for _, child in ipairs(self.children) do
+            if child.position == POSITION_TYPES.STATIC or child.position == POSITION_TYPES.RELATIVE then
+                local childSizeMain = child['m' .. props.main_size]
+                local childSizeCross = child['m' .. props.cross_size]
+                totalChildrenSizeMain = totalChildrenSizeMain + childSizeMain
+                totalChildrenSizeCross = totalChildrenSizeCross + childSizeCross
+                table.insert(childrenToSquish, child)
+            end
+        end
+        
+        local availableSpaceMain = 200 --self['c' .. props.main_size]
+        local availableSpaceCross = 200 --self['c' .. props.cross_size]
+        local scaleFactorMain = availableSpaceMain / totalChildrenSizeMain
+        local scaleFactorCross = availableSpaceCross / totalChildrenSizeCross
+
+        for _, child in ipairs(childrenToSquish) do
+            child['c' .. props.main_size] = child['c' .. props.main_size] * scaleFactorMain
+            child['c' .. props.cross_size] = child['c' .. props.cross_size] * scaleFactorCross
+            child['m' .. props.main_size] = child['m' .. props.main_size] * scaleFactorMain
+            child['m' .. props.cross_size] = child['m' .. props.cross_size] * scaleFactorCross
+            child['p' .. props.main_size] = child['p' .. props.main_size] * scaleFactorMain
+            child['p' .. props.cross_size] = child['p' .. props.cross_size] * scaleFactorCross
+            child.cMargin[props.start_margin] = child.cMargin[props.start_margin] * scaleFactorMain
+            child.cMargin[props.end_margin] = child.cMargin[props.end_margin] * scaleFactorMain
+            child.cMargin[props.cross_start_margin] = child.cMargin[props.cross_start_margin] * scaleFactorCross
+            child.cMargin[props.cross_end_margin] = child.cMargin[props.cross_end_margin] * scaleFactorCross
+            child.cPadding[props.start_margin] = child.cPadding[props.start_margin] * scaleFactorMain
+            child.cPadding[props.end_margin] = child.cPadding[props.end_margin] * scaleFactorMain
+            child.cPadding[props.cross_start_margin] = child.cPadding[props.cross_start_margin] * scaleFactorCross
+            child.cPadding[props.cross_end_margin] = child.cPadding[props.cross_end_margin] * scaleFactorCross
+        end
+        
+        -- Force repositioning after squish
+        print("Forcing reposition after squish")
+        self:_positionChildren()
+        
+        -- Update parent's content size to reflect squished children
+        if self.parent then
+            local parentProps
+            if self.parent.flexDirection == FLEX_DIRECTION.ROW then
+                parentProps = ROW_LOOKUP
+            elseif self.parent.flexDirection == FLEX_DIRECTION.COLUMN then
+                parentProps = COLUMN_LOOKUP
+            end
+            
+            -- Recalculate parent's content size based on squished children
+            local totalSquishedSize = 0
+            for _, child in ipairs(self.children) do
+                if child.position == POSITION_TYPES.STATIC or child.position == POSITION_TYPES.RELATIVE then
+                    totalSquishedSize = totalSquishedSize + child['m' .. parentProps.main_size]
+                end
+            end
+            print("Parent content size after squish: " .. totalSquishedSize)
+        end
+        
+        remainingSpace = 0
     end
 
     -- calculate FRs
@@ -1411,7 +1485,6 @@ function Container:handleScroll(x, y)
         local mouseX, mouseY = love.mouse.getPosition()
         local scrollTargets = {}
 
-        -- Find all scrollable elements under the mouse
         for _, childObj in ipairs(self.flattened) do
             local child = childObj.child
             if mouseX > child.scissorX and mouseX < child.scissorX + child.scissorW
@@ -1420,21 +1493,18 @@ function Container:handleScroll(x, y)
             end
         end
 
-        -- Scroll from the deepest to the highest container
         for i = #scrollTargets, 1, -1 do
             local target = scrollTargets[i]
 
-            -- If it's a scroll container, scroll it
             if target.overflow == OVERFLOW.SCROLL then
                 local main_size = target.flexDirection == FLEX_DIRECTION.ROW and "w" or "h"
                 local amount = -y * 7
                 local prevScroll = target.scrollPosition
                 target.scrollPosition = clamp(target.scrollPosition + amount, 0, target._childrenTotalSize - target["c" .. main_size])
 
-                -- Only apply child positioning if the scroll actually changed
                 if target.scrollPosition ~= prevScroll then
                     target:resize()
-                    return -- Stop propagating scroll if this container handled it
+                    return
                 end
             end
         end
@@ -1500,7 +1570,7 @@ function Container:draw()
             love.graphics.rectangle("line", -child.cPivotX, -child.cPivotY, child.cw, child.ch)
             -- love.graphics.rectangle("line", -child.cPivotX - child.cMargin.left, -child.cPivotY - child.cMargin.top, child.mw, child.mh)
         end
-
+        
         -- love.graphics.setScissor(self.scissorX, self.scissorY, self.scissorW, self.scissorH)
         love.graphics.pop()
     end
@@ -1792,7 +1862,6 @@ function TextBox:wrap()
                 goto skip
             end
 
-            -- iter throught each segment
             local lastSpace
 
             while right <= left + #text.text do
@@ -2160,7 +2229,7 @@ function ImageBox:draw()
     -- love.graphics.push()
     -- love.graphics.rotate(self.tr)
     -- love.graphics.scale(self.tsx, self.tsy)
-    Box.draw(self) -- Draws background if needed
+    Box.draw(self)
     love.graphics.setColor(1,1,1,1)
     love.graphics.draw(self.image, -self.cPivotX, -self.cPivotY, 0, self.scaleX, self.scaleY)
     -- love.graphics.pop()
@@ -2211,13 +2280,12 @@ end
 
 function QuadBox:setScaleBy(str)
     assert(type(str) == "string", "Argument must be a string!")
-    -- add a check for SCALE_BY values
     self.scaleBy = str
     return self
 end
 
 function QuadBox:draw()
-    Box.draw(self) -- Draws background if needed
+    Box.draw(self)
     love.graphics.setColor(1,1,1,1)
     love.graphics.draw(self.texture, self.quad, -self.cPivotX, -self.cPivotY, 0, self.scaleX, self.scaleY)
 end
@@ -2239,9 +2307,9 @@ end
 function AnimatedQuadBox:addAnimation(name, frameTime, frames, reverse, oneshot)
     self.animations[name] = {
         frameTime = frameTime or 0.1,
-        frames = frames or {},  -- A list of quads
+        frames = frames or {}, 
         reverse = reverse or false,
-        oneshot = oneshot or false,  -- Whether the animation is a oneshot
+        oneshot = oneshot or false,
         currentFrame = 1,
         timer = 0,
         playing = false

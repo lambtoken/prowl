@@ -211,6 +211,11 @@ local data = {
             unlocked = true
         },
         {
+            key = 'goat',
+            name = 'goat',
+            unlocked = true
+        },
+        {
             key = 'apple',
             name = 'apple',
             unlocked = true

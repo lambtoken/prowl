@@ -71,6 +71,13 @@ function love.load(args)
     renderM = RenderManager:getInstance()
 
     music.load()
+
+    for index, value in ipairs(args) do
+        if value == "test" then
+            require("src.test.run_all")()
+            love.event.quit(0)
+        end
+    end
 end
 
 function love.update(dt)

@@ -1354,7 +1354,7 @@ local mobs = {
         name = 'phoenix',
         sprite = 'phoenix',
         stats = {
-            atk = 4,
+            atk = 3,
             def = 3,
             maxHp = 8,
             moves = 1,
@@ -1505,6 +1505,35 @@ local mobs = {
         },
         passive = ER.banananana
     },
+    goat = 
+    {
+        name = 'goat',
+        sprite = 'goat',
+        stats = {
+            atk = 3,
+            def = 0,
+            maxHp = 4,
+            moves = DEFAULT.moves,
+            crit = 0.1,
+            critDamage = DEFAULT.critDamage,
+            lifeSteal = DEFAULT.lifeSteal,
+            luck = 0.15,
+            energy = 3
+        },
+        stepsOn = DEFAULT.stepsOn,
+        movePattern = {
+            {0, 1, 0},
+            {1, 0, 1},
+            {0, 1, 0}
+        },
+        atkPattern = {
+            {0, 1, 0},
+            {1, 0, 1},
+            {0, 1, 0}
+        },
+        -- passive = ER.charge -- extra damage on first move
+    },
+
     apple =
     {
         name = 'apple',

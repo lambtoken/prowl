@@ -130,19 +130,18 @@ function animalStats:draw()
 
     love.graphics.print(level, levelX, self.screenY + self.margin)
 
-    -- Draw items
     self.statBoxSize = self.portraitSize + 2 * self.margin + self.hpBarWidth + 2 * self.margin
     self.itemsStartX = self.screenX + self.statBoxSize
     self.itemsStartY = RM.windowHeight - self.itemSize - self.margin
     self.itemSpacing = self.itemSize + self.margin
 
-    -- Draw empty item slots
+    -- drawing empty slots
     for i = 1, self.maxItems do
         love.graphics.setColor(0.3, 0.3, 0.3)
         love.graphics.rectangle("line", self.itemsStartX + (i-1) * self.itemSpacing, self.itemsStartY, self.itemSize, self.itemSize)
     end
 
-    -- Draw actual items
+    -- drawing items
     if self.animalRef.inventory and self.animalRef.inventory.items then
         for i, item in ipairs(self.animalRef.inventory.items) do
             if i <= self.maxItems then

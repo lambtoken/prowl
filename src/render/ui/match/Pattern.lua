@@ -4,7 +4,6 @@ local RM = require ('src.render.RenderManager'):getInstance()
 local moveTexture = love.graphics.newQuad(spriteTable['moveMark'][1] * RM.spriteSize, spriteTable['moveMark'][2] * RM.spriteSize, RM.spriteSize, RM.spriteSize, RM.image)
 local attackTexture = love.graphics.newQuad(spriteTable['attackMark'][1] * RM.spriteSize, spriteTable['attackMark'][2] * RM.spriteSize, RM.spriteSize, RM.spriteSize, RM.image)
 
-
 local Pattern = {}
 Pattern.__index = Pattern
 
@@ -84,21 +83,6 @@ end
 
 -- tons of room for optimization for these next 2 functions
 function Pattern:drawMovePattern()
-    -- local patternX = self.inputManager.hoveredTileX - self.animal.position.x + math.ceil(#self.animal.stats.currentPatterns.movePattern[1] / 2)
-    -- local patternY = self.inputManager.hoveredTileY - self.animal.position.y + math.ceil(#self.animal.stats.currentPatterns.movePattern / 2)
-    
-    -- if patternX <= #self.animal.stats.currentPatterns.movePattern[1]
-    -- and patternX > 0 
-    -- and patternY <= #self.animal.stats.currentPatterns.movePattern
-    -- and patternY > 0 
-    -- and self.animal.stats.currentPatterns.movePattern[patternY][patternX] == 1 then
-        
-    --     love.graphics.setColor(1, 1, 1, 1)
-    -- else
-        
-    --     love.graphics.setColor(1, 1, 1, 0.5) 
-    -- end
-
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(self.moveCanvas, self.animal.position.screenX - self.moveAdjX, self.animal.position.screenY - self.moveAdjY)
 end

@@ -26,6 +26,9 @@ function InputManager:new(camera, currentMatch)
         mouseType = mouseTypes.default,
         lastHoveredTileX = nil,
         lastHoveredTileY = nil,
+        hoverTimer = 0,
+        hoverDelay = 0.5, -- 0.5 seconds delay before showing tooltip
+        hoveredEntity = nil,
     }
     setmetatable(o, InputManager)
     self.__index = self
@@ -88,6 +91,10 @@ function InputManager:mousepressed(x, y, btn)
             if sceneManager.currentScene.pattern then
                 sceneManager.currentScene.pattern:preparePatterns()
             end
+            
+            -- Clear hover state when animal is selected
+            self.hoveredEntity = nil
+            self.hoverTimer = 0
         else
             self.drag = true
             self.dragX, self.dragY = self.camera:worldCoords(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
@@ -121,9 +128,14 @@ function InputManager:mousemoved(x, y)
             -- SoundManager:playSound("softclick2")
             SoundManager:playSound("pclick5")
             if tile and tile[1] then
+                -- Start hover timer instead of showing tooltip immediately
+                self.hoveredEntity = tile[1]
+                self.hoverTimer = 0
                 sceneManager.currentScene:removeTooltip()
-                sceneManager.currentScene:createTooltip(tile[1])
             else
+                -- Reset hover state when not hovering over anything
+                self.hoveredEntity = nil
+                self.hoverTimer = 0
                 sceneManager.currentScene:removeTooltip()
             end
         elseif sceneManager.currentScene.pattern.isInsideMovePattern then
@@ -153,6 +165,21 @@ end
 
 function InputManager:setPatternDisplay(pd)
     self.patternDisplay = pd
+end
+
+function InputManager:update(dt)
+    -- Update hover timer
+    if self.hoveredEntity then
+        self.hoverTimer = self.hoverTimer + dt
+        
+        -- Show tooltip after delay
+        if self.hoverTimer >= self.hoverDelay and not sceneManager.currentScene.tooltip then
+            sceneManager.currentScene:createTooltip(self.hoveredEntity)
+        end
+    else
+        -- Reset timer when not hovering over anything
+        self.hoverTimer = 0
+    end
 end
 
 function InputManager:keypressed(key)

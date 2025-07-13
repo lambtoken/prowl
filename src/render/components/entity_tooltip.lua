@@ -12,7 +12,7 @@ local function tooltip(entity)
     c:setHeight("auto")
     c:setPos(0, 0)
     c:setPosition("absolute")
-    c.bgColor = {0, 0, 0, 1}
+    c.bgColor = {0, 0, 0, 0.8}
 
     if entity.stats and entity.stats.currentPatterns then
         local atk_pattern = entity.stats.currentPatterns.atkPattern
