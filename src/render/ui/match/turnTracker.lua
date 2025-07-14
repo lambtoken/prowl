@@ -1,6 +1,7 @@
 local RM = require ('src.render.RenderManager'):getInstance()
 -- local teamIcon = require 'src.render.ui.match.teamIcon'
 local spriteTable = require 'src.render.spriteTable'
+local getFont = require 'src.render.getFont'
 
 local turnTracker = {}
 turnTracker.__index = turnTracker
@@ -68,6 +69,10 @@ function turnTracker:draw()
 
         self:drawHealthBar(i, self.screenX + (14 * RM.increaseFactor * (i - 1)), self.screenY + 14 * RM.increaseFactor, 14 * RM.increaseFactor, 2 * RM.increaseFactor)
     end
+
+    love.graphics.setFont(getFont('basis33', 32))
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.print("Turn: " .. self.teamManager.match.turn, self.screenX + 10, self.screenY + 100)
 end
 
 function turnTracker:update(dt)
@@ -136,10 +141,10 @@ function turnTracker:drawHealthBar(teamId, x, y, width, height)
     local healthPercentage = currentHealth / maxHealth
     local healthWidth = width * healthPercentage
 
-    love.graphics.setColor(0, 1, 0) -- Green for health
+    love.graphics.setColor(0, 1, 0)
     love.graphics.rectangle("fill", x, y, healthWidth, height)
 
-    love.graphics.setColor(1, 1, 1) -- Reset color
+    love.graphics.setColor(1, 1, 1)
 end
 
 return turnTracker

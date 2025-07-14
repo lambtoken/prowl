@@ -265,6 +265,10 @@ function teamManager:nextAliveTeam()
         end
     end
 
+    if self.turnTeamId == 1 then
+        self.match.turn = self.match.turn + 1
+    end
+
     for _, team in ipairs(self.teams) do
         for _, animal in ipairs(team.members) do
             animal.state.currentTurnMoves = 0

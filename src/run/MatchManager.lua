@@ -38,6 +38,7 @@ function MatchManager:initialize()
     self.width = 6
     self.height = 6
     self.teams = {}
+    self.turn = 1
     self.board = {
         terrain = {},
         decorations = {},
@@ -54,6 +55,7 @@ end
 function MatchManager:init()
     self.width = stageBoardSize[gs.run and gs.run.currentStage] or 6
     self.height = stageBoardSize[gs.run and gs.run.currentStage] or 6
+    self.turn = 1
     self.rng = rng:new(self.seed)
     self.rng:addGenerator("combat")
     self.rng:addGenerator("terrainGen")
