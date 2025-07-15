@@ -18,8 +18,8 @@ function animalStats:new()
         itemSize = 40,
         maxItems = 8,
         animationTime = 0,
-        animationSpeed = 2, -- How fast the bar moves
-        animationAmplitude = 2, -- How far the bar moves
+        animationSpeed = 2,
+        animationAmplitude = 2,
     }
 
     o.textHeight = o.font:getHeight()
@@ -152,17 +152,6 @@ function animalStats:draw()
             end
         end
     end
-
-    -- Draw energy bar background
-    love.graphics.setColor(0.2, 0.2, 0.4)
-    love.graphics.rectangle("fill", self.screenX + self.portraitSize + 2 * self.margin, energyBarY, energyBarWidth, energyBarHeight)
-    -- Draw energy bar foreground
-    love.graphics.setColor(0.3, 0.7, 1)
-    love.graphics.rectangle("fill", self.screenX + self.portraitSize + 2 * self.margin, energyBarY, currentEnergyBarWidth, energyBarHeight)
-    -- Draw energy text
-    love.graphics.setColor(1, 1, 1)
-    local energyText = "energy: " .. energy .. "/" .. maxEnergy
-    love.graphics.print(energyText, self.screenX + self.portraitSize + 2 * self.margin + energyBarWidth / 2 - self.font:getWidth(energyText) / 2, energyBarY)
 
     self.statusBar:draw()
 end

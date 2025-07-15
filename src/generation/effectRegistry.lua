@@ -34,7 +34,7 @@ local effects = {
         name = 'shed_and_heal',
         description = '50% chance to heal by 1 at the start of the turn.',
         onStandBy = function(matchState, entity) 
-            if math.random() > 0.5 then
+            if math.random() > 0.25 then
                 matchState.combatSystem:heal(entity, 1)
             end
         end

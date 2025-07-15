@@ -3,6 +3,7 @@ local tween = require "libs.tween"
 local tablex = require "libs.batteries.tablex"
 local getFont = require "src.render.getFont"
 local pretty  = require "libs.batteries.pretty"
+local RM = require ("src.render.RenderManager"):getInstance()
 
 local class = require "libs.middleclass"
 
@@ -1557,13 +1558,20 @@ function Container:draw()
                 child.cy - parentY + child.cPivotY - parentH
             )
         end
-
+        
+        
         love.graphics.scale(child.transform.scaleX, child.transform.scaleY)
         love.graphics.rotate(child.transform.rotation)
         love.graphics.translate(child.anchorX + child.transform.translateX, child.anchorY + child.transform.translateY)
+        
+        if child.class.name == "TextRow" then
+            love.graphics.scale(1/RM.scale)
+        end
+        
         -- if child.overflow == OVERFLOW.CLIP then
         --     love.graphics.intersectScissor(child.cx, child.cy, child.cw, child.ch)
         -- end
+        
         child:draw()
         if child._debug then
             love.graphics.setColor(unpack(child._debugColor))
@@ -1691,14 +1699,16 @@ local function setup(row)
                 size = tonumber(text.style.size)
             elseif text.style.relSize then
                 size = row.textBox.fontSize + text.style.relSize
-            else
-                size = row.textBox.fontSize
             end
-        else
+        end
+
+        if not size then
             size = row.textBox.fontSize
         end
 
-        font = getFont("basis33", size)
+        print("TextRow:setup: size = " .. size)
+
+        font = getFont(text.font or "basis33", size)
         -- if text.font then
         --     font = love.graphics.newFont(text.font, size)
         -- elseif self.textBox.font then
@@ -1714,6 +1724,7 @@ local function setup(row)
 
         text.size = size
         text.font = font
+        text.fontName = "basis33"
         text.width = width
         text.height = height
     end
@@ -1743,12 +1754,18 @@ function TextRow:draw()
             love.graphics.setColor(1, 1, 1, 1)
         end
 
-        local x = -self.cPivotX + pos
-        local y = -self.cPivotY + self.ch - text.height
+        local x = (-self.cPivotX + pos) * RM.scale
+        local y = (-self.cPivotY + self.ch - text.height) * RM.scale
 
         pos = pos + text.width
 
-        love.graphics.setFont(text.font)
+        love.graphics.setFont(
+            getFont(
+                text.fontName or "basis33", 
+                math.floor((text.size or 16) * RM.scale)
+            )
+        
+        )
         love.graphics.print(text.text, x, y)
     end
 
@@ -1891,6 +1908,8 @@ function TextBox:wrap()
                     newText.height = text.height
                     newText.width = text.font:getWidth(newText.text)
                     newText.font = text.font
+                    newText.size = text.size
+                    newText.fontName = text.fontName
 
                     table.insert(rows[#rows].formatted, newText)
 
@@ -1915,6 +1934,8 @@ function TextBox:wrap()
                     newText.height = text.height
                     newText.width = text.font:getWidth(newText.text)
                     newText.font = text.font
+                    newText.size = text.size
+                    newText.fontName = text.fontName
                     table.insert(rows[#rows].formatted, newText)
                 end
 

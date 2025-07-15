@@ -9,9 +9,8 @@ return function(animalData)
     c:setHeight("auto")
     c:setPosition("relative")
     c:setAlignContent("center")
-    c.bgColor = {0, 0, 0, 0.8} -- Add semi-transparent background
+    c.bgColor = {0, 0, 0, 0.8}
 
-    -- Add patterns above stats (only visible when clicked)
     if animalData.movePattern and animalData.atkPattern then
         local move_container = mold.Container:new()
             :setWidth("auto")

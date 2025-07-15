@@ -61,6 +61,8 @@ function love.load(args)
 
     gs = GameState:getInstance()
     gs.match = MatchManager:new()
+    gs.match:init()
+    
     gs:setSeed(os.time())
     
     sceneM = SceneManager:getInstance()

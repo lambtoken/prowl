@@ -45,8 +45,6 @@ function MatchManager:initialize()
         objects = {}
     }
 
-    self:init_ecs()
-
     self.eventManager = EventManager:getInstance()
     
     noiseShader:send("resolution", {love.graphics.getWidth(), love.graphics.getHeight()})
@@ -63,6 +61,7 @@ function MatchManager:init()
     self.rng:addGenerator("objGen")
 
     self:removeEntitiesFromTheWorld()
+    self.eventManager:reset()
     self:init_ecs()
     self:init_state_machine()
     self.winnerId = nil
@@ -713,6 +712,10 @@ end
 
 
 function MatchManager:removeEntitiesFromTheWorld()
+    if not self.ecs then
+        return
+    end
+    
     for _, entity in ipairs(self.ecs:getEntities()) do
         self.ecs:removeEntity(entity)
         -- print("removing: " .. entity.metadata.type, (entity.metadata.name or ""))
@@ -750,11 +753,6 @@ end
 
 
 function MatchManager:onExit()
-    -- not happy with this approach. we should just create MatchManager and register events once
-    self.eventManager:reset()
-    -- self:removeEntitiesFromTheWorld()
-    -- self.ecs = nil
-    -- gs.match = nil
 end
 
 

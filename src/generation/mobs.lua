@@ -23,7 +23,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 3 -- fast, small
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -52,7 +51,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 3 -- fast, small
         },
         stepsOn = { "ground", "water" },
 
@@ -84,7 +82,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 3 -- fast, small
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -112,7 +109,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = { "ground", "tree" },
 
@@ -171,7 +167,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -195,7 +190,7 @@ local mobs = {
         name = 'deer',
         sprite = 'deer',
         stats = {
-            atk = 2, -- 4,
+            atk = 2,
             def = 1,
             maxHp = 5,
             moves = DEFAULT.moves,
@@ -203,7 +198,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -232,7 +226,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = 0.1,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -264,7 +257,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = 0.2,
-            energy = 2 -- medium
         },
         stepsOn = { "ground", "water" },
 
@@ -284,31 +276,30 @@ local mobs = {
         name = 'spider',
         sprite = 'spider',
         stats = {
-            atk = 1,
+            atk = 2,
             def = 1,
-            maxHp = 5,
+            maxHp = 4,
             moves = DEFAULT.moves,
             crit = DEFAULT.crit,
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = { "ground", "wall" },
 
         -- maybe have it so it flips its pattern every other move
         movePattern = {
-            {0, 0, 0, 0, 0},
-            {0, 1, 1, 0, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 1, 0, 0},
             {0, 1, 0, 1, 0},
-            {0, 0, 1, 1, 0},
-            {0, 0, 0, 0, 0}
+            {0, 0, 1, 0, 0},
+            {0, 0, 1, 0, 0}
         },
         atkPattern = {
             {0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0},
             {0, 1, 0, 1, 0},
-            {0, 0, 0, 0, 0},
-            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
             {0, 0, 0, 0, 0}
         }
     },
@@ -325,7 +316,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -360,7 +350,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -392,7 +381,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -424,7 +412,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = { "ground", "fence" },
 
@@ -456,7 +443,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -488,7 +474,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -520,7 +505,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -552,7 +536,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -584,7 +567,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = { "ground", "water" },
 
@@ -616,7 +598,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = { "ground", "water" },
 
@@ -648,7 +629,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -680,7 +660,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -715,7 +694,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = { "ground", "water" },
 
@@ -747,7 +725,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -779,7 +756,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -811,7 +787,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -843,7 +818,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage + 0.1,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -875,7 +849,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -907,7 +880,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = { "ground", "tree" },
 
@@ -939,7 +911,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 3 -- fast, small
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -971,7 +942,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 3 -- fast, small
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1003,7 +973,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1035,7 +1004,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1068,7 +1036,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1100,7 +1067,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = 0.1,
-            energy = 2 -- medium
         },
         passive = {        },
         stepsOn = DEFAULT.stepsOn,
@@ -1132,7 +1098,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1165,7 +1130,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1197,7 +1161,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1229,7 +1192,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = { "ground", "fence" },
 
@@ -1261,7 +1223,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = { "ground" },
 
@@ -1295,7 +1256,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 2 -- medium
         },
         stepsOn = { "ground" },
 
@@ -1330,7 +1290,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1362,7 +1321,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1394,7 +1352,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1426,7 +1383,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1457,7 +1413,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1485,7 +1440,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 
@@ -1518,7 +1472,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = 0.15,
-            energy = 3
         },
         stepsOn = DEFAULT.stepsOn,
         movePattern = {
@@ -1547,7 +1500,6 @@ local mobs = {
             critDamage = DEFAULT.critDamage,
             lifeSteal = DEFAULT.lifeSteal,
             luck = DEFAULT.luck,
-            energy = 1 -- large, tanky
         },
         stepsOn = DEFAULT.stepsOn,
 

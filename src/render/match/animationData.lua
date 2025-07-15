@@ -83,6 +83,17 @@ local animations = {
         }
     },
 
+    hit_soft = { 
+        cancelCategory = "none",
+        loop = false,
+        stackable = true,
+        onFinish = function(entity) EventManager:emit("afterAttack", entity) end,
+        tweens = {
+            { delay = 0, duration = 0.15, target = 'scaleX', from = 0, to = 0.1, func = "outSine" },
+            { delay = 0.15, duration = 0.3, target = 'scaleX', from = 0.1, to = 0, func = "inSine" }
+        }
+    },
+
     attack = {
 
         cancelCategory = "all",

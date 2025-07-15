@@ -42,6 +42,10 @@ function RenderManager:init()
     -- shaders
     self.shaderStack = {}
     self:createShaders()
+
+    --transform
+    self.transformStack = { love.math.newTransform() }
+    
     -- camera shake
     self.xoffset = 0
     self.yoffset = 0
@@ -167,6 +171,39 @@ function RenderManager:resetCanvas()
     if self.currentCanvas then
         love.graphics.setCanvas()
         self.currentCanvas = nil
+    end
+end
+
+function RenderManager:pushTransform()
+    table.insert(self.transformStack, love.math.newTransform())
+end
+
+function RenderManager:popTransform()
+    local transform = table.remove(self.transformStack)
+    return transform
+end
+
+function RenderManager:cloneTransform()
+    local top = self.transformStack[#self.transformStack]
+    self.transformStack[#self.transformStack + 1] = top:clone()
+end
+
+function RenderManager:translate(x, y)
+    self.transformStack[#self.transformStack]:translate(x, y)
+end
+
+function RenderManager:scale(sx, sy)
+    self.transformStack[#self.transformStack]:scale(sx, sy)
+end
+
+function RenderManager:rotate(angle)
+    self.transformStack[#self.transformStack]:rotate(angle)
+end
+
+function RenderManager:applyTransform()
+    love.graphics.origin()
+    if #self.transformStack > 0 then
+        love.graphics.applyTransform(self.transformStack[#self.transformStack])
     end
 end
 

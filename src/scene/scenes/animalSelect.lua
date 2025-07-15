@@ -48,12 +48,14 @@ function animalSelect:enter()
         
     container.bgColor = {0.8, 0.8, 0.8, 1}
 
-    local instructions = mold.TextBox:new("Click an animal to see details on the left.\nPress Enter/Space or Right-click to select.")
+    self.instructions = mold.TextBox:new("Click an animal to see details.\nPress Enter/Space or Right-click to select.")
         -- :setSize(20)
-        :setColor({1, 1, 1, 1})
         -- :setPosition("fixed")
         -- :setMargin("20px", "top")
-    self.left_container:addChild(instructions)
+        :setColor({1, 1, 1, 1})
+        :playAnimation("hit", false)
+
+    self.left_container:addChild(self.instructions)
 
     local function newRow()
         local row = mold.Container:new()
@@ -82,11 +84,7 @@ function animalSelect:enter()
     self.details = nil
 
     self.detailsBySpecies = {}
-
-    for _, animal in ipairs(data.animals) do
-        local species = animal.key
-        self.detailsBySpecies[species] = animal_details(mobs[species])
-    end
+    self.detailsCache = {}
 
     self.root:resize()
 end
@@ -135,6 +133,13 @@ function animalSelect:draw()
     self.root:draw()
 end
 
+function animalSelect:getAnimalDetails(species)
+    if not self.detailsCache[species] then
+        self.detailsCache[species] = animal_details(mobs[species])
+    end
+    return self.detailsCache[species]
+end
+
 function animalSelect:makeRoster()
 
     local arr = {}
@@ -158,6 +163,7 @@ function animalSelect:makeRoster()
     r.onMouseReleased = function(s)
         local random = data.animals[math.ceil(math.random() * #data.animals)].key
         self:pick(random)
+        self.instructions:playAnimation("hit_soft", false)
     end
     
     table.insert(arr, r)
@@ -185,15 +191,15 @@ function animalSelect:makeRoster()
         end
         
         anim.onMouseReleased = function(s)
-            -- Show animal details on click
             if self.details then
                 self.left_container:removeChild(self.details)
                 self.root:resize()
             end
-            self.details = self.detailsBySpecies[anim.species]
+            self.details = self:getAnimalDetails(anim.species)
+            self.detailsBySpecies[anim.species] = self.details
             self.left_container:addChild(self.details)
             self.root:resize()
-            
+            self.instructions:playAnimation("hit_soft", false)
             SoundManager:playSound("pclick4")
         end
 
@@ -208,7 +214,6 @@ function animalSelect:keypressed(key)
         SoundManager:playSound("pm3")
         sceneM:switchScene('mainMenu')
     elseif key == 'return' or key == 'space' then
-        -- Select animal if details are shown
         if self.details then
             local selectedSpecies = nil
             for species, details in pairs(self.detailsBySpecies) do

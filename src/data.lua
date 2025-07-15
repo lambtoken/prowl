@@ -140,21 +140,21 @@ local data = {
             name = 'wolf',
             unlocked = false
         },
-        {
-            key = 'dragon',
-            name = 'dragon',
-            unlocked = false
-        },
-        {
-            key = 'phoenix',
-            name = 'phoenix',
-            unlocked = false
-        },
-        {
-            key = 'hydra',
-            name = 'hydra',
-            unlocked = false
-        },
+        -- {
+        --     key = 'dragon',
+        --     name = 'dragon',
+        --     unlocked = false
+        -- },
+        -- {
+        --     key = 'phoenix',
+        --     name = 'phoenix',
+        --     unlocked = false
+        -- },
+        -- {
+        --     key = 'hydra',
+        --     name = 'hydra',
+        --     unlocked = false
+        -- },
         {
             key = 'wyvern',
             name = 'wyvern',
@@ -215,11 +215,11 @@ local data = {
             name = 'goat',
             unlocked = true
         },
-        {
-            key = 'apple',
-            name = 'apple',
-            unlocked = true
-        }
+        -- {
+        --     key = 'apple',
+        --     name = 'apple',
+        --     unlocked = true
+        -- }
         
         -- {
         --     key = 'unicorn',

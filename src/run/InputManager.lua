@@ -27,7 +27,7 @@ function InputManager:new(camera, currentMatch)
         lastHoveredTileX = nil,
         lastHoveredTileY = nil,
         hoverTimer = 0,
-        hoverDelay = 0.5, -- 0.5 seconds delay before showing tooltip
+        hoverDelay = 0.5,
         hoveredEntity = nil,
     }
     setmetatable(o, InputManager)
@@ -37,7 +37,6 @@ end
 
 function InputManager:mousepressed(x, y, btn)
 
-    -- check right click first
     if btn == 2 and self.selectedAnimal then
         self.selectedAnimal.state.pickedUp = false
         self.selectedAnimal = nil
@@ -49,6 +48,9 @@ function InputManager:mousepressed(x, y, btn)
     end
 
     if self.selectedAnimal then
+        if self.match.teamManager.turnTeamId ~= self.selectedAnimal.team.teamId then
+            return
+        end
         
         local tile = self.match.moveSystem:findByCoordinates(self.hoveredTileX, self.hoveredTileY)
         local steppable = self.match:isSteppable(self.hoveredTileX, self.hoveredTileY, self.selectedAnimal)
@@ -92,7 +94,6 @@ function InputManager:mousepressed(x, y, btn)
                 sceneManager.currentScene.pattern:preparePatterns()
             end
             
-            -- Clear hover state when animal is selected
             self.hoveredEntity = nil
             self.hoverTimer = 0
         else
@@ -125,15 +126,13 @@ function InputManager:mousemoved(x, y)
 
     if (self.hoveredTileX ~= self.lastHoveredTileX or self.hoveredTileY ~= self.lastHoveredTileY) then -- and #tile > 0 then
         if not self.selectedAnimal then
-            -- SoundManager:playSound("softclick2")
+            -- SoundManager:playSound("softclick2") -- idk
             SoundManager:playSound("pclick5")
             if tile and tile[1] then
-                -- Start hover timer instead of showing tooltip immediately
                 self.hoveredEntity = tile[1]
                 self.hoverTimer = 0
                 sceneManager.currentScene:removeTooltip()
             else
-                -- Reset hover state when not hovering over anything
                 self.hoveredEntity = nil
                 self.hoverTimer = 0
                 sceneManager.currentScene:removeTooltip()
@@ -141,7 +140,7 @@ function InputManager:mousemoved(x, y)
         elseif sceneManager.currentScene.pattern.isInsideMovePattern then
             SoundManager:playSound("softclick2")
 
-            -- SoundManager:playSound("softclick3")
+            -- SoundManager:playSound("softclick3") -- maybe not..
         end
     end
     
@@ -150,7 +149,6 @@ function InputManager:mousemoved(x, y)
 end
 
 function InputManager:getHoveredTileCoordinates()
-    -- Calculate hovered tile coordinates
     local screenX, screenY = love.mouse.getPosition()
     local virtualX, virtualY = RM:mouseToVirtual(screenX, screenY)
     local x, y = self.camera:worldCoords(virtualX, virtualY, 0, 0, RM.windowWidth, RM.windowHeight)
@@ -168,16 +166,13 @@ function InputManager:setPatternDisplay(pd)
 end
 
 function InputManager:update(dt)
-    -- Update hover timer
     if self.hoveredEntity then
         self.hoverTimer = self.hoverTimer + dt
         
-        -- Show tooltip after delay
         if self.hoverTimer >= self.hoverDelay and not sceneManager.currentScene.tooltip then
             sceneManager.currentScene:createTooltip(self.hoveredEntity)
         end
     else
-        -- Reset timer when not hovering over anything
         self.hoverTimer = 0
     end
 end

@@ -4,3 +4,13 @@ generate terrain ( place )
 match instance issue
 
 test wrong ln in bt
+
+############################
+
+FONT SCALE ISSUE
+
+to solve this we need a custom transform stack in RM
+this would allow us to only reset scale
+this shouldn't be any more intensive than what we have now
+only additional love.graphics.origin calls
+it doesnt flush gpu so we good :)

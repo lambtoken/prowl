@@ -28,12 +28,8 @@ function match:enter()
         :setJustifyContent("center")
     self.root:resize()
     
-    -- gs.match = MatchManager:new(gs.currentMatchNode)
     self.match = gs.match
-    -- self.match:reset()
-    -- self.match:removeEntitiesFromTheWorld()
     self.match:init()
-    -- clear state
     self.match:generateTerrain(gs.currentMatchNode)
     self.camera = Camera((self.match.width * RM.tileSize) / 2, (self.match.height * RM.tileSize) / 2)
     self.matchEvents = self.match.eventManager
