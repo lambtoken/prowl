@@ -124,10 +124,6 @@ function match:enter()
         self.slidingText:slide("End Turn", RM.teamColors[teamId])
     end)
     self.match.eventManager:on("mainPhase", function(teamId)
-        print("Main Phase for team", teamId)
-        print("ColorR: " .. RM.teamColors[teamId][1] .. 
-              " ColorG: " .. RM.teamColors[teamId][2] .. 
-              " ColorB: " .. RM.teamColors[teamId][3])
         self.slidingText:slide("Main Phase", RM.teamColors[teamId])
     end)
 end

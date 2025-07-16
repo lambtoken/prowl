@@ -32,8 +32,9 @@ function TextBubble:newShortCC(entity, text)
         text = text,
         x = 0,
         y = 0,
-        baseX = 0,
-        baseY = 0,
+        -- must be positive
+        baseX = math.abs(math.sin(math.random() * 2 * math.pi) * RM.tileSize),
+        baseY = math.abs(math.cos(math.random() * 2 * math.pi) * RM.tileSize * 0.5),
         duration = 2,
         timer = 0,
         alpha = 1,
@@ -83,8 +84,8 @@ function TextBubble:newDamage(entity, amount, crit)
         amount = tostring(amount),
         x = 0,
         y = 0,
-        baseY = y,
-        baseX = x,
+        baseY = math.abs(math.sin(math.random() * 2 * math.pi) * RM.tileSize * 0.6) + RM.tileSize * 0.2,
+        baseX = math.abs(math.cos(math.random() * 2 * math.pi) * RM.tileSize * 0.6) + RM.tileSize * 0.2,
         offsetX = 0,
         duration = 2,
         timer = 0,
@@ -282,7 +283,7 @@ function TextBubbleManager:draw()
         if bubble.entityRef and bubble.alpha > 0 then
             r, g, b = unpack(bubble.color)
             love.graphics.setColor(r, g, b, bubble.alpha)
-            love.graphics.print(bubble.amount, bubble.x + bubble.entityRef.position.screenX + bubble.offsetX, bubble.y + bubble.entityRef.position.screenY)
+            love.graphics.print(bubble.amount, bubble.baseX + bubble.x + bubble.entityRef.position.screenX + bubble.offsetX, bubble.baseY + bubble.y + bubble.entityRef.position.screenY)
             love.graphics.setColor(1, 1, 1, 1)
         end
     end

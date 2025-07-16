@@ -1706,8 +1706,6 @@ local function setup(row)
             size = row.textBox.fontSize
         end
 
-        print("TextRow:setup: size = " .. size)
-
         font = getFont(text.font or "basis33", size)
         -- if text.font then
         --     font = love.graphics.newFont(text.font, size)

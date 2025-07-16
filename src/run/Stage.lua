@@ -228,8 +228,6 @@ function Stage:connectNodes()
         getValidEdges(currentRow, nextRow, i, false)
     end
 
-    print("size",#self.nodes,#self.nodes[1])
-
     -- connect ramaining nodes
     -- this shit needs a refactor...whatever. one day. as long as it doesn't break
     for i = #self.nodes - 1, 2, -1 do

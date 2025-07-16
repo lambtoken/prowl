@@ -6,6 +6,8 @@ local gs = require('src.state.GameState'):getInstance()
 local mold = require('libs.mold')
 local spriteTable = require('src.render.spriteTable')
 local tween = require('libs.tween')
+local mobData = require('src.generation.mobs')
+local itemData = require('src.generation.items')
 
 local animalBg = {}
 
@@ -16,56 +18,73 @@ function animalBg:load()
     self.time = 0
     self.animals = {}
     
+    local mobSprites = {}
+    for mobName, mobInfo in pairs(mobData) do
+        if mobInfo.sprite and spriteTable[mobInfo.sprite] then
+            table.insert(mobSprites, mobInfo.sprite)
+        end
+    end
+    
+    local itemSprites = {}
+    for itemName, itemInfo in pairs(itemData) do
+        if itemInfo.name and spriteTable[itemInfo.name] then
+            table.insert(itemSprites, itemInfo.name)
+        end
+    end
+    
     local x = math.ceil(RM.windowWidth / RM.tileSize)
-    local y = math.ceil(RM.windowHeight / RM.tileSize)
-
-    local animalTopLeft = {0, 0}
-    local animalBotRight = {17, 1}
-
-    local itemTopLeft = {0, 4}
-    local itemBotRight = {40, 7}
+    local y = math.ceil(RM.windowHeight / RM.tileSize) * 2
 
     local index = 1
 
     for i = 0, x do
         for j = 0, y do
-            local randAnimalX
-            local randAnimalY
-            if math.random() > 0.5 then
-                randAnimalX = animalTopLeft[1] + math.random(animalBotRight[1] - animalTopLeft[1])
-                randAnimalY = animalTopLeft[2] + math.random(animalBotRight[2] - animalTopLeft[2])
+            local spriteName
+            
+            if math.random() > 0.5 and #mobSprites > 0 then
+                spriteName = mobSprites[math.random(#mobSprites)]
+            elseif #itemSprites > 0 then
+                spriteName = itemSprites[math.random(#itemSprites)]
             else
-                randAnimalX = itemTopLeft[1] + math.random(itemBotRight[1] - itemTopLeft[1])
-                randAnimalY = itemTopLeft[2] + math.random(itemBotRight[2] - itemTopLeft[2])
+                goto continue
             end
 
             local offsetX = math.sin(self.time + index) * self.amp
             local offsetY = math.cos(self.time + index) * self.amp
-        
-            local quad = love.graphics.newQuad(randAnimalX * RM.spriteSize, randAnimalY * RM.spriteSize, RM.spriteSize, RM.spriteSize, RM.image)
             
-            local ax = i * self.size
-            local ay = j * self.size
-            table.insert(self.animals, {x = ax, y = ay, offsetX = offsetX, offsetY = offsetY, quad = quad})
+            local spriteCoords = spriteTable[spriteName]
+            if spriteCoords then
+                local quad = love.graphics.newQuad(
+                    spriteCoords[1] * RM.spriteSize, 
+                    spriteCoords[2] * RM.spriteSize, 
+                    RM.spriteSize, 
+                    RM.spriteSize, 
+                    RM.image
+                )
+                
+                local ax = i * self.size
+                local ay = j * self.size
+                table.insert(self.animals, {x = ax, y = ay, offsetX = offsetX, offsetY = offsetY, quad = quad})
+            end
+            
             index = index + 1
+            ::continue::
         end
     end
 end
 
 function animalBg:draw()
 
-    -- RM:pushShader("gray")
-
     love.graphics.clear(193/255, 224/255, 201/255, 1)
     for _, a in ipairs(self.animals) do
-        -- -0.1 + math.random() % 0.2
-        love.graphics.push()
-        love.graphics.translate(a.x + a.offsetX, a.y + a.offsetY)
+        RM:pushScreen()
+        love.graphics.scale(RM.scale)
+        local x = a.x + a.offsetX
+        local y = a.y + a.offsetY
+        love.graphics.translate(x, y)
         love.graphics.draw(RM.image, a.quad, - self.size/2, - self.size/2, 0, self.increase)
         love.graphics.pop()
     end
-
-    -- RM:popShader()
 
 end
 

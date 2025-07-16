@@ -29,10 +29,6 @@ local function defMissChance(attacker, target)
 end
 
 function combatSystem:init()
-    -- EVENTS
-    -- EventManager:on("onStep", function() 
-    --     on("onStep", matchState, entity)
-    -- end)
     EventManager:on("onStep", function(entity, attack)
         local matchState = gs.match
 

@@ -222,6 +222,7 @@ function EntityFactory:createObject(name, x, y)
 
     entity.metadata.type = 'object'
     self:applyDefault(entity, 'status')
+    self:applyDefault(entity, 'metadata')
     self:applyDefault(entity, 'position')
     self:applyDefault(entity, 'collider')
 

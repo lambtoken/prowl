@@ -96,6 +96,8 @@ function MatchManager:init_state_machine()
                 s.timerFlag = false
                 if s.instance.winnerId == 1 then
                     SoundManager:playSound('victory')
+                elseif s.instance.winnerId == 0 then
+                    SoundManager:playSound('loss')  -- Could use a different sound for draw
                 else
                     SoundManager:playSound('loss')
                 end
@@ -110,8 +112,16 @@ function MatchManager:init_state_machine()
                     -- change scene to pick Item Scene
                     
                     if s.instance.winnerId == 1 then
-                        SceneManager:switchScene("itemSelectNew")
+                        if gs.run.currentStage == 3 and gs.run.currentNodeCoords[1] == 7 then
+                            gs.run.runWon = true
+                            SceneManager:switchScene("runEnd")
+                        else
+                            SceneManager:switchScene("itemSelectNew")
+                        end
+                    elseif s.instance.winnerId == 0 then
+                        SceneManager:switchScene("runMap")
                     else
+                        -- Loss
                         gs.run:decreaseHealth()
                         if gs.run.runHealth > 0 then
                             SceneManager:switchScene("runMap")
@@ -127,7 +137,13 @@ function MatchManager:init_state_machine()
             end,
 
             draw = function(s) 
-                love.graphics.print(s.instance.winnerId == 1 and "You won" or "You lost", 0, 0)
+                local message = "You lost"
+                if s.instance.winnerId == 1 then
+                    message = "You won"
+                elseif s.instance.winnerId == 0 then
+                    message = "Draw"
+                end
+                love.graphics.print(message, 0, 0)
             end,
             
             exit = function() 
@@ -714,12 +730,10 @@ function MatchManager:checkForWinner()
     if #aliveTeams == 1 then
         self.winnerId = aliveTeams[1]
         self.states:set_state("result")
+    elseif #aliveTeams == 0 then
+        self.winnerId = 0
+        self.states:set_state("result")
     end
-
-    -- if #aliveTeams == 0 then
-    --     self.winnerId = 10000
-    --     self.states:set_state("result")
-    -- end
 end
 
 

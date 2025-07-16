@@ -126,6 +126,15 @@ function console:load_commands()
         
         return tonumber(a) + tonumber(b)
     end)
+    console:register("killx", function()
+        if not GameState.match and not GameState.run then
+            table.insert(self.history, "No match in progress.")
+            return nil
+        end
+        for _, entity in  ipairs(GameState.match.ecs:getEntities()) do
+            GameState.match.stateSystem:changeState(entity, "dead")
+        end
+    end)
 end
 
 function love.textinput(t)

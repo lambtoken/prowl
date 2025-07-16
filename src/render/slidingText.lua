@@ -103,7 +103,6 @@ function SlidingText:resize(w, h)
 end
 
 function SlidingText:slide(text, color)
-    print("SlidingText:slide", text)
     self.text = text
     self.color = color or {1, 1, 1}
     self:resize(RM.windowWidth, RM.windowHeight)
