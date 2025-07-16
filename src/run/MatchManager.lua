@@ -195,6 +195,16 @@ function MatchManager:init_state_machine()
     self.phase:set_state("stand_by_phase")
 end
 
+-- dear future self
+-- there might be an issue because we are not calling :removeEntity()
+-- for player members when match ends
+-- this could break any future :removeEntity() calls
+-- but we might not need to call it at all
+-- because we want to preserve all entities for stats
+
+-- pooling not needed right now, it's not a performance bottleneck
+-- smol turn based game
+
 function MatchManager:init_ecs()
     self.ecs = Concord.world()
 
@@ -217,7 +227,8 @@ function MatchManager:init_ecs()
         self.__systems.turnSystem,
         self.__systems.damageOverTimeSystem,
         self.__systems.markSystem,
-        self.__systems.collisionSystem
+        self.__systems.collisionSystem,
+        self.__systems.projectileSystem
     )
 
     self.moveSystem = self.ecs:getSystem(self.__systems.moveSystem)
@@ -236,6 +247,7 @@ function MatchManager:init_ecs()
     self.damageOverTimeSystem = self.ecs:getSystem(self.__systems.damageOverTimeSystem)
     self.markSystem = self.ecs:getSystem(self.__systems.markSystem)
     self.collisionSystem = self.ecs:getSystem(self.__systems.collisionSystem)
+    self.projectileSystem = self.ecs:getSystem(self.__systems.projectileSystem)
 end
 
 function MatchManager:generateTerrain(node_type)
@@ -415,7 +427,7 @@ function MatchManager:generateEnemies()
 
     local species = {}
 
-    -- -1 to acount for start node
+    -- -1 to account for start node
     local amountMin = stageMobAmount[gs.run.currentStage][self.matchNode.x - 1][1]
     local amountMax = stageMobAmount[gs.run.currentStage][self.matchNode.x - 1][2]
 
@@ -751,6 +763,17 @@ function MatchManager:positionPlayer()
     self.ecs:__flush()
 end
 
+function MatchManager:printAllEntities()
+    for _, entity in ipairs(self.ecs:getEntities()) do
+        print("ENTITY: " .. entity.metadata.type, entity.metadata.subType, entity.metadata.name)
+        print("ID: ", entity.metadata.id)
+        print("X: ", (entity.position and entity.position.x or "N/A"), "Y: ", (entity.position and entity.position.y or "N/A"))
+        print("TEAM: ", entity.metadata.team)
+        print("LEVEL: ", (entity.stats and entity.stats.current.level or "N/A"))
+        print("STATE: ", entity.state.current)
+        print("____________________")
+    end
+end
 
 function MatchManager:onExit()
 end

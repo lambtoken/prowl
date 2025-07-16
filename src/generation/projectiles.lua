@@ -15,7 +15,7 @@ local defaultMove = function(entity, dt)
         local dx, dy = targetX - pos.x, targetY - pos.y
         local lengthSq = dx * dx + dy * dy
         if lengthSq > 0.2 then
-            -- speed should be tile per second
+            -- speed should be tiles per second
             local normalIzed = math.sqrt(lengthSq)
             local normalizedX = dx / normalIzed
             local normalizedY = dy / normalIzed
@@ -24,11 +24,15 @@ local defaultMove = function(entity, dt)
             pos.lastStepX = pos.x
             pos.lastStepY = pos.y
             speed = speed * damping
+        else
+            pos.lastStepX = pos.x
+            pos.lastStepY = pos.y
+            entity.position.customMove = nil
         end
     end
 end
 
-function followTargetInstant(entity, dt)
+local followTargetInstant = function(entity, dt)
     local pos = entity.position
     local targetX = entity.projectile.targetX
     local targetY = entity.projectile.targetY
@@ -45,12 +49,13 @@ local projectiles = {
     arrow = {
         speed = DEFAULTS.SPEED,
         damping = DEFAULTS.DAMPING,
+        despawnTime = 1,
         moveFunction = defaultMove,
         onHit = function(matchState, source, target)
             if target.metadata.type == "animal" then
                 matchState.combatSystem:hit(target, 1)
                 source.collider.disabled = true
-                matchState.animationSystem:playAnimation(source, "trigger_death")
+                -- matchState.animationSystem:playAnimation(source, "trigger_death")
             end
             
         end
@@ -59,6 +64,7 @@ local projectiles = {
     snowball = {
         speed = 1.5,
         damping = DEFAULTS.DAMPING,
+        despawnTime = 1,
         moveFunction = defaultMove,
         onHit = function(matchState, source, target)
             if matchState.combatSystem:isValidTarget(target, source) then
@@ -71,6 +77,7 @@ local projectiles = {
     banana = {
         speed = DEFAULTS.SPEED,
         damping = DEFAULTS.DAMPING,
+        despawnTime = 1,
         moveFunction = defaultMove,
         onHit = function(matchState, source, target)
             if target.metadata.type == "animal" then

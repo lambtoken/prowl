@@ -30,7 +30,6 @@ end
 function EntityFactory:applyDefault(entity, comp)
     if comp == "metadata" then
         entity.metadata.id = self.idCounter
-        -- print("setting id", entity.metadata.id, entity.metadata.name)
         self.idCounter = self.idCounter + 1
     elseif comp == "stats" then
         if entity.metadata.type == "animal" and animalData[entity.metadata.name].stats then
@@ -289,6 +288,7 @@ function EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId)
         :give('state')
         :give('shader')
         :give('team', 0)
+        :give('timers')
 
     entity.metadata.type = 'projectile'
     entity.metadata.projectileType = type
@@ -297,6 +297,7 @@ function EntityFactory:createProjectile(type, x, y, targetX, targetY, ownerId)
     entity.projectile.targetY = targetY
     entity.projectile.speed = projectileData[type].speed
     entity.projectile.angle = math.atan2(targetY - y, targetX - x)
+    entity.projectile.despawnTime = projectileData[type].despawnTime or 3.0
    
     self:applyDefault(entity, 'position')
     self:applyDefault(entity, 'metadata')

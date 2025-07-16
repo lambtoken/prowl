@@ -44,32 +44,19 @@ function collisionSystem:update()
                     table.insert(colA.collidedWith, entityB.metadata.id)
                     table.insert(colB.collidedWith, entityA.metadata.id)
 
+                    if colA.state and not colA.state.alive or
+                        colB.state and not colB.state.alive then
+                            goto continue2
+                    end
+
                     if colA.onCollision then
-                        -- for index, value in ipairs(colA.ignoreIds) do
-                        --     print("colA ids: ", value)
-                        -- end
-                        -- for index, value in ipairs(colB.ignoreIds) do
-                        --     print("colB ids: ", value)
-                        -- end
-                        -- print(entityA.metadata.id, entityB.metadata.id)
-                        -- print("collision1")
                         colA.onCollision(entityA, entityB)
                     end
-
+                    colA.collidedWith[entityB.metadata.id] = true
+                    
                     if colB.onCollision then
-                        -- for index, value in ipairs(colA.ignoreIds) do
-                        --     print("colA ids: ", value)
-                        -- end
-                        -- for index, value in ipairs(colB.ignoreIds) do
-                        --     print("colB ids: ", value)
-                        -- end
-                        -- print(entityA.metadata.id, entityB.metadata.id)
-                        -- print("collision2")
                         colB.onCollision(entityB, entityA)
                     end
-
-                    -- Mark as colliding
-                    colA.collidedWith[entityB.metadata.id] = true
                     colB.collidedWith[entityA.metadata.id] = true
                 end
             else

@@ -9,6 +9,15 @@ local callbackRegistry = {
         if gs.match and gs.match.TextBubbleManager then
             gs.match.TextBubbleManager:endStatusEffect(data.bubbleId)
         end
+    end,
+    despawnProjectile = function(data)
+        -- this is fine for now
+        if gs.match and gs.match.ecs and data.entityId then
+            local entity = gs.match:getEntityById(data.entityId)
+            if entity.metadata and entity.metadata.type == "projectile" then
+                gs.match.stateSystem:changeState(entity, "dead")
+            end
+        end
     end
 }
 

@@ -42,7 +42,7 @@ function itemSelect:enter()
     
     self.generated_items = getRandomItems(math.random(1, 3), nItems) -- just names
 
-    -- self.generated_items[1] = math.random() > 0.5 and 'water_gun' or 'kite'
+    self.generated_items[1] = 'crossbow'
 
     for _, i in ipairs(self.generated_items) do
         local item = item_box(i)
