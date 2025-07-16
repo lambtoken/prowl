@@ -22,7 +22,6 @@ function crowdControlSystem:applyCC(entity, type, source)
     local matchState = sceneManager.currentScene.match
 
     if cc.callback(matchState, entity, source) then
-        -- Create status effect bubble
         EventManager:emit("shortCCBubble", entity, cc.adjective)
         
         -- Set up removal of bubble when effect ends

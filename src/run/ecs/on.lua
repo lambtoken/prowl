@@ -9,7 +9,6 @@ local function on(callback, matchState, entity, ...)
     if entity.metadata.type == 'animal' then
         local animal = mobData[entity.metadata.name]
         if animal.passive and animal.passive[callback] then
-            -- Pass all arguments as they are
             animal.passive[callback](matchState, entity, ...)
         end
         if entity.inventory and entity.inventory.items then

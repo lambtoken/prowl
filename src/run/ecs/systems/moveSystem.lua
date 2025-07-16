@@ -22,23 +22,20 @@ local function calculateDirectionFromTweens(position)
         local dx = tweenData.targetX - tweenData.startX
         local dy = tweenData.targetY - tweenData.startY
         
-        -- Normalize
         local length = math.sqrt(dx * dx + dy * dy)
         if length > 0 then
             dx, dy = dx / length, dy / length
         end
         
-        -- Sum
         totalDX = totalDX + dx
         totalDY = totalDY + dy
     end
     
-    -- Normalize the resultant direction vector
     local totalLength = math.sqrt(totalDX * totalDX + totalDY * totalDY)
     if totalLength > 0 then
         return totalDX / totalLength, totalDY / totalLength
     else
-        return 0, 0 -- No movement
+        return 0, 0
     end
 end
 

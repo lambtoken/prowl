@@ -116,8 +116,9 @@ function combatSystem:init()
     end)
 
     EventManager:on("onHover", function(entity) 
-        local matchState = sceneManager.currentScene.match
 
+        local matchState = sceneManager.currentScene.match
+        
         local targets = matchState.moveSystem:findByCoordinates(entity.position.x, entity.position.y)
         
         EventManager:emit("onHoverAny", entity)
@@ -127,18 +128,20 @@ function combatSystem:init()
                 if target == entity or not target.state.alive then 
                     goto continue  -- Skip this target instead of returning
                 end
-                    
-                local mob = mobData[entity.metadata.name]
-                
-                if mob.passive and mob.passive.onHover then
-                    mob.passive.onHover(matchState, target, entity)
-                end
 
-                for _, item in ipairs(entity.inventory.items) do
-                    if item.passive and item.passive.onHover then
-                        item.passive.onHover(matchState, target, entity)
-                    end
-                end
+                on("onHover", matchState, entity, target)
+                
+                -- local mob = mobData[entity.metadata.name]
+                
+                -- if mob.passive and mob.passive.onHover then
+                --     mob.passive.onHover(matchState, target, entity)
+                -- end
+
+                -- for _, item in ipairs(entity.inventory.items) do
+                --     if item.passive and item.passive.onHover then
+                --         item.passive.onHover(matchState, target, entity)
+                --     end
+                -- end
                 
                 ::continue::
             end

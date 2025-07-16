@@ -1,4 +1,5 @@
 local soundManager = require("src.sound.SoundManager"):getInstance()
+local ccFunctions = require("src.run.combat.crowdControlFunctions")
 
 local effects = {
 
@@ -15,8 +16,50 @@ local effects = {
     toro = {
         name = 'toro',
         description = 'Passing through the enemy pushes them aside.',
-        onHover = function(matchState, target, source)
-            matchState.crowdControlSystem:applyCC(target, "displace", source)
+        onHover = function(matchState, source, target)
+            if not target.status or not target.status.current.isDisplaceable then
+                return false
+            end
+
+            local destX, destY = matchState.moveSystem:getDestination(target)
+
+            local dx = target.position.x - source.position.lastStepX
+            local dy = target.position.y - source.position.lastStepY
+                        
+            local ldx, ldy = dy, -dx
+            local rdx, rdy = -dy, dx
+            
+            ldx = ldx ~= 0 and (ldx / math.abs(ldx)) or 0
+            ldy = ldy ~= 0 and (ldy / math.abs(ldy)) or 0
+            rdx = rdx ~= 0 and (rdx / math.abs(rdx)) or 0
+            rdy = rdy ~= 0 and (rdy / math.abs(rdy)) or 0
+            
+            local lSteppable = matchState:isSteppable(destX + ldx, destY + ldy, target)
+            local rSteppable = matchState:isSteppable(destX + rdx, destY + rdy, target)
+            
+            if lSteppable and rSteppable then
+                if math.random() > 0.5 then
+                    dx, dy = ldx, ldy
+                else
+                    dx, dy = rdx, rdy
+                end
+            elseif lSteppable and not rSteppable then
+                dx, dy = ldx, ldy
+            elseif not lSteppable and rSteppable then
+                dx, dy = rdx, rdy
+            else
+                return false
+            end
+            
+            local displaceX, displaceY = ccFunctions.checkPath(matchState, destX, destY, dx, dy, 1)
+            
+            if target.position.x == displaceX and target.position.y == displaceY then
+                return false
+            else
+                soundManager:playSound("displace")
+                matchState.moveSystem:move(target, 'displace', displaceX, displaceY)
+                return true
+            end
         end
     },
 
