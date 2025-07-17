@@ -145,6 +145,10 @@ function mainMenu:enter()
     local exit_btn = buttons:addChild(mold.Button("Exit"))
         :setTextMargin("20px")
 
+    function exit_btn.onMouseReleased()
+        love.event.quit()
+    end
+
     for index, child in ipairs(buttons.children) do
         -- child.bgColor = {0.2, 0.2, 0.2, 0.8}
         child.bgColor = {0.7, 0.7, 0.7, 0.9}

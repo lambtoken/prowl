@@ -442,7 +442,7 @@ local items = {
         pattern = {},
         passive = {
             description = "Moving over enemies causes them to take 1 damage.",
-            onHover = function(matchState, target, source)
+            onHover = function(matchState, source, target)
                 matchState.combatSystem:hit(target, 1)
             end
         },

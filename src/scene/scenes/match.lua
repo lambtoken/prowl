@@ -298,19 +298,18 @@ end
 
 function match:keypressed(key)
     if key == 'escape' then
-        -- sceneM:switchScene('runMap')
         self.paused = not self.paused
     end
 
-    if key == 'a' then
-        self.match.winnerId = 1
-        self.match.states:set_state("result")
-    end
+    -- if key == 'a' then
+    --     self.match.winnerId = 1
+    --     self.match.states:set_state("result")
+    -- end
 
-    if key == 's' then
-        self.match.winnerId = 2
-        self.match.states:set_state("result")
-    end
+    -- if key == 's' then
+    --     self.match.winnerId = 2
+    --     self.match.states:set_state("result")
+    -- end
 end
 
 function match:createTooltip(entity)

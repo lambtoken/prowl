@@ -155,11 +155,11 @@ local data = {
         --     name = 'hydra',
         --     unlocked = false
         -- },
-        {
-            key = 'wyvern',
-            name = 'wyvern',
-            unlocked = false
-        },
+        -- {
+        --     key = 'wyvern',
+        --     name = 'wyvern',
+        --     unlocked = false
+        -- },
         {
             key = 'magpie',
             name = 'magpie',

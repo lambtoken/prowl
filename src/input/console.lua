@@ -135,6 +135,14 @@ function console:load_commands()
             GameState.match.stateSystem:changeState(entity, "dead")
         end
     end)
+    console:register("win", function()
+        if not GameState.match and not GameState.run then
+            table.insert(self.history, "No match in progress.")
+            return nil
+        end
+        GameState.match.winnerId = 1
+        GameState.match.states:set_state("result")
+    end)
 end
 
 function love.textinput(t)

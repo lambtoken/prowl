@@ -15,6 +15,13 @@ Unique build every playthrough!
 - **10** different biomes/places
 - Damage over time, status effects, crowd control, projectiles and more
 
+### Screenshots
+
+![screenshot1](https://i.imgur.com/a2Cc8nb.png)
+![screenshot2](https://i.imgur.com/jEWKOxF.png)
+![screenshot3](https://i.imgur.com/h5aVuXM.png)
+![screenshot4](https://i.imgur.com/kX3v9J2.png)
+
 ## Installation
 
 One way of playing is if you are familiar with LOVE2d, install it on your machine and just clone this repo, cd into it and run:

@@ -50,9 +50,9 @@ end
 
 local anchors = {
     {
-        [1] = {levelUpChance=0, negativeChance=1, minLevel=1, maxLevel=2},
-        [5] = {levelUpChance=1, negativeChance=0, minLevel=4, maxLevel=4}
-        -- [5] = {levelUpChance=1, negativeChance=0, minLevel=2, maxLevel=4}
+        [1] = {levelUpChance=0, negativeChance=1, minLevel=1, maxLevel=1},
+        [5] = {levelUpChance=1, negativeChance=0.5, minLevel=1, maxLevel=3},
+        [7] = {levelUpChance=1, negativeChance=0, minLevel=3, maxLevel=4}
     },
     {
         [1] = {levelUpChance=0.5, negativeChance=0, minLevel=5, maxLevel=7},
