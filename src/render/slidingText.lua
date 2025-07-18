@@ -118,7 +118,7 @@ function SlidingText:draw()
     love.graphics.setFont(getFont('basis33', self.fontSize))
     love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.opacity)
     -- love.graphics.print(self.text, 100, 100)
-    love.graphics.print(self.text, self.tweenX * RM.virtualWidth - self.halfTextWidth, self.screenY + math.sin(love.timer.getDelta()) * 20)
+    love.graphics.print(self.text, self.tweenX * RM.windowWidth - self.halfTextWidth, self.screenY + math.sin(love.timer.getDelta()) * 20)
 end
 
 function SlidingText:update(dt)

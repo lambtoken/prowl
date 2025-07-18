@@ -117,7 +117,20 @@ end
 
 function InputManager:mousemoved(x, y)
     if self.drag then
-        self.camera:lookAt(self.dragX - (x - self.dragMouseX), self.dragY - (y - self.dragMouseY))
+        local dx = x - self.dragMouseX
+        local dy = y - self.dragMouseY
+        
+        local newCamX = self.dragX - dx
+        local newCamY = self.dragY - dy
+        
+        local boundary = RM.tileSize * 2
+        local mapWidth = self.match.width * RM.tileSize
+        local mapHeight = self.match.height * RM.tileSize
+        
+        local clampedX = math.max(-boundary, math.min(mapWidth + boundary, newCamX))
+        local clampedY = math.max(-boundary, math.min(mapHeight + boundary, newCamY))
+        
+        self.camera:lookAt(clampedX, clampedY)
     end
     
     self.hoveredTileX, self.hoveredTileY = self:getHoveredTileCoordinates()

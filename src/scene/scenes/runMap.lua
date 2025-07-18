@@ -76,10 +76,12 @@ function runMap:enter(s)
     end
 
     self.hearts = hearts:new(gs.run)
+    self.animationTime = 0
 end
 
 function runMap:update(dt)
     noiseShader:send("time", love.timer.getTime())
+    self.animationTime = self.animationTime + dt
 end
 
 function runMap:mousemoved(x, y)
@@ -145,28 +147,51 @@ function runMap:draw(s)
                 end
             end
 
-
+            local nodeColor = {190/255, 163/255, 201/255}
+            local connectedColor = {0.6, 0.3, 0.6}
+            local passedColor = {0.3, 0.3, 0.3}
+            
             -- set node background color accordingly
             if not nodeContains(node.from, gs.run.currentNodeCoords) then
-                love.graphics.setColor(190/255, 163/255, 201/255)
+                -- unconnected node
+                love.graphics.setColor(unpack(nodeColor))
             else
-                love.graphics.setColor(0.6, 0.3, 0.6)
-            end
-
-            if node.passed then
-                love.graphics.setColor(0.3, 0.3, 0.3)
+                -- connected node
+                love.graphics.setColor(unpack(connectedColor))
             end
             
-            -- Apply a slight Y-offset elevation effect when hovering
+            if node.passed then
+                -- passed node
+                love.graphics.setColor(unpack(passedColor))
+            end
+            
+            -- need to put all these colors into variables in some global table
+            
             local elevationOffset = 0
             if adventureConfig.hoveredNode == node then
-                elevationOffset = -5  -- Lift the node up by 5 pixels
+                elevationOffset = -5
             end
-
+            
+            if gs.run.currentNodeCoords[1] == i and gs.run.currentNodeCoords[2] == j then
+                local maskColor = {nodeColor[1] / 2, nodeColor[2] / 2, nodeColor[3] / 2, 1}
+                
+                love.graphics.setColor(unpack(maskColor))
+                love.graphics.rectangle(
+                    'fill',
+                    nodeX,
+                    nodeY + elevationOffset,
+                    adventureConfig.nodeIconSize,
+                    adventureConfig.nodeIconSize
+                )
+             
+                local playerNodeColor = {nodeColor[1], nodeColor[2], nodeColor[3], math.abs(math.sin(self.animationTime * 2) * 0.5) + 0.3}
+                love.graphics.setColor(unpack(playerNodeColor))
+            end
+            
             love.graphics.rectangle(
                 'fill',
                 nodeX,
-                nodeY + elevationOffset,  -- Apply the offset here
+                nodeY + elevationOffset,
                 adventureConfig.nodeIconSize,
                 adventureConfig.nodeIconSize
             )
@@ -212,6 +237,7 @@ function runMap:draw(s)
         end
 
         if gs.run.currentNodeCoords[1] == i then
+
             if gs.run.starterSpecies then
                 local quad = love.graphics.newQuad(
                     spriteTable[gs.run.starterSpecies][1] * RM.spriteSize,
