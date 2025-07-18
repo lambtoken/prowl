@@ -4,3 +4,4 @@ docs/*
 Thumbs.db
 build/
 love-runtime/
+todo/*

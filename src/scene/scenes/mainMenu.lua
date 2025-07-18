@@ -133,6 +133,7 @@ function mainMenu:enter()
         :setMargin("15px", "bottom")
 
     function new_game_btn.onMouseReleased()
+        gs.run = nil
         SceneManager:switchScene('animalSelect')
         soundM:playSound('clicktech2')
     end
