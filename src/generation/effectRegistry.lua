@@ -277,38 +277,53 @@ local effects = {
         end
     },
 
+    -- banananana = {
+    --     onStep = function(matchState, source)
+    --         local nearbyEnemy = matchState.moveSystem:getNearestEntity(source, 'animal', source.team.teamId)
+
+    --         if nearbyEnemy then
+    --             local offsets = {
+    --                 {1, 0}, {-1, 0}, {0, 1}, {0, -1}
+    --             }
+
+    --             local freeTiles = {}
+
+    --             for _, offset in ipairs(offsets) do
+    --                 local ox, oy = offset[1], offset[2]
+    --                 local tx = nearbyEnemy.position.x + ox
+    --                 local ty = nearbyEnemy.position.y + oy
+
+    --                 local occupied = matchState.moveSystem:findByCoordinates(tx, ty)
+    --                 if #occupied == 0 then
+    --                     table.insert(freeTiles, { tx, ty })
+    --                 end
+    --             end
+
+    --             if #freeTiles > 0 then
+    --                 local targetTile = freeTiles[math.random(#freeTiles)]
+    --                 local tx, ty = targetTile[1], targetTile[2]
+
+    --                 soundManager:playSound("arrow")
+    --                 matchState:newProjectile('banana',
+    --                     source.position.x, source.position.y,
+    --                     tx, ty,
+    --                     source.metadata.id
+    --                 )
+    --             end
+    --         end
+    --     end
+    -- }
+
+    -- this is just for now until we rework the projectile system
+
     banananana = {
+        description = "Moving has 20% chance to throw a banana at a random enemy.",
         onStep = function(matchState, source)
-            local nearbyEnemy = matchState.moveSystem:getNearestEntity(source, 'animal', source.team.teamId)
-
-            if nearbyEnemy then
-                local offsets = {
-                    {1, 0}, {-1, 0}, {0, 1}, {0, -1}
-                }
-
-                local freeTiles = {}
-
-                for _, offset in ipairs(offsets) do
-                    local ox, oy = offset[1], offset[2]
-                    local tx = nearbyEnemy.position.x + ox
-                    local ty = nearbyEnemy.position.y + oy
-
-                    local occupied = matchState.moveSystem:findByCoordinates(tx, ty)
-                    if #occupied == 0 then
-                        table.insert(freeTiles, { tx, ty })
-                    end
-                end
-
-                if #freeTiles > 0 then
-                    local targetTile = freeTiles[math.random(#freeTiles)]
-                    local tx, ty = targetTile[1], targetTile[2]
-
+            if math.random() < 0.2 then
+                local nearestEntity = matchState.moveSystem:getNearestEntity(source, 'animal', source.team.teamId)
+                if nearestEntity then
                     soundManager:playSound("arrow")
-                    matchState:newProjectile('banana',
-                        source.position.x, source.position.y,
-                        tx, ty,
-                        source.metadata.id
-                    )
+                    matchState:newProjectile('banana', source.position.x, source.position.y, nearestEntity.position.x, nearestEntity.position.y, source.metadata.id)
                 end
             end
         end

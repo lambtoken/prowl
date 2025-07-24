@@ -74,8 +74,27 @@ local projectiles = {
         end
     },
 
+    -- banana = {
+    --     speed = DEFAULTS.SPEED,
+    --     damping = DEFAULTS.DAMPING,
+    --     despawnTime = 1,
+    --     moveFunction = defaultMove,
+    --     onHit = function(matchState, source, target)
+    --         if target.metadata.type == "animal" then
+    --             matchState.combatSystem:hit(target, 1)
+    --             source.collider.disabled = true
+    --             matchState.animationSystem:playAnimation(source, "trigger_death")
+    --         end
+    --     end,
+    --     onLanding = function(matchState, source, target)
+    --         -- spawn banana
+    --         -- destroy self
+    --         source.position.customMove.active = false
+    --     end
+    -- },
+
     banana = {
-        speed = DEFAULTS.SPEED,
+        speed = 7,
         damping = DEFAULTS.DAMPING,
         despawnTime = 1,
         moveFunction = defaultMove,
@@ -83,13 +102,9 @@ local projectiles = {
             if target.metadata.type == "animal" then
                 matchState.combatSystem:hit(target, 1)
                 source.collider.disabled = true
-                matchState.animationSystem:playAnimation(source, "trigger_death")
+                -- matchState.animationSystem:playAnimation(source, "trigger_death")
             end
-        end,
-        onLanding = function(matchState, source, target)
-            -- spawn banana
-            -- destroy self
-            source.position.customMove.active = false
+            
         end
     },
 }

@@ -95,11 +95,13 @@ end
 function RenderManager:resize(w, h)
     self.virtualWidth = w
     self.virtualHeight = h
-    self.scale = math.min(self.virtualWidth / self.windowWidth, self.virtualHeight / self.windowHeight)
+    
+    local rawScale = math.min(self.virtualWidth / self.windowWidth, self.virtualHeight / self.windowHeight)
+    
+    self.scale = math.floor(rawScale * self.tileSize) / self.tileSize
+    
     self.offsetX = math.floor((self.virtualWidth - self.windowWidth * self.scale) / 2)
     self.offsetY = math.floor((self.virtualHeight - self.windowHeight * self.scale) / 2)
-
-    -- self.tileSize = math.floor(self.windowHeight / 10 / 16) * 16
 end
 
 function RenderManager:pushVirtual()

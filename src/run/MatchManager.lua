@@ -792,6 +792,11 @@ end
 function MatchManager:onExit()
 end
 
+function MatchManager:resize(w, h)
+    -- Update noise shader resolution for board rendering
+    noiseShader:send("resolution", {w, h})
+end
+
 
 function MatchManager:update(dt)
     self.ecs:emit("update", dt)

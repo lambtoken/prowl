@@ -8,6 +8,6 @@ function love.conf(t)
     t.window.height = 720
     t.window.minwidth = 640
     t.window.minheight = 480
-    t.console = true
+    t.console = false
     t.window.vsync = 0
 end

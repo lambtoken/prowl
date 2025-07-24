@@ -123,6 +123,8 @@ function mainMenu:enter()
     local buttons = root:addContainer()
         :setWidth("auto")
         :setHeight("auto")
+        :setMargin("20px", "top")
+        :setMargin("20px", "bottom")
         :setJustifyContent("space-evenly")
         :setAlignContent("center")
 
@@ -200,9 +202,9 @@ function mainMenu:enter()
     end
 
     -- version
-    local ver = root:addChild(mold.TextBox:new("v0.1.0"))
-        :setPosition("fixed")
+    local ver = root:addChild(mold.TextBox:new("v0.1.1"))
         :setMargin("auto", "top")
+        :setPosition("relative")
         :setSize(50)
 
     root:resize()
