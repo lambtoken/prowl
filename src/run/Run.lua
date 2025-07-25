@@ -8,13 +8,16 @@ local stageConfig = require "src.run.stageConfig"
 
 local Run = class("Run")
 
+local RUN_HEALTH = 3
+
 function Run:initialize(starterSpecies, seed)
     self.starterSpecies = starterSpecies
     self.currentStage = 1
     self.stages = {}
     self.team = {}
     self.currentNodeCoords = {1, 1}
-    self.runHealth = 5
+    self.runMaxHealth = RUN_HEALTH
+    self.runHealth = RUN_HEALTH
 
     self.idCounter = 0
 

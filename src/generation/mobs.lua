@@ -904,7 +904,7 @@ local mobs = {
         sprite = 'bee',
         stats = {
             atk = 1,
-            def = 0,
+            def = -1,
             maxHp = 1,
             moves = DEFAULT.moves,
             crit = DEFAULT.crit,
@@ -923,11 +923,12 @@ local mobs = {
         },
         atkPattern = {
             {0, 0, 0, 0, 0},
-            {0, 1, 1, 1, 0},
+            {0, 0, 1, 0, 0},
             {0, 1, 0, 1, 0},
-            {0, 1, 1, 1, 0},
+            {0, 0, 1, 0, 0},
             {0, 0, 0, 0, 0}
-        }
+        },
+        passive = ER.sting
     },
     butterfly = 
     {
@@ -935,7 +936,7 @@ local mobs = {
         sprite = 'butterfly',
         stats = {
             atk = 1,
-            def = 0,
+            def = -2,
             maxHp = 2,
             moves = DEFAULT.moves,
             crit = DEFAULT.crit,

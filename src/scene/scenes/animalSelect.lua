@@ -34,7 +34,6 @@ function animalSelect:enter()
         :setAlignContent("center")
         :setJustifyContent("center")
         :setDirection("column")
-        -- :setMode("squish")
 
     -- self.left_container.bgColor = {0.8, 0.8, 0.8, 1}
         

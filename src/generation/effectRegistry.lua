@@ -327,6 +327,14 @@ local effects = {
                 end
             end
         end
+    },
+
+    sting = {
+        onAttack = function(matchState, source, target)
+            if math.random() < 0.2 then
+                matchState.damageOverTimeSystem:giveDotEffect(target, source, 'poison', 1, true)
+            end
+        end
     }
 }
 

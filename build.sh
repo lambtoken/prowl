@@ -33,7 +33,7 @@ rm -rf diet/
 # win
 mkdir ./build/prowl-win
 cp ./love-runtime/love-11.5-win64/* ./build/prowl-win/
-cat ./build/prowl-win/lovec.exe ./build/prowl.love > ./build/prowl-win/prowl.exe
+cat ./build/prowl-win/love.exe ./build/prowl.love > ./build/prowl-win/prowl.exe
 rm ./build/prowl-win/love.exe
 rm ./build/prowl-win/lovec.exe
 rm ./build/prowl-win/readme.txt

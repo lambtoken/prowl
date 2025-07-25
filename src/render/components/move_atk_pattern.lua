@@ -13,25 +13,27 @@ local function generate_pattern(pattern, kind)
 
     local container = mold.Container:new()
 
+    container:setMode("squish")
     for _, row in ipairs(pattern) do
         local r = mold.Container:new()
         r:setDirection("row")
-        r:setWidth("auto")
-        r:setHeight("auto")
+        r:setWidth("100%")
+        r:setHeight("100%")
 
         for _, cell in ipairs(row) do
             local c
             
             if cell == 1 then
                 c = portrait(sprite)
+                c:setScaleBy("width")
             else
                 c = mold.Container:new()
             end
 
             -- c:debug()
 
-            c:setWidth("50px")
-            c:setHeight("50px")
+            c:setWidth("100%")
+            c:setHeight("100%")
             c:playAnimation("rand_wave", true)
             
             r:addChild(c)
@@ -40,8 +42,8 @@ local function generate_pattern(pattern, kind)
         container:addChild(r)
     end
 
-    container:setWidth("auto")
-    container:setHeight("auto")
+    container:setWidth("256px")
+    container:setHeight("256px")
 
     return container
 end

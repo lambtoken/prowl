@@ -898,18 +898,47 @@ function Container:_resizeChildren()
             end
         end
         
-        local availableSpaceMain = 200 --self['c' .. props.main_size]
-        local availableSpaceCross = 200 --self['c' .. props.cross_size]
+        local availableSpaceMain = self['c' .. props.main_size]
+        local availableSpaceCross = self['c' .. props.cross_size]
         local scaleFactorMain = availableSpaceMain / totalChildrenSizeMain
         local scaleFactorCross = availableSpaceCross / totalChildrenSizeCross
 
         for _, child in ipairs(childrenToSquish) do
-            child['c' .. props.main_size] = child['c' .. props.main_size] * scaleFactorMain
-            child['c' .. props.cross_size] = child['c' .. props.cross_size] * scaleFactorCross
-            child['m' .. props.main_size] = child['m' .. props.main_size] * scaleFactorMain
-            child['m' .. props.cross_size] = child['m' .. props.cross_size] * scaleFactorCross
-            child['p' .. props.main_size] = child['p' .. props.main_size] * scaleFactorMain
-            child['p' .. props.cross_size] = child['p' .. props.cross_size] * scaleFactorCross
+
+            if child.scaleBy and child._handleAspectRatio then
+                local newMainSize, newCrossSize
+                
+                if child.scaleBy == SCALE_BY.WIDTH then
+                    newMainSize = child['c' .. props.main_size] * scaleFactorMain
+                    if props.main_size == "w" then
+                        newMainSize, newCrossSize = child:_handleAspectRatio(newMainSize, child['c' .. props.cross_size])
+                    else
+                        newCrossSize, newMainSize = child:_handleAspectRatio(child['c' .. props.cross_size], newMainSize)
+                    end
+                elseif child.scaleBy == SCALE_BY.HEIGHT then
+                    newCrossSize = child['c' .. props.cross_size] * scaleFactorCross
+                    if props.cross_size == "h" then
+                        newMainSize, newCrossSize = child:_handleAspectRatio(child['c' .. props.main_size], newCrossSize)
+                    else
+                        newCrossSize, newMainSize = child:_handleAspectRatio(newCrossSize, child['c' .. props.main_size])
+                    end
+                end
+                
+                child['c' .. props.main_size] = newMainSize
+                child['c' .. props.cross_size] = newCrossSize
+                child['m' .. props.main_size] = newMainSize
+                child['m' .. props.cross_size] = newCrossSize
+                child['p' .. props.main_size] = newMainSize
+                child['p' .. props.cross_size] = newCrossSize
+            else
+                child['c' .. props.main_size] = child['c' .. props.main_size] * scaleFactorMain
+                child['c' .. props.cross_size] = child['c' .. props.cross_size] * scaleFactorCross
+                child['m' .. props.main_size] = child['m' .. props.main_size] * scaleFactorMain
+                child['m' .. props.cross_size] = child['m' .. props.cross_size] * scaleFactorCross
+                child['p' .. props.main_size] = child['p' .. props.main_size] * scaleFactorMain
+                child['p' .. props.cross_size] = child['p' .. props.cross_size] * scaleFactorCross
+            end
+            
             child.cMargin[props.start_margin] = child.cMargin[props.start_margin] * scaleFactorMain
             child.cMargin[props.end_margin] = child.cMargin[props.end_margin] * scaleFactorMain
             child.cMargin[props.cross_start_margin] = child.cMargin[props.cross_start_margin] * scaleFactorCross
@@ -920,11 +949,8 @@ function Container:_resizeChildren()
             child.cPadding[props.cross_end_margin] = child.cPadding[props.cross_end_margin] * scaleFactorCross
         end
         
-        -- Force repositioning after squish
-        print("Forcing reposition after squish")
         self:_positionChildren()
         
-        -- Update parent's content size to reflect squished children
         if self.parent then
             local parentProps
             if self.parent.flexDirection == FLEX_DIRECTION.ROW then
@@ -933,14 +959,12 @@ function Container:_resizeChildren()
                 parentProps = COLUMN_LOOKUP
             end
             
-            -- Recalculate parent's content size based on squished children
             local totalSquishedSize = 0
             for _, child in ipairs(self.children) do
                 if child.position == POSITION_TYPES.STATIC or child.position == POSITION_TYPES.RELATIVE then
                     totalSquishedSize = totalSquishedSize + child['m' .. parentProps.main_size]
                 end
             end
-            print("Parent content size after squish: " .. totalSquishedSize)
         end
         
         remainingSpace = 0
@@ -2238,20 +2262,16 @@ end
 
 function ImageBox:setScaleBy(str)
     assert(type(str) == "string", "Argument must be a string!")
-    -- add a check for SCALE_BY values
+    -- assert(SCALE_BY[str], "Invalid scale by value: " .. str)
     self.scaleBy = str
     return self
 end
 
 
 function ImageBox:draw()
-    -- love.graphics.push()
-    -- love.graphics.rotate(self.tr)
-    -- love.graphics.scale(self.tsx, self.tsy)
     Box.draw(self)
     love.graphics.setColor(1,1,1,1)
     love.graphics.draw(self.image, -self.cPivotX, -self.cPivotY, 0, self.scaleX, self.scaleY)
-    -- love.graphics.pop()
 end
 
 
@@ -2272,8 +2292,6 @@ function QuadBox:initialize(texture, x, y, w, h)
 end
 
 function QuadBox:setScale()
-    -- self:setWidth(w .. "px")
-    -- self:setHeight(h .. "px")
     self.scaleX = self.cw / self.origWidth
     self.scaleY = self.ch / self.origHeight
 end

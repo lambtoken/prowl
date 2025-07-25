@@ -4,6 +4,7 @@ local sceneM = require('src.scene.SceneManager'):getInstance()
 local gs = require('src.state.GameState'):getInstance()
 local mold = require "libs.mold"
 local RM = require("src.render.RenderManager"):getInstance()
+local portrait = require("src.render.components.portrait")
 
 local test = "aaaaaaa"
 
@@ -26,10 +27,19 @@ function uiTest:enter()
     self.root:addChild(self.container)
 
     self.inner = mold.Container:new()
-        :setWidth("100px")
-        :setHeight("1000px")
+        :setWidth("1000px")
+        :setHeight("100px")
         :setDirection("row")
         :debug()
+
+    for _ = 1, 10 do
+        self.container:addChild(portrait("chicken")
+            :setWidth("100px")
+            :setHeight("100px")
+            :setScaleBy("width")
+            :debug()
+        )
+    end
 
     self.container:addChild(self.inner)
 

@@ -17,7 +17,7 @@ end
 function hearts:draw()
     local quad = love.graphics.newQuad(spriteTable["heart_empty"][1] * RM.spriteSize, spriteTable["heart_empty"][2] * RM.spriteSize, RM.spriteSize, RM.spriteSize, RM.image)
 
-    for i = 1, 3 do
+    for i = 1, self.run.runMaxHealth do
         love.graphics.draw(RM.image, quad,  math.floor((i - 1) * (RM.tileSize - 10)), RM.windowHeight - RM.tileSize, 0, RM.increaseFactor)
     end
 
