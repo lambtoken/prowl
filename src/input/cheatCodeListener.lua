@@ -11,8 +11,6 @@ listener.keypressed = function(key)
     end
 
     table.insert(pressed, 1, key)
-
-    pretty.print(pressed)
     
     for i, cheat in ipairs(cheatCodes) do
 

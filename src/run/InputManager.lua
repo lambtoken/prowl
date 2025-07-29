@@ -36,6 +36,9 @@ function InputManager:new(camera, currentMatch)
 end
 
 function InputManager:mousepressed(x, y, btn)
+    if self.match.winnerId then
+        return
+    end
 
     if btn == 2 and self.selectedAnimal then
         self.selectedAnimal.state.pickedUp = false

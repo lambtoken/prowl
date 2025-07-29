@@ -41,7 +41,7 @@ local function new_stats(entity)
         def = '/'
     end
 
-    if entity.stats and entity.stats.current and entity.stats.current.hp then
+    if entity.stats and entity.stats.current and entity.stats.current.maxHp then
         hp = entity.stats.current.maxHp
     else
         hp = '/'

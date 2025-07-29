@@ -1,7 +1,7 @@
 local songNames = require 'src.sound.songs'
 local gs = require('src.state.GameState'):getInstance()
 
-local musicVolume = 0.3
+local musicVolume = 0.5
 
 local music = {}
 

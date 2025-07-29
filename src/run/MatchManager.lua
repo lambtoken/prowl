@@ -92,19 +92,31 @@ function MatchManager:init_state_machine()
 
             enter = function(s)
                 s.sceneTimer = 0
-                s.sceneTime = 0
+                s.sceneTime = 2
                 s.timerFlag = false
                 if s.instance.winnerId == 1 then
                     SoundManager:playSound('victory')
+                    s.balloonsTimer = 0
+                    s.balloonsTime = 0.5
+                    SceneManager.currentScene:displayResult("You won")
                 elseif s.instance.winnerId == 0 then
-                    SoundManager:playSound('loss')  -- Could use a different sound for draw
+                    SoundManager:playSound('loss')
+                    SceneManager.currentScene:displayResult("Draw")
                 else
                     SoundManager:playSound('loss')
+                    SceneManager.currentScene:displayResult("You lost")
                 end
             end,
             
             update = function(s, dt) 
                 s.sceneTimer = s.sceneTimer + dt
+                if s.balloonsTime then
+                    s.balloonsTimer = s.balloonsTimer + dt
+                    if s.balloonsTimer >= s.balloonsTime then
+                        SceneManager.balloons:emit(20)
+                        s.balloonsTimer = 0
+                    end
+                end
                 
                 if s.sceneTimer >= s.sceneTime and s.timerFlag == false then
                    
@@ -137,13 +149,6 @@ function MatchManager:init_state_machine()
             end,
 
             draw = function(s) 
-                local message = "You lost"
-                if s.instance.winnerId == 1 then
-                    message = "You won"
-                elseif s.instance.winnerId == 0 then
-                    message = "Draw"
-                end
-                love.graphics.print(message, 0, 0)
             end,
             
             exit = function() 
@@ -716,7 +721,7 @@ function MatchManager:checkForWinner()
     for teamId, team in ipairs(self.teamManager.teams) do
         local teamAlive = false
         for _, member in ipairs(team.members) do
-            if member.state.current ~= "dead" then
+            if member.state.alive then
                 teamAlive = true
                 break
             end
@@ -744,6 +749,10 @@ function MatchManager:removeEntitiesFromTheWorld()
     
     for _, entity in ipairs(self.ecs:getEntities()) do
         self.ecs:removeEntity(entity)
+        -- there are issues with removing entities in the world.
+        -- not sure if it's a concord bug or on my side.
+        -- so we are resetting the world after each match as well.
+
         -- print("removing: " .. entity.metadata.type, (entity.metadata.name or ""))
         -- entity.__world = nil
         -- entity = nil

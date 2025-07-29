@@ -132,6 +132,10 @@ function RenderManager:sendDefaultUniforms(shader, name)
 end
 
 function RenderManager:sendUniform(name, value)
+    if not self.shaderStack[#self.shaderStack] then
+        return
+    end
+
     self.shaderStack[#self.shaderStack]:send(name, value)
 end
 

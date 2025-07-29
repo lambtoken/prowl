@@ -4,6 +4,7 @@ local mouse = require 'src.input.mouse'
 local Cursor = require 'src.render.Cursor'
 local cheatCodeListener = require 'src.input.cheatCodeListener'
 local console = require "src.input.console"
+local balloons = require "src.render.balloons"
 
 local SceneManager = {}
 SceneManager.__index = SceneManager
@@ -38,6 +39,8 @@ function SceneManager:initialize()
     self.mouseY = 0
     self.globalKeyBindings = {}
     self.fullScreen = false
+    self.balloons = balloons
+    self.balloons:setPosition(renderManager.windowWidth / 2, renderManager.windowHeight)
 
     self.globalKeyBindings['`'] = function() love.event.quit('restart') end
     self.globalKeyBindings['f11'] = function() love.window.setFullscreen( not self.fullScreen ) self.fullScreen = not self.fullScreen end
@@ -79,16 +82,22 @@ function SceneManager:draw()
         end
     end
 
+    
     love.graphics.pop()
-
+    
     if self.transitionExit then
         transitions[self.transitionType].onExit.draw()
     end
-
+    
     if self.transitionEnter then
         transitions[self.transitionType].onEnter.draw()
     end
     
+    renderManager:pushVirtual()
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(self.balloons)
+    love.graphics.pop()
+
     console:draw()
     self.cursor:draw()
 end
@@ -126,6 +135,7 @@ function SceneManager:update(dt)
     
     console:update(dt)
     self.cursor:update(dt)
+    self.balloons:update(dt)
 end
 
 -- initiates scene change

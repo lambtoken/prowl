@@ -39,7 +39,7 @@ local function new_stats(entityData)
         def = '/'
     end
 
-    if entityData.stats and entityData.stats.hp then
+    if entityData.stats and entityData.stats.maxHp then
         hp = entityData.stats.maxHp
     else
         hp = '/'

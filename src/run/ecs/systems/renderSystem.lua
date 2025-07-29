@@ -30,13 +30,6 @@ function renderSystem:draw()
             return false
         end
 
-        -- -- flowers z - ordering
-        -- if a.metadata.subType == "flower" and b.metadata.subType ~= "flower" then
-        --     return a.position.screenY < b.position.screenY
-        -- elseif b.metadata.subType == "flower" and a.metadata.subType ~= "flower" then
-        --     return a.position.screenY > b.position.screenY
-        -- end
-
         local adjustedAY = a.position.screenY - a.position.screenY * 0.001
         local adjustedBY = b.position.screenY - b.position.screenY * 0.001
 
@@ -129,14 +122,11 @@ function renderSystem:draw()
                         RM:pushShader(shader.name)
                         RM:sendUniform("time", love.timer.getTime())
                         
-                        -- For wobble shader, send quad information
                         if shader.name == "wobble" and layer.texture then
                             local quad = layer.texture
-                            -- Get quad viewport info (x, y, width, height in texture coordinates)
                             local x, y, width, height = quad:getViewport()
                             local textureWidth, textureHeight = RM.image:getDimensions()
                             
-                            -- Convert to texture coordinates (0-1 range)
                             local quadInfo = {
                                 x / textureWidth,
                                 y / textureHeight,

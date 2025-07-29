@@ -117,6 +117,9 @@ function match:enter()
 
     self.tooltip = nil
 
+    self.resultText = nil
+    self.resultTextSize = 100
+
     self.match.eventManager:on("standByPhase", function(teamId)
         self.slidingText:slide("Stand By", RM.teamColors[teamId])
     end)
@@ -128,42 +131,48 @@ function match:enter()
     end)
 end
 
+function match:displayResult(message)
+    self.resultText = message
+end
+
 function match:update(dt) 
-    if not self.paused then
-        if self.match.teamManager.turnTeamId == 1 then
-            if self.match.teamManager:canCurrentTeamRest() and self.match:areAllMobsIdle() and self.match.stateSystem:teamHasMovesLeft(1) then
-                self.endTurnButton.disabled = false
-            else
-                self.endTurnButton.disabled = true
-            end
-            self.endTurnButton:update(dt)
-        end
-
-        self.match:update(dt)
-        self.inputManager:update(dt)
-        self.hangingPiece:update(dt)
-        self.turnTracker:update(dt)
-        self.TextBubbleManager:update(dt)
-        self.particleSystem:update(dt)
-        self.hearts:update(dt)
-        
-        if self.isShaking then    
-            self.shakeTimer = self.shakeTimer - dt
-    
-            if self.shakeTimer > 0 then
-                self.shakeOffsetX = (math.random(-self.shakeMagnitude, self.shakeMagnitude))
-                self.shakeOffsetY = (math.random(-self.shakeMagnitude, self.shakeMagnitude))
-    
-            else
-                self.isShaking = false
-                self.shakeTimer = self.shakeTime
-                self.shakeOffsetX = 0
-                self.shakeOffsetY = 0
-            end
-        end
-
-        self.slidingText:update(dt)
+    if self.paused then
+        return
     end
+
+    if self.match.teamManager.turnTeamId == 1 then
+        if self.match.teamManager:canCurrentTeamRest() and self.match:areAllMobsIdle() and self.match.stateSystem:teamHasMovesLeft(1) then
+            self.endTurnButton.disabled = false
+        else
+            self.endTurnButton.disabled = true
+        end
+        self.endTurnButton:update(dt)
+    end
+
+    self.match:update(dt)
+    self.inputManager:update(dt)
+    self.hangingPiece:update(dt)
+    self.turnTracker:update(dt)
+    self.TextBubbleManager:update(dt)
+    self.particleSystem:update(dt)
+    self.hearts:update(dt)
+    
+    if self.isShaking then    
+        self.shakeTimer = self.shakeTimer - dt
+
+        if self.shakeTimer > 0 then
+            self.shakeOffsetX = (math.random(-self.shakeMagnitude, self.shakeMagnitude))
+            self.shakeOffsetY = (math.random(-self.shakeMagnitude, self.shakeMagnitude))
+
+        else
+            self.isShaking = false
+            self.shakeTimer = self.shakeTime
+            self.shakeOffsetX = 0
+            self.shakeOffsetY = 0
+        end
+    end
+
+    self.slidingText:update(dt)
 end 
 
 function match:mousemoved(x, y)
@@ -251,32 +260,33 @@ function match:draw()
         RM:popShader()
         -- love.graphics.setScissor()
     end
-    
 
-    self.camera:detach()
     
+    
+    self.camera:detach()    
     love.graphics.pop()
+
     
     if self.inputManager.selectedAnimal then
         self.hangingPiece:draw()
     end
     
     self.hearts:draw()
-
+    
     if self.animalStats.animalRef and self.animalStats.animalRef.state.current ~= "dead" then
         self.animalStats:draw()
     end
     
     
     self.turnTracker:draw()
-
+    
     if self.match.teamManager.turnTeamId == 1 then
         self.endTurnButton:draw()
     end
-
+    
     if self.paused then
         local pausedFont = getFont('basis33', 50)
-    
+        
         love.graphics.setShader(nil)
         love.graphics.setFont(pausedFont)
         love.graphics.print(
@@ -285,11 +295,18 @@ function match:draw()
             RM.windowHeight / 2 - pausedFont:getHeight() / 2
         )
     end
-
+    
     self.slidingText:draw()
-
+    
     self.root:draw()
+    
+    if self.resultText then
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.setFont(getFont('basis33', self.resultTextSize))
+        love.graphics.print(self.resultText, RM.windowWidth / 2 - getFont('basis33', self.resultTextSize):getWidth(self.resultText) / 2, RM.windowHeight / 2 - getFont('basis33', self.resultTextSize):getHeight(self.resultText) / 2)
+    end
 end
+
 
 function match:exit() 
     self.match:onExit()
@@ -300,16 +317,6 @@ function match:keypressed(key)
     if key == 'escape' then
         self.paused = not self.paused
     end
-
-    -- if key == 'a' then
-    --     self.match.winnerId = 1
-    --     self.match.states:set_state("result")
-    -- end
-
-    -- if key == 's' then
-    --     self.match.winnerId = 2
-    --     self.match.states:set_state("result")
-    -- end
 end
 
 function match:createTooltip(entity)

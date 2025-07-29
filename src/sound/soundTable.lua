@@ -20,16 +20,16 @@ local soundTable = {
     clicktech3 = {type = 'click', file = '01Pclicktech3.wav'},
     clicktech4 = {type = 'click', file = '01Pclicktech4.wav'},
     pclick1 = {type = 'click', file = '01Pclick1.wav'},
-    pclick2 = {type = 'click', file = '01Pclick2.wav'},
+    pclick2 = {type = 'click', file = '01Pclick2.wav', volume = 0.6},
     pclick3 = {type = 'click', file = '01Pclick3.wav', volume = 0.5},
     pclick4 = {type = 'click', file = '01Pclick4.wav'},
     pclick5 = {type = 'click', file = '01Pclick5.wav'},
     pclick6 = {type = 'click', file = '01Pclick6.wav'},
     pclick7 = {type = 'click', file = '01Pclick7.wav'},
 
-    pdmg1 = {type = 'click', file = '01Pdmg1.wav', volume = 0.6},
-    pdmg2 = {type = 'click', file = '01Pdmg2.wav', volume = 0.6},
-    pdmg3 = {type = 'click', file = '01Pdmg3.wav', volume = 0.5},
+    pdmg1 = {type = 'click', file = '01Pdmg1.wav', volume = 0.4},
+    pdmg2 = {type = 'click', file = '01Pdmg2.wav', volume = 0.4},
+    pdmg3 = {type = 'click', file = '01Pdmg3.wav', volume = 0.4},
     ppop = {type = 'click', file = '01Ppop.wav', volume = 0.8},
     pm3 = {type = 'ui', file = '01Pm3.wav', volume = 0.7},
     pm7 = {type = 'ui', file = '01Pm7.wav', volume = 0.7},
@@ -55,7 +55,6 @@ local soundTable = {
     displace = {type = 'displace', file = 'displace.wav', volume = 1},
     victory = {type = 'ui', file = 'victory.wav', volume = 1},
     loss = {type = 'ui', file = 'slowmo.wav', volume = 0.6},
-    --arrow = {type = 'effect', file = 'oawn.wav', volume = 1},
     miss = {type = 'effect', file = 'miss.wav', volume = 0.6},
 }
 

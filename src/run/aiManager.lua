@@ -170,7 +170,7 @@ function aiManager:pickMove(moves, difficulty)
         else
             local leftIndex = #moves - math.max(1, math.floor(#moves * 0.3))
             local portion = splitTableByRange(moves, leftIndex, #moves)
-            print("move portion: ", #portion)
+            -- print("move portion: ", #portion)
             return portion[math.random(#portion)]
         end
 

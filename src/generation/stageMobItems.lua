@@ -49,22 +49,22 @@ local itemAnchors = {
     -- Stage 1 anchors
     {
         [1] = { chance = 0, min = 1, max = 1 },
-        [5] = { chance = 0, min = 1, max = 1 },
-        [7] = { chance = 0.1, min = 1, max = 1 }
+        [5] = { chance = 0.1, min = 1, max = 1 },
+        [7] = { chance = 0.2, min = 1, max = 1 }
     },
     
     -- Stage 2 anchors
     {
-        [1] = { chance = 0.2, min = 1, max = 2 },
-        [4] = { chance = 0.3, min = 2, max = 3 },
-        [7] = { chance = 0.3, min = 2, max = 4 }
+        [1] = { chance = 0.3, min = 1, max = 2 },
+        [4] = { chance = 0.4, min = 2, max = 3 },
+        [7] = { chance = 0.5, min = 2, max = 4 }
     },
     
     -- Stage 3 anchors
     {
-        [1] = { chance = 0.4, min = 2, max = 3 },
-        [4] = { chance = 0.5, min = 3, max = 4 },
-        [7] = { chance = 0.6, min = 4, max = 5 }
+        [1] = { chance = 0.6, min = 2, max = 3 },
+        [4] = { chance = 0.7, min = 3, max = 4 },
+        [7] = { chance = 0.8, min = 4, max = 5 }
     }
 }
 
