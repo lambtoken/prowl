@@ -89,6 +89,10 @@ end
 
 
 function animationSystem:update(dt)
+    if #self.pool == 0 then
+        return
+    end
+    
     for _, entity in ipairs(self.pool) do 
         local state = entity.state
         
@@ -98,13 +102,27 @@ function animationSystem:update(dt)
         
         local renderable = entity.renderable
         
+        local hasAnimations = #renderable.animations > 0
+        if not hasAnimations then
+            for _, layer in ipairs(renderable.layers) do
+                if #layer.animations > 0 then
+                    hasAnimations = true
+                    break
+                end
+            end
+        end
+        
+        if not hasAnimations then
+            goto continue
+        end
+        
         self:updateAnimations(entity.renderable, entity, dt)
 
         for index, layer in ipairs(renderable.layers) do
-        
             local animations = layer.animations
-            self:updateAnimations(layer, entity, dt)
-            
+            if #animations > 0 then
+                self:updateAnimations(layer, entity, dt)
+            end
         end
         ::continue::
     end

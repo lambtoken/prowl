@@ -96,8 +96,6 @@ function MatchManager:init_state_machine()
                 s.timerFlag = false
                 if s.instance.winnerId == 1 then
                     SoundManager:playSound('victory')
-                    s.balloonsTimer = 0
-                    s.balloonsTime = 0.5
                     SceneManager.currentScene:displayResult("You won")
                 elseif s.instance.winnerId == 0 then
                     SoundManager:playSound('loss')
@@ -110,13 +108,6 @@ function MatchManager:init_state_machine()
             
             update = function(s, dt) 
                 s.sceneTimer = s.sceneTimer + dt
-                if s.balloonsTime then
-                    s.balloonsTimer = s.balloonsTimer + dt
-                    if s.balloonsTimer >= s.balloonsTime then
-                        SceneManager.balloons:emit(20)
-                        s.balloonsTimer = 0
-                    end
-                end
                 
                 if s.sceneTimer >= s.sceneTime and s.timerFlag == false then
                    
@@ -143,6 +134,7 @@ function MatchManager:init_state_machine()
                         end
                     end
                     
+                    SceneManager.balloons:emit(20)
                     s.timerFlag = true
                 end
 
@@ -308,31 +300,44 @@ function MatchManager:getEntityById(id)
 end
 
 function MatchManager:draw()
+    local hoveredTileX = SceneManager.currentScene.inputManager.hoveredTileX
+    local hoveredTileY = SceneManager.currentScene.inputManager.hoveredTileY
 
     love.graphics.setShader(noiseShader)
-
+    love.graphics.setColor(1, 1, 1, 1)
+    
     for i = 1, self.height do
         for j = 1, self.width do
-
-            if  j - 1 == SceneManager.currentScene.inputManager.hoveredTileX and
-                i - 1 == SceneManager.currentScene.inputManager.hoveredTileY then
-                    love.graphics.setShader(shimmerShader)
-            else
-                love.graphics.setShader(noiseShader)
-
+            if not (j - 1 == hoveredTileX and i - 1 == hoveredTileY) then
+                love.graphics.draw(
+                    RM.image, 
+                    self.board.terrain[i][j].quad, 
+                    (j - 1) * RM.tileSize, 
+                    (i - 1) * RM.tileSize, 
+                    0, 
+                    RM.increaseFactor,
+                    RM.increaseFactor
+                )
             end
-
-            love.graphics.setColor(1 ,1 ,1 ,1)
-            love.graphics.draw(
-                RM.image, 
-                self.board.terrain[i][j].quad, 
-                (j - 1) * RM.tileSize, 
-                (i - 1) * RM.tileSize, 
-                0, 
-                RM.increaseFactor,
-                RM.increaseFactor
-            )
         end
+    end
+    if hoveredTileX and hoveredTileY and 
+       hoveredTileX >= 0 and hoveredTileX < self.width and
+       hoveredTileY >= 0 and hoveredTileY < self.height then
+    love.graphics.setShader(shimmerShader)
+    love.graphics.setColor(1, 1, 1, 1)
+    
+    local i = hoveredTileY + 1
+    local j = hoveredTileX + 1
+    love.graphics.draw(
+        RM.image, 
+        self.board.terrain[i][j].quad, 
+        hoveredTileX * RM.tileSize, 
+        hoveredTileY * RM.tileSize, 
+        0, 
+            RM.increaseFactor,
+            RM.increaseFactor
+        )
     end
 
     love.graphics.setShader()

@@ -45,7 +45,7 @@ function renderSystem:draw()
         local state = entity.state
         local position = entity.position
         local renderable = entity.renderable
-        
+
         if entity.metadata.type == 'flower' then
             local angle = love.math.noise((entity.position.x + entity.position.y) / 10 + love.timer.getTime() * 0.7) - 0.5
             love.graphics.setColor(1, 1, 1, 1)

@@ -140,6 +140,7 @@ function match:update(dt)
         return
     end
 
+    -- this should be moved to button and only run when entered
     if self.match.teamManager.turnTeamId == 1 then
         if self.match.teamManager:canCurrentTeamRest() and self.match:areAllMobsIdle() and self.match.stateSystem:teamHasMovesLeft(1) then
             self.endTurnButton.disabled = false

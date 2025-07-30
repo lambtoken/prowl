@@ -39,18 +39,28 @@ function timerSystem:newTimer(time, callbackId, data)
 end
 
 function timerSystem:update(dt)
+    if #self.pool == 0 then
+        return
+    end
 
     for index, entity in ipairs(self.pool) do
-        for i = #entity.timers.timers, 1, -1 do
-            local timer = entity.timers.timers[i]
+        local timers = entity.timers.timers
+
+        if #timers == 0 then
+            goto continue
+        end
+        
+        for i = #timers, 1, -1 do
+            local timer = timers[i]
 
             timer.currentTime = timer.currentTime + dt
 
             if timer.currentTime >= timer.duration then
                 callbackRegistry[timer.callbackId](timer.data)
-                table.remove(entity.timers.timers, i)
+                table.remove(timers, i)
             end
         end
+        ::continue::
     end
 
 end

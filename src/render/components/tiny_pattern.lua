@@ -43,6 +43,7 @@ local function new_pattern(pattern_data)
 
     local tb = mold.TextBox:new(text)
         :setMargin("10px", "bottom")
+        :setSize(20)
         :setColor({1, 1, 1, 1})
 
     c:addChild(tb)

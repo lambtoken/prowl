@@ -202,7 +202,7 @@ function mainMenu:enter()
     end
 
     -- version
-    local ver = root:addChild(mold.TextBox:new("v0.1.1"))
+    local ver = root:addChild(mold.TextBox:new("v0.1.2"))
         :setMargin("auto", "top")
         :setPosition("relative")
         :setSize(50)
