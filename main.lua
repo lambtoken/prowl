@@ -97,8 +97,8 @@ end
 function love.draw()
     sceneM:draw()
     renderM:draw()
-    love.graphics.setFont(getFont('basis33', 30))
-    love.graphics.print(love.timer.getFPS(), 0, 0)
+    -- love.graphics.setFont(getFont('basis33', 30))
+    -- love.graphics.print(love.timer.getFPS(), 0, 0)
 end
 
 function love.mousemoved(x, y)

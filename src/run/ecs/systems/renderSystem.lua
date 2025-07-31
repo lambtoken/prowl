@@ -12,11 +12,11 @@ local renderSystem = Concord.system({pool = {"position", "renderable", "shader"}
 local drawColliders = false
 
 function renderSystem:init()
-    self.pusleDuration = 1
+    self.pusleDuration = 0.75
     self.pulseTimer = 0
     self.pulseAlpha = 0
-    self.pulseAlphaPeak = 0.7
-    self.pulseAlphaLow = 0.2
+    self.pulseAlphaPeak = 0.8
+    self.pulseAlphaLow = 0.5
     self.outlinePulse = tween.new(self.pusleDuration, self, {pulseAlpha = self.pulseAlphaPeak}, "outInSine")
 end
 
@@ -110,34 +110,45 @@ function renderSystem:draw()
             
             for index, layer in ipairs(renderable.layers) do
                 
-                if entity.metadata.type == 'animal' and sceneManager.currentScene.teamOutline then
-                    outlineShader:send("outlineSize", textureSize/16 * 0.25)
-                    local r, g, b = unpack(RM.teamColors[entity.team.teamId])
-                    outlineShader:send("outlineColor", {r, g, b, self.pulseAlpha})
-                    love.graphics.setShader(outlineShader)
-                end
 
-                if entity.shader then
-                    for _, shader in ipairs(entity.shader.shaders) do
-                        RM:pushShader(shader.name)
-                        RM:sendUniform("time", love.timer.getTime())
-                        
-                        if shader.name == "wobble" and layer.texture then
-                            local quad = layer.texture
-                            local x, y, width, height = quad:getViewport()
-                            local textureWidth, textureHeight = RM.image:getDimensions()
+                -- if entity.shader then
+                --     for _, shader in ipairs(entity.shader.shaders) do
+                --         RM:pushShader(shader.name)
+                --         RM:sendUniform("time", love.timer.getTime())
+                --         if shader.name == "wobble" and layer.texture then
+                --             local quad = layer.texture
+                --             local x, y, width, height = quad:getViewport()
+                --             local textureWidth, textureHeight = RM.image:getDimensions()
                             
-                            local quadInfo = {
-                                x / textureWidth,
-                                y / textureHeight,
-                                width / textureWidth,
-                                height / textureHeight
-                            }
+                --             local quadInfo = {
+                --                 x / textureWidth,
+                --                 y / textureHeight,
+                --                 width / textureWidth,
+                --                 height / textureHeight
+                --             }
                             
-                            RM:sendUniform("quadInfo", quadInfo)
-                        end
-                    end
-                end
+                --             RM:sendUniform("quadInfo", quadInfo)
+                --         end
+                --     end
+                -- end
+
+                -- if entity.metadata.type == 'animal' then
+                --     RM:pushShader("outline")
+                --     RM:sendUniform("outlineWidth", 1)
+                --     local r, g, b = unpack(RM.teamColors[entity.team.teamId])
+                    
+                --     local teamColorInfluence = self.pulseAlpha * 0.75
+                --     local teamColorMaxSaturation = 0.5
+                --     local finalR = (1 - teamColorInfluence) * 1 + teamColorInfluence * r * teamColorMaxSaturation
+                --     local finalG = (1 - teamColorInfluence) * 1 + teamColorInfluence * g * teamColorMaxSaturation
+                --     local finalB = (1 - teamColorInfluence) * 1 + teamColorInfluence * b * teamColorMaxSaturation
+                   
+                --     local alphaAmount = 0.4
+
+                --     local alpha = alphaAmount + self.pulseAlpha * (1 - alphaAmount)
+                    
+                --     RM:sendUniform("outlineColor", {finalR, finalG, finalB, alpha})
+                -- end
 
                 love.graphics.draw(
                     RM.image,
@@ -148,18 +159,17 @@ function renderSystem:draw()
                     RM.increaseFactor * layer.transform.scaleX * renderable.transform.flipX,
                     RM.increaseFactor * layer.transform.scaleY
                 )
+
                 if #entity.shader.shaders > 0 then
                     RM:popShader(#entity.shader.shaders)
                 end
-            
+
             end
 
             love.graphics.pop()
             
             if entity.metadata.type == 'animal' then 
-                if sceneManager.currentScene.teamOutline then
-                    love.graphics.setShader()
-                end
+                RM:popShader()
 
                 local bgFont = getFont("basis33", 38)
                 local font = getFont("basis33", 35)
@@ -192,9 +202,9 @@ function renderSystem:update(dt)
     if self.outlinePulse then
         if self.outlinePulse:update(dt) then
             if self.pulseAlpha == self.pulseAlphaPeak then
-                self.outlinePulse = tween.new(self.pusleDuration, self, {pulseAlpha = self.pulseAlphaLow}, "outInSine")
+                self.outlinePulse = tween.new(self.pusleDuration, self, {pulseAlpha = self.pulseAlphaLow}, "outSine")
             elseif self.pulseAlpha == self.pulseAlphaLow then
-                self.outlinePulse = tween.new(self.pusleDuration, self, {pulseAlpha = self.pulseAlphaPeak}, "outInSine")
+                self.outlinePulse = tween.new(self.pusleDuration, self, {pulseAlpha = self.pulseAlphaPeak}, "inSine")
             end    
         end
     end

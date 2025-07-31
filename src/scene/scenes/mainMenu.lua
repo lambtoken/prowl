@@ -71,6 +71,7 @@ function animalBg:load()
             ::continue::
         end
     end
+
 end
 
 function animalBg:draw()
@@ -204,7 +205,8 @@ function mainMenu:enter()
     -- version
     local ver = root:addChild(mold.TextBox:new("v0.1.2"))
         :setMargin("auto", "top")
-        :setPosition("relative")
+        :setPosition("absolute")
+        :setPos(0, RM.windowHeight - 50)
         :setSize(50)
 
     root:resize()

@@ -107,7 +107,7 @@ function buffDebuffSystem:onStandBy(teamId)
                 end
 
                 table.remove(effects, i)
-                print("removed effect", effect.name)
+                -- print("removed effect", effect.name)
             else
                 effect.turn = effect.turn + 1
             end

@@ -71,7 +71,7 @@ function combatSystem:init()
 
                         local m = defMissChance(entity, target)
 
-                        print("def miss ", m)
+                        -- print("def miss ", m)
 
                         missed = missed or math.random() <= m
             

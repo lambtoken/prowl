@@ -115,6 +115,7 @@ function MatchManager:init_state_machine()
                     -- change scene to pick Item Scene
                     
                     if s.instance.winnerId == 1 then
+                        SceneManager.balloons:emit(20)
                         if gs.run.currentStage == 3 and gs.run.currentNodeCoords[1] == 7 then
                             gs.run.runWon = true
                             SceneManager:switchScene("runEnd")
@@ -134,7 +135,6 @@ function MatchManager:init_state_machine()
                         end
                     end
                     
-                    SceneManager.balloons:emit(20)
                     s.timerFlag = true
                 end
 

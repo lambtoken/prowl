@@ -1,5 +1,5 @@
 function love.conf(t)
-    t.window.fullscreen = false
+    t.window.fullscreen = true
     t.window.icon = 'assets/icon.png'
     t.window.depth = 16
     t.window.title = "Prowl"

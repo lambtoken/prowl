@@ -29,7 +29,6 @@ local function item_details(name)
             :setSize(20)
             :setMargin("top", 20)
             :setColor({0.8, 0.8, 0.8, 1})
-            :setWidth("250px")
         
         c:addChild(description)
     end
