@@ -1,4 +1,5 @@
 local pretty = require "libs.batteries.pretty"
+local gs = require('src.state.GameState'):getInstance()
 local aiManager = {}
 aiManager.__index = aiManager
 
@@ -217,7 +218,7 @@ function aiManager:getMoves(teamID, amount)
     for i = 1, amount do
         -- Instead of sorting + filtering, just pick from allMoves
 
-        local randomMove = #allMoves > 0 and self:pickMove(allMoves, "medium") or nil
+        local randomMove = #allMoves > 0 and self:pickMove(allMoves, gs.settings.difficulty or "medium") or nil
 
         if randomMove then
             table.insert(picked, randomMove)
@@ -240,7 +241,7 @@ end
 
 -- Returns a table: { [entity] = { main = move, alt = move } }
 function aiManager:getMainAndAltMoves(teamID, amount, difficulty)
-    difficulty = difficulty or "easy" -- default to medium if not specified
+    difficulty = difficulty or gs.settings.difficulty or "medium"
     local entityMoves = {}
     
     -- First, collect all possible moves for each entity

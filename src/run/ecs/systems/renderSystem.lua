@@ -111,26 +111,26 @@ function renderSystem:draw()
             for index, layer in ipairs(renderable.layers) do
                 
 
-                -- if entity.shader then
-                --     for _, shader in ipairs(entity.shader.shaders) do
-                --         RM:pushShader(shader.name)
-                --         RM:sendUniform("time", love.timer.getTime())
-                --         if shader.name == "wobble" and layer.texture then
-                --             local quad = layer.texture
-                --             local x, y, width, height = quad:getViewport()
-                --             local textureWidth, textureHeight = RM.image:getDimensions()
+                if entity.shader then
+                    for _, shader in ipairs(entity.shader.shaders) do
+                        RM:pushShader(shader.name)
+                        RM:sendUniform("time", love.timer.getTime())
+                        if shader.name == "wobble" and layer.texture then
+                            local quad = layer.texture
+                            local x, y, width, height = quad:getViewport()
+                            local textureWidth, textureHeight = RM.image:getDimensions()
                             
-                --             local quadInfo = {
-                --                 x / textureWidth,
-                --                 y / textureHeight,
-                --                 width / textureWidth,
-                --                 height / textureHeight
-                --             }
+                            local quadInfo = {
+                                x / textureWidth,
+                                y / textureHeight,
+                                width / textureWidth,
+                                height / textureHeight
+                            }
                             
-                --             RM:sendUniform("quadInfo", quadInfo)
-                --         end
-                --     end
-                -- end
+                            RM:sendUniform("quadInfo", quadInfo)
+                        end
+                    end
+                end
 
                 -- if entity.metadata.type == 'animal' then
                 --     RM:pushShader("outline")

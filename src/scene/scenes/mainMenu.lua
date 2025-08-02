@@ -137,7 +137,7 @@ function mainMenu:enter()
 
     function new_game_btn.onMouseReleased()
         gs.run = nil
-        SceneManager:switchScene('animalSelect')
+        SceneManager:switchScene('difficultySelect')
         soundM:playSound('clicktech2')
     end
 
