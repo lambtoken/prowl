@@ -11,6 +11,29 @@ return function(animalData)
     c:setAlignContent("center")
     c.bgColor = {0, 0, 0, 0.8}
 
+    if animalData.passive and animalData.passive.description then
+        local passive_container = mold.Container:new()
+            :setWidth("auto")
+            :setHeight("auto")
+            :setAlignContent("center")
+            :setMargin("10px", "bottom")
+
+        passive_container.bgColor = {0.2, 0.2, 0.2, 0.8}
+        
+        local passive_title = mold.TextBox:new("Passive Ability")
+            :setColor(1, 1, 0.8, 1)  
+            :setSize(22)
+            :setMargin("5px", "bottom")
+        
+        local passive_desc = mold.TextBox:new(animalData.passive.description)
+            :setColor(0.9, 0.9, 0.9, 1)  
+            :setSize(18)
+        
+        passive_container:addChild(passive_title)
+        passive_container:addChild(passive_desc)
+        c:addChild(passive_container)
+    end
+
     if animalData.movePattern and animalData.atkPattern then
         local move_container = mold.Container:new()
             :setWidth("auto")

@@ -493,6 +493,10 @@ function MatchManager:generateEnemies()
             level = self.matchNode.level
         end
 
+        if not positions[pos] then
+            goto continue
+        end
+
         local animal = self:newAnimal(value, positions[pos][1], positions[pos][2], level)
 
         local chance = stageMobItems[gs.run.currentStage][self.matchNode.x - 1].chance
@@ -517,6 +521,8 @@ function MatchManager:generateEnemies()
 
         table.remove(positions, pos)
         self:addToTeam(2, animal)
+
+        ::continue::
     end
 
     -- self.ecs:emit('update', 0.01)
