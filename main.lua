@@ -1,6 +1,7 @@
 local GameState = require'src.state.GameState'
 local SceneManager = require'src.scene.SceneManager'
 local RenderManager = require'src.render.RenderManager'
+local SoundManager = require'src.sound.SoundManager'
 local music = require 'src.sound.music'
 local getFont = require 'src.render.getFont'
 local MatchManager = require 'src.run.MatchManager'
@@ -54,6 +55,10 @@ local renderM
 local steamInitialized
 local achset
 
+local TARGET_FPS = 60
+local FRAME_DURATION = 1 / TARGET_FPS
+local frame_accumulator = 0
+
 function love.load(args)
     
     -- steamInitialized = steam.init()
@@ -71,10 +76,14 @@ function love.load(args)
     sceneM:switchScene('loading')
 
     renderM = RenderManager:getInstance()
+    
+    local soundM = SoundManager:getInstance()
+    soundM:setSoundVolume(gs.settings.soundEffectsVolume)
+    soundM:setMusicVolume(gs.settings.musicVolume)
 
     music.load()
 
-    for index, value in ipairs(args) do
+    for _, value in ipairs(args) do
         if value == "test" then
             require("src.test.run_all")()
             love.event.quit(0)
@@ -83,12 +92,20 @@ function love.load(args)
 end
 
 function love.update(dt)
-    dt = dt * gs.settings.speed
-
+    
     if not gs.isPaused then
         require("libs/lovebird").update()
         sceneM:update(dt)
     end
+
+    frame_accumulator = frame_accumulator + dt
+    
+    if frame_accumulator < FRAME_DURATION then
+        love.timer.sleep(FRAME_DURATION - frame_accumulator)
+        frame_accumulator = FRAME_DURATION
+    end
+    
+    frame_accumulator = frame_accumulator - FRAME_DURATION
 
     renderM:update(dt)
     music.update(dt)
@@ -97,14 +114,13 @@ end
 function love.draw()
     sceneM:draw()
     renderM:draw()
-    -- love.graphics.setFont(getFont('basis33', 30))
-    -- love.graphics.print(love.timer.getFPS(), 0, 0)
+    love.graphics.setFont(getFont('basis33', 30))
+    love.graphics.print(love.timer.getFPS(), 0, 0)
 end
 
 function love.mousemoved(x, y)
     sceneM:mousemoved(x, y)
 end
-
 
 function love.mousepressed(x, y, btn)
     sceneM:mousepressed(x, y, btn)
