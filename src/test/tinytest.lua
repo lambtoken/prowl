@@ -1,13 +1,15 @@
 local tinytest = {}
 
-function tinytest.new()
+function tinytest.new(test_set_name)
   return {
+    name = test_set_name or "unnamed test set",
     tests = {},
     add = function(self, name, fn)
       table.insert(self.tests, { name = name, fn = fn })
     end,
     run = function(self)
       local passed, failed = 0, 0
+      print("Running tests for " .. self.name)
       for _, t in ipairs(self.tests) do
         local ok, err = xpcall(t.fn, debug.traceback)
         if ok then
@@ -18,8 +20,8 @@ function tinytest.new()
           failed = failed + 1
         end
       end
-      print(("\n%d passed, %d failed"):format(passed, failed))
-      if failed > 0 then os.exit(1) end
+      print(("%d passed, %d failed"):format(passed, failed))
+      return passed, failed
     end
   }
 end
